@@ -1,0 +1,30 @@
+:root{--bg:#1b1410;--card:#2a1f19;--fg:#f6ece2;--sub:#bfae9e;--accent:#ff8a3d;--cool:#5ec2e6;--line:#4a3a30}
+@media (prefers-color-scheme: light){:root{--bg:#fbf4ec;--card:#fff;--fg:#2b1d14;--sub:#7b6656;--line:#e6d8ca}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;line-height:1.7}
+main{max-width:640px;margin:0 auto;padding:24px 16px 64px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+h1{font-size:1.8rem;margin:.2em 0}
+h2{font-size:1.2rem;margin:1.4em 0 .4em}
+.sub{color:var(--sub)}
+.center{text-align:center}
+.emoji{font-size:3.5rem}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--accent);color:#2b1305;border:0;border-radius:999px;padding:12px 28px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:focus-visible,.opt:focus-visible{outline:3px solid var(--cool);outline-offset:2px}
+.progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:20px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--cool));transition:width .3s}
+.q{font-size:1.15rem;min-height:4.5em}
+.scale{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:16px 0 4px}
+.opt{width:46px;height:46px;border-radius:50%;border:2px solid var(--line);background:transparent;color:var(--fg)}
+.opt:nth-child(1),.opt:nth-child(5){width:56px;height:56px}
+.opt:hover{border-color:var(--accent)}
+.labels{display:flex;justify-content:space-between;font-size:.8rem;color:var(--sub)}
+.bar{margin:14px 0}
+.bar .row{display:flex;justify-content:space-between;font-size:.9rem}
+.bar .track{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--line)}
+.bar .fill{background:var(--accent)}
+ul{padding-left:1.2em}
+.code{letter-spacing:.2em;color:var(--accent);font-weight:700}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px}
