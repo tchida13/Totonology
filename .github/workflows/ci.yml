@@ -22,6 +22,9 @@ jobs:
       - name: JavaScript 構文チェック
         run: for f in js/*.js; do node --check "$f"; done
 
+      - name: テスト
+        run: node --test
+
       - name: index.html の参照ファイル確認
         run: |
           status=0

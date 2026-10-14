@@ -10,7 +10,9 @@ Totonology 開発における AI エージェント・人間共通の作業ル�
 | ファイル | 役割 |
 |---|---|
 | `js/data.js` | 軸・質問・16タイプの定義（文言の編集はここ） |
-| `js/app.js` | 画面遷移・スコア計算 |
+| `js/score.js` | スコア計算・タイプ判定（DOM非依存。ブラウザ/Node両対応） |
+| `js/app.js` | 画面遷移・描画 |
+| `test/` | `node --test` で実行するテスト（外部依存なし） |
 | `style.css` | スタイル（ライト/ダーク対応） |
 | `index.html` | エントリポイント |
 
@@ -69,7 +71,7 @@ fix(score): 同点時にタイプ判定が偏る問題を修正
 
 ## CI/CD
 
-- `.github/workflows/ci.yml` … PR と `main` への push で実行。JS の構文チェックと、`index.html` が参照するファイルの存在確認
+- `.github/workflows/ci.yml` … PR と `main` への push で実行。JS の構文チェック、`node --test`、`index.html` が参照するファイルの存在確認
 - `.github/workflows/deploy.yml` … `main` への push で GitHub Pages にデプロイ
 
 PR は CI が成功してからマージする。
@@ -79,11 +81,13 @@ PR は CI が成功してからマージする。
 ```sh
 python3 -m http.server   # http://localhost:8000
 for f in js/*.js; do node --check "$f"; done
+node --test   # テスト
 ```
 
 ## エージェント向け注意事項
 
 - 変更は依頼された Issue の範囲に収める。範囲外の改善は新しい Issue として提案する
 - `git push`、PR 作成、Issue 操作など外部に影響する操作は、依頼の範囲内で行う
-- 依存パッケージやビルド工程を安易に追加しない（静的サイトのまま保つ）
+- 依存パッケージやビルド工程を安易に追加しない（静的サイトのまま保つ。テストも Node 標準の `node --test` を使う）
+- ロジックを変えたら `test/` にテストを追加・更新する
 - 質問・タイプの文言は `js/data.js` のみで編集できる構造を維持する
