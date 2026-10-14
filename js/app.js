@@ -53,8 +53,8 @@
     const t = TYPES[code];
     const m = TYPES[t.match];
     const bars = sc.map((s) => {
-      const pct = s.sum > 0 ? s.pct : 100 - s.pct;
-      const main = s.sum > 0 ? s.ax.first : s.ax.second;
+      const pct = s.side === "first" ? s.pct : 100 - s.pct;
+      const main = s.ax[s.side];
       return `<div class="bar"><div class="row"><span>${esc(s.ax.title)}</span><span>${esc(main.label)} ${pct}%</span></div>
         <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
     }).join("");
