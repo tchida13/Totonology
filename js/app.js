@@ -40,19 +40,8 @@
     if (back) back.onclick = () => question(i - 1);
   }
 
-  // 各軸のスコア: first側の割合(0-100)
-  function scores() {
-    return AXES.map((ax) => {
-      let sum = 0, max = 0;
-      Q.forEach((q, i) => { if (q.axis === ax.id) { sum += answers[i] * q.dir; max += 2; } });
-      return { ax, sum, pct: Math.round(((sum + max) / (2 * max)) * 100) };
-    });
-  }
-
-  function codeOf(sc) {
-    // 同点(0)は second 側に倒す
-    return sc.map((s) => (s.sum > 0 ? s.ax.first.code : s.ax.second.code)).join("");
-  }
+  const scores = () => window.Score.scores(answers, Q, AXES);
+  const codeOf = window.Score.codeOf;
 
   function finish() {
     const code = codeOf(scores());
