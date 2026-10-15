@@ -9,7 +9,7 @@ const SRC = ["data.js", "score.js", "app.js"].map(read);
 
 // 新しいスタブ環境を作り、app.js を読み込んで返す。storage は引き継げる
 function boot({ hash = "", search = "", reduce = false, ritual = false, share = false, storage = {}, storageBroken = false } = {}) {
-  const env = { html: "", storage, listeners: {}, urls: [], timers: [] };
+  const env = { html: "", storage, listeners: {}, urls: [], timers: [], vars: {}, fx: { className: "", innerHTML: "" }, announce: { textContent: "" } };
   const btns = [2, 1, 0, -1, -2].map((v) => ({ dataset: { v: String(v) }, click() { this.onclick(); } }));
   const el = {}; // id -> 要素スタブ
   const app = {
@@ -26,7 +26,8 @@ function boot({ hash = "", search = "", reduce = false, ritual = false, share = 
       ? { getItem() { throw new Error("blocked"); }, setItem() { throw new Error("blocked"); }, removeItem() { throw new Error("blocked"); } }
       : { getItem: (k) => storage[k] ?? null, setItem: (k, v) => (storage[k] = v), removeItem: (k) => delete storage[k] },
     document: {
-      getElementById: (id) => (id === "app" ? app : (el[id] = el[id] || { innerHTML: "ORIG", click() { this.onclick(); } })),
+      body: { dataset: {}, style: { setProperty: (k, v) => (env.vars[k] = v) } },
+      getElementById: (id) => (id === "app" ? app : id === "fx" ? env.fx : id === "announce" ? env.announce : (el[id] = el[id] || { innerHTML: "ORIG", click() { this.onclick(); } })),
       addEventListener: (t, f) => (env.listeners[t] = f),
     },
     confirm: () => env.confirmAnswer,
@@ -43,6 +44,7 @@ function boot({ hash = "", search = "", reduce = false, ritual = false, share = 
   // data.js/score.js は window / globalThis に定義するため、関数内で window を差し替えて評価する
   const run = new Function(...Object.keys(g), SRC.join("\n"));
   run(...Object.values(g));
+  env.body = g.document.body;
   env.btns = btns;
   env.el = el;
   env.key = (key, extra = {}) => env.listeners.keydown({ key, ...extra });
@@ -280,4 +282,57 @@ test("シェア画像: 生成に失敗しても結果表示は壊れず、セク
   await new Promise((r) => setImmediate(r));
   assert.match(env.html, /強み/);
   assert.equal(env.el.share.hidden, true);
+});
+
+// 質問中の場面: 暗いサウナ室 → 半分(Q12)でロウリュが一度だけ入る
+test("場面: 開始→質問→(演出)→結果で body の data-scene が切り替わる", () => {
+  const env = boot({ ritual: true });
+  assert.equal(env.body.dataset.scene, "start");
+  env.el.go.click();
+  assert.equal(env.body.dataset.scene, "quiz");
+  for (let i = 0; i < 24; i++) env.key("1");
+  assert.equal(env.body.dataset.scene, "ritual");
+  env.el.skip.click();
+  assert.equal(env.body.dataset.scene, "result");
+});
+
+test("ロウリュ: 半分(12問回答)で一度だけ入り、以降は熱気が増して室温表示が上がる", () => {
+  const env = boot({ ritual: true });
+  env.el.go.click();
+  for (let i = 0; i < 11; i++) env.key("1");
+  assert.doesNotMatch(env.fx.className, /\bon\b/); // 11問目まではなし
+  assert.match(env.html, /Q12 \//);
+  assert.match(env.html, /class="temp"[^>]*>(8\d)°C/);
+  env.key("1"); // 12問目に回答 → 13問目へ
+  assert.match(env.fx.className, /on/);
+  assert.match(env.fx.innerHTML, /ロウリュ/);
+  assert.match(env.announce.textContent, /ロウリュ/); // 読み上げ用
+  assert.equal(env.body.dataset.loyly, "1");
+  assert.match(env.html, /class="temp"[^>]*>(9\d)°C/);
+  env.fx.className = "fx"; env.fx.innerHTML = "";
+  env.key("1"); env.key("1");
+  assert.doesNotMatch(env.fx.className, /\bon\b/); // 再生は一度だけ
+  assert.equal(env.fx.innerHTML, "");
+  env.timers.forEach((t) => t.fn()); // 後片付けのタイマーを発火しても壊れない
+});
+
+test("ロウリュ: 復元・戻る操作では再生しないが、熱気の状態は引き継ぐ", () => {
+  const first = boot({ ritual: true });
+  first.el.go.click();
+  for (let i = 0; i < 14; i++) first.key("1");
+  const second = boot({ ritual: true, storage: first.storage });
+  assert.match(second.html, /Q15 \//);
+  assert.doesNotMatch(second.fx.className, /\bon\b/);
+  assert.equal(second.body.dataset.loyly, "1");
+});
+
+test("ロウリュ: 動きを減らす設定では演出を出さず、もう一度診断で熱気はリセットされる", () => {
+  const env = boot({ ritual: true, reduce: true });
+  env.el.go.click();
+  for (let i = 0; i < 12; i++) env.key("1");
+  assert.doesNotMatch(env.fx.className, /\bon\b/);
+  assert.equal(env.body.dataset.loyly, "1");
+  env.location.hash = "#invalid"; env.listeners.hashchange(); // start() 相当
+  assert.equal(env.body.dataset.loyly, undefined);
+  assert.equal(env.body.dataset.scene, "start");
 });

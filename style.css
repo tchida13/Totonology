@@ -18,6 +18,7 @@ ul{margin:0;padding:0;list-style:none}
 button{font:inherit;cursor:pointer;color:inherit}
 img{max-width:100%}
 [hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .avatar{display:block;margin:0 auto;height:auto}
 .sub{color:var(--sub)}
 .icon{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
@@ -28,7 +29,7 @@ img{max-width:100%}
 /* ---- ヘッダー・フッター ---- */
 .top{max-width:760px;margin:0 auto;padding:14px 16px 6px}
 .brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:1rem;letter-spacing:.14em;text-transform:uppercase}
-.brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:2px;color:#F3F1EC;background:var(--fg)}
+.brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:2px;color:var(--bg);background:var(--fg)}
 .brand-mark .icon{width:20px;height:20px}
 .foot{max-width:760px;margin:0 auto;padding:0 16px 40px;color:var(--sub);font-size:.8rem;text-align:center}
 .foot p{margin:4px 0}
@@ -152,7 +153,7 @@ img{max-width:100%}
 .ritual>*{position:relative;z-index:1}
 .ritual.s1{background:#4A4240}
 .ritual.s2{background:#1D4658}
-.ritual.s3{background:#E9EEEC;color:var(--fg)}
+.ritual.s3{background:#E9EEEC;color:#25292C}/* ritual 場面では --fg が明るい色に上書きされるため、明るい背景には固定色 */
 .r-scene{position:absolute!important;inset:0;z-index:0!important;pointer-events:none}
 .r-temp{font-size:clamp(4rem,22vw,7rem);font-weight:200;line-height:1.1;letter-spacing:.02em;font-variant-numeric:tabular-nums}
 .r-status h2{font-size:1.4rem;letter-spacing:.3em;margin:6px 0 4px;padding-left:.3em}
@@ -182,3 +183,28 @@ img{max-width:100%}
 /* ---- シェア用画像 ---- */
 .share-img{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface2)}
 .share .actions{margin-top:16px}
+
+/* ---- 質問中: 暗いサウナ室で我慢する。進捗に応じて熱気(--heat)が増し、半分でロウリュが入る ---- */
+@property --heat{syntax:"<number>";inherits:true;initial-value:0}
+body{transition:--heat 1s ease,background-color .8s ease,color .8s ease}
+body[data-scene="quiz"],body[data-scene="ritual"]{--bg:#1B1614;--surface:#2A2220;--surface2:#352B28;--fg:#F1E8DF;--sub:#BDB1A6;--line:#4C403A;--hot:#E4694A;--cool:#7DB7D0}
+body[data-scene="quiz"]{background:radial-gradient(120% 70% at 50% 118%,rgba(228,105,60,calc(.12 + var(--heat) * .34)),transparent 62%),repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 2px,transparent 2px 54px),var(--bg)}
+body[data-scene="quiz"]::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.5));animation:endure 6s ease-in-out infinite alternate}
+@keyframes endure{from{opacity:.55}to{opacity:1}}
+body[data-scene="quiz"][data-loyly]::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(255,236,215,.09),transparent 55%);animation:haze 7s ease-in-out infinite alternate}
+@keyframes haze{from{transform:translateY(-2%)}to{transform:translateY(3%)}}
+.temp{margin:0 0 0 auto;font-size:1.5rem;font-weight:300;letter-spacing:.04em;color:var(--sub)}
+.fx{position:fixed;inset:0;z-index:20;overflow:hidden;pointer-events:none;display:none}
+.fx.on{display:block}
+.fx.on::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(255,190,130,.42),transparent 62%);animation:flash 1.8s ease-out .8s both}
+@keyframes flash{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
+.stones{position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(180deg,#5a3a2a,#1b1210);box-shadow:0 -6px 30px rgba(255,120,50,.55)}
+.ldrop{position:absolute;left:50%;top:-20px;width:12px;height:16px;margin-left:-6px;border-radius:50% 50% 50% 50%/65% 65% 35% 35%;background:#A8D2E4;animation:ldrop .8s cubic-bezier(.5,0,1,.6) forwards}
+@keyframes ldrop{to{transform:translateY(calc(100vh - 80px));opacity:.2}}
+.steam-burst{position:absolute;bottom:40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,0) 68%);filter:blur(14px);opacity:0;animation:burst 2.6s ease-out .8s forwards}
+.b1{left:-6%}.b2{left:26%;animation-delay:.9s}.b3{left:54%;animation-delay:.85s}.b4{left:78%;animation-delay:1s}
+@keyframes burst{0%{transform:translateY(0) scale(.5);opacity:0}25%{opacity:.85}100%{transform:translateY(-75vh) scale(1.7);opacity:0}}
+.loyly-banner{position:absolute;left:50%;top:22%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 22px;border:1px solid rgba(255,255,255,.5);background:rgba(20,14,12,.55);color:#fff;text-align:center;white-space:nowrap;animation:banner 3s ease-out .7s both}
+.loyly-banner b{font-size:1.6rem;font-weight:600;letter-spacing:.4em;padding-left:.4em}
+.loyly-banner span{font-size:.8rem;letter-spacing:.1em;opacity:.85}
+@keyframes banner{0%{opacity:0;transform:translate(-50%,8px)}15%,75%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
