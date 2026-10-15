@@ -24,7 +24,7 @@
   const scene = (name) => {
     if (document.body) document.body.dataset.scene = name;
     const meta = document.querySelector && document.querySelector('meta[name="theme-color"]'); // モバイルのブラウザバーも場面の色に合わせる
-    if (meta) meta.setAttribute("content", name === "quiz" || name === "ritual" ? "#1B1614" : "#F3F1EC");
+    if (meta) meta.setAttribute("content", { quiz: "#1B1614", ritual: "#0B2029" }[name] || "#F3F1EC");
   };
   const heat = (v) => { if (document.body) document.body.style.setProperty("--heat", v); };
   const calm = () => typeof matchMedia !== "function" || matchMedia("(prefers-reduced-motion: reduce)").matches; // 動きを減らす設定(や matchMedia のない環境)
@@ -167,7 +167,7 @@
     calm() ? result(code, sc) : ritual(code, sc);
   }
 
-  // 結果の前の「ため」: ロウリュ→蒸気→水風呂→外気浴。スキップ(ボタン/Esc/タップ)で即結果へ
+  // 結果の前の「ため」: 水風呂から始まり、休憩→外気浴→整いと、だんだん明るくなる。スキップ(ボタン/Esc/タップ)で即結果へ
   const RITUAL_STEP_MS = 1200;
   let ritualTimer = 0, ritualSkip = null;
   function ritual(code, sc) {
@@ -180,7 +180,7 @@
     const skip = () => { if (ritualSkip !== skip) return; result(code, sc); };
     ritualSkip = skip;
     el(`<section class="ritual s0" id="ritual">
-      <div class="r-scene" aria-hidden="true"><i class="drop"></i><i class="puff p1"></i><i class="puff p2"></i><i class="puff p3"></i><i class="puff p4"></i><div class="water"></div></div>
+      <div class="r-scene" aria-hidden="true"><div class="rays"></div><div class="water"></div><i class="bub b1"></i><i class="bub b2"></i><i class="bub b3"></i><i class="bub b4"></i><i class="bub b5"></i></div>
       <p class="r-temp" id="r-temp" aria-hidden="true">${esc(R[0].temp)}</p>
       <div class="r-status" role="status"><h2 id="r-name">${esc(R[0].name)}</h2><p id="r-line">${esc(R[0].line)}</p></div>
       <ol class="r-dots" aria-hidden="true">${R.map(() => "<li></li>").join("")}</ol>
