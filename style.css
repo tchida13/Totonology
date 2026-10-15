@@ -5,12 +5,16 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-
 main{max-width:640px;margin:0 auto;padding:24px 16px 64px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
 h1{font-size:1.8rem;margin:.2em 0}
-h2{font-size:1.2rem;margin:1.4em 0 .4em}
+h2{font-size:1.2rem;margin:1.4em 0 .4em;display:flex;align-items:center;gap:8px}
+h2 .icon{color:var(--accent)}
 .sub{color:var(--sub)}
 .center{text-align:center}
+.icon{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
+.hero-icon{display:inline-grid;place-items:center;width:84px;height:84px;border-radius:24px;color:#fff;background:linear-gradient(180deg,#ff9142,#e5481b)}
+.hero-icon .icon{width:48px;height:48px}
 .emoji{font-size:3.5rem}
 button{font:inherit;cursor:pointer}
-.btn{background:var(--accent);color:#2b1305;border:0;border-radius:999px;padding:12px 28px;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:var(--accent);color:#2b1305;border:0;border-radius:999px;padding:12px 28px;font-weight:700}
 .btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
 .btn:focus-visible,.opt:focus-visible{outline:3px solid var(--cool);outline-offset:2px}
 .progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:20px}
@@ -25,7 +29,7 @@ button{font:inherit;cursor:pointer}
 .labels{display:flex;justify-content:space-between;font-size:.8rem;color:var(--sub)}
 .bar{margin:14px 0}
 .bar .row{display:flex;justify-content:space-between;font-size:.9rem}
-.bar .title{font-size:.8rem}
+.bar .title{font-size:.8rem;display:flex;align-items:center;gap:6px}
 .bar .row .win{font-weight:700;color:var(--accent)}
 .bar .track{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--cool)}
 .bar .fill{background:var(--accent)}

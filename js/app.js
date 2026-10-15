@@ -3,6 +3,9 @@
   const Q = window.QUESTIONS, AXES = window.AXES, TYPES = window.TYPES, SPOTS = window.SPOTS;
   // シェアにはトップURLを使う（結果URLのハッシュには回答が含まれるため、投稿文には載せない）
   const SITE_URL = "https://tchida13.github.io/Totonology/";
+  // lucide のSVGスプライト(assets/icons.svg)から表示する。色は currentColor に追従
+  const icon = (name) => `<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#${name}"/></svg>`;
+  const AXIS_ICON = { heat: "thermometer", cool: "waves", mate: "users", style: "compass" };
   const CHOICES = ["とてもそう思う", "ややそう思う", "どちらでもない", "あまり思わない", "全くそう思わない"];
   const ORDER = window.Score.order(Q, AXES); // 出題順 (質問インデックスの並び)
   let answers = []; // 各設問の回答 (+2..-2)。質問の定義順で保持
@@ -36,11 +39,11 @@
     store.clear();
     history.replaceState(null, "", location.pathname);
     el(`<section class="card center">
-      <div class="emoji">🧖</div>
+      <div class="hero-icon">${icon("flame")}</div>
       <h1 data-focus>Totonology</h1>
       <p>サウナ16タイプ診断</p>
       <p class="sub">${Q.length}問・約${Math.max(1, Math.round(Q.length / 8))}分。あなたのサウナの楽しみ方から、<br>16のサウナ性格タイプを診断します。</p>
-      <div class="actions"><button class="btn" id="go">診断をはじめる</button></div>
+      <div class="actions"><button class="btn" id="go">診断をはじめる${icon("arrow-right")}</button></div>
     </section>`);
     document.getElementById("go").onclick = () => question(0);
   }
@@ -56,7 +59,7 @@
         ${[2, 1, 0, -1, -2].map((v, k) => `<button class="opt${answers[qi] === v ? " on" : ""}" data-v="${v}" aria-pressed="${answers[qi] === v}" aria-label="${CHOICES[k]}" title="${CHOICES[k]}"></button>`).join("")}
       </div>
       <div class="labels"><span>そう思う</span><span>思わない</span></div>
-      <div class="actions">${i > 0 ? '<button class="btn ghost" id="back">戻る</button>' : ""}</div>
+      <div class="actions">${i > 0 ? `<button class="btn ghost" id="back">${icon("arrow-left")}戻る</button>` : ""}</div>
     </section>`);
     app.querySelectorAll(".opt").forEach((b) => (b.onclick = () => {
       answers[qi] = Number(b.dataset.v);
@@ -83,7 +86,7 @@
     // 左=first側・右=second側。勝った側のラベルを強調する
     const bars = sc.map((s) => {
       const a = s.ax;
-      return `<div class="bar"><div class="title sub">${esc(a.title)}</div><div class="row"><span class="${s.side === "first" ? "win" : ""}">${esc(a.first.label)} ${s.pct}%</span><span class="${s.side === "second" ? "win" : ""}">${100 - s.pct}% ${esc(a.second.label)}</span></div>
+      return `<div class="bar"><div class="title sub">${icon(AXIS_ICON[a.id])}${esc(a.title)}</div><div class="row"><span class="${s.side === "first" ? "win" : ""}">${esc(a.first.label)} ${s.pct}%</span><span class="${s.side === "second" ? "win" : ""}">${100 - s.pct}% ${esc(a.second.label)}</span></div>
         <div class="track" role="img" aria-label="${esc(a.title)}: ${esc(a.first.label)} ${s.pct}%、${esc(a.second.label)} ${100 - s.pct}%"><div class="fill" style="width:${s.pct}%"></div></div></div>`;
     }).join("");
     const text = `私のサウナタイプは【${t.name}】(${code})でした！ #Totonology`;
@@ -97,23 +100,24 @@
       </div>
       <p>${esc(t.desc)}</p>
       ${bars}
-      <h2>強み</h2><ul>${t.strengths.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
-      <h2>気をつけたいこと</h2><ul>${t.cautions.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
-      <h2>おすすめのサウナ</h2><p>${esc(t.sauna)}</p>
+      <h2>${icon("sparkles")}強み</h2><ul>${t.strengths.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
+      <h2>${icon("triangle-alert")}気をつけたいこと</h2><ul>${t.cautions.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
+      <h2>${icon("map-pin")}おすすめのサウナ</h2><p>${esc(t.sauna)}</p>
       <ul class="spots">${t.spots.map((id) => { const sp = SPOTS[id]; return `<li class="spot"><strong>${esc(sp.name)}</strong> <span class="sub">${esc(sp.area)}</span><br><span class="vibe">${esc(sp.vibe)}</span><br><span class="sub">${esc(sp.note)}</span></li>`; }).join("")}</ul>
       <p class="sub" style="font-size:.8rem">※ 営業状況・料金・利用条件は変わることがあります。訪問前に公式情報をご確認ください。</p>
-      <h2>相性のいいタイプ</h2><p>${m.emoji} ${esc(m.name)} <span class="sub">(${t.match})</span></p>
+      <h2>${icon("heart-handshake")}相性のいいタイプ</h2><p>${m.emoji} ${esc(m.name)} <span class="sub">(${t.match})</span></p>
       <div class="actions">
-        <a class="btn" target="_blank" rel="noopener" href="${shareUrl}">結果をシェア</a>
-        <button class="btn ghost" id="copy">結果リンクをコピー</button>
-        <button class="btn ghost" id="again">もう一度診断する</button>
+        <a class="btn" target="_blank" rel="noopener" href="${shareUrl}">${icon("share-2")}結果をシェア</a>
+        <button class="btn ghost" id="copy">${icon("link")}結果リンクをコピー</button>
+        <button class="btn ghost" id="again">${icon("rotate-ccw")}もう一度診断する</button>
       </div>
       <p class="sub center" style="font-size:.8rem;margin-top:20px">※ 娯楽目的の診断です。サウナは体調に合わせて無理せず、水分補給をしてお楽しみください。</p>
     </section>`);
     document.getElementById("again").onclick = start;
     const copy = document.getElementById("copy");
     copy.onclick = () => {
-      const done = (msg) => { copy.textContent = msg; setTimeout(() => (copy.textContent = "結果リンクをコピー"), 2000); };
+      const orig = copy.innerHTML;
+      const done = (msg) => { copy.innerHTML = icon("check") + msg; setTimeout(() => (copy.innerHTML = orig), 2000); };
       (navigator.clipboard ? navigator.clipboard.writeText(location.href) : Promise.reject())
         .then(() => done("コピーしました"), () => done("コピーできませんでした"));
     };
