@@ -24,10 +24,59 @@ test("second 側に全振りすると各軸 0% で second コードになる", (
   assert.equal(codeOf(sc), "SATF");
 });
 
-test("すべて「どちらでもない」なら 50% で同点（現状は second 側に倒れる）", () => {
+test("すべて「どちらでもない」なら 50% で同点、最終的に first 側になる", () => {
   const sc = scores(neutral, Q, AXES);
-  sc.forEach((s) => { assert.equal(s.sum, 0); assert.equal(s.pct, 50); });
-  assert.equal(codeOf(sc), "SATF");
+  sc.forEach((s) => { assert.equal(s.sum, 0); assert.equal(s.pct, 50); assert.equal(s.side, "first"); });
+  assert.equal(codeOf(sc), "HWOR");
+});
+
+// 「first 側に v」を、その質問の dir を考慮した回答値に変換する
+const toAns = (i, v) => v * Q[i].dir;
+const axisIdx = (axisId) => Q.map((q, i) => (q.axis === axisId ? i : -1)).filter((i) => i >= 0);
+const axisScore = (answers, axisId) => scores(answers, Q, AXES).find((s) => s.ax.id === axisId);
+
+test("同点: 強い回答(±2)が多い側を採用する", () => {
+  AXES.forEach((ax) => {
+    const [i0, i1, i2] = axisIdx(ax.id);
+    // first +2 / second +1, +1 → 合計0だが、強い回答は first 側のみ
+    const a = neutral.slice();
+    a[i0] = toAns(i0, 2); a[i1] = toAns(i1, -1); a[i2] = toAns(i2, -1);
+    assert.equal(axisScore(a, ax.id).sum, 0, ax.id);
+    assert.equal(axisScore(a, ax.id).side, "first", ax.id);
+    // 逆向き: 強い回答は second 側のみ
+    const b = neutral.slice();
+    b[i0] = toAns(i0, -2); b[i1] = toAns(i1, 1); b[i2] = toAns(i2, 1);
+    assert.equal(axisScore(b, ax.id).sum, 0, ax.id);
+    assert.equal(axisScore(b, ax.id).side, "second", ax.id);
+  });
+});
+
+test("同点で強い回答もない場合は決め手(decisive)の質問で決まる", () => {
+  AXES.forEach((ax) => {
+    const idx = axisIdx(ax.id);
+    const d = idx.find((i) => Q[i].decisive);
+    const other = idx.find((i) => i !== d);
+    // 決め手が second 側に1、他の1問が first 側に1 → 合計0・強い回答なし
+    const a = neutral.slice();
+    a[d] = toAns(d, -1); a[other] = toAns(other, 1);
+    assert.equal(axisScore(a, ax.id).sum, 0, ax.id);
+    assert.equal(axisScore(a, ax.id).side, "second", ax.id);
+    const b = neutral.slice();
+    b[d] = toAns(d, 1); b[other] = toAns(other, -1);
+    assert.equal(axisScore(b, ax.id).side, "first", ax.id);
+  });
+});
+
+test("同点判定は決定的（同じ回答から常に同じ結果）", () => {
+  for (let n = 0; n < 100; n++) {
+    const answers = Q.map(() => Math.floor(Math.random() * 5) - 2);
+    assert.equal(codeOf(scores(answers, Q, AXES)), codeOf(scores(answers.slice(), Q, AXES)));
+  }
+});
+
+test("同点でない軸は合計の符号で決まる", () => {
+  scores(allFirst, Q, AXES).forEach((s) => assert.equal(s.side, "first"));
+  scores(allSecond, Q, AXES).forEach((s) => assert.equal(s.side, "second"));
 });
 
 test("dir が逆の質問は回答の符号が反転して集計される", () => {
@@ -52,6 +101,10 @@ test("データ整合性: 全軸に質問があり dir は ±1", () => {
     assert.ok(q.dir === 1 || q.dir === -1);
     assert.ok(q.text);
   });
+});
+
+test("データ整合性: 各軸に決め手(decisive)の質問がちょうど1問ある", () => {
+  AXES.forEach((ax) => assert.equal(Q.filter((q) => q.axis === ax.id && q.decisive).length, 1, ax.id));
 });
 
 test("データ整合性: 16タイプが揃い match が実在する", () => {
