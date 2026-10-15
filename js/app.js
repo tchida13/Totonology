@@ -6,6 +6,21 @@
   let answers = []; // 各設問の回答 (+2..-2)。質問の定義順で保持
 
   // 描画後、[data-focus] の要素（質問文・見出し）へフォーカスを移して画面遷移を支援技術に伝える
+  // 回答途中の保存・復元（sessionStorage が使えない環境でもそのまま動く）
+  const KEY = "totonology:progress";
+  const store = {
+    save: (pos) => { try { sessionStorage.setItem(KEY, JSON.stringify({ a: Array.from(Q, (_, i) => answers[i] ?? null), p: pos })); } catch (e) {} },
+    clear: () => { try { sessionStorage.removeItem(KEY); } catch (e) {} },
+    load: () => {
+      try {
+        const d = JSON.parse(sessionStorage.getItem(KEY));
+        const ok = d && Array.isArray(d.a) && d.a.length === Q.length && Number.isInteger(d.p) && d.p > 0 && d.p < Q.length
+          && d.a.every((v, i) => ORDER.indexOf(i) >= d.p || [-2, -1, 0, 1, 2].includes(v));
+        return ok ? d : null;
+      } catch (e) { return null; }
+    },
+  };
+
   const el = (html) => {
     app.innerHTML = html;
     window.scrollTo(0, 0);
@@ -16,6 +31,7 @@
 
   function start() {
     answers = [];
+    store.clear();
     history.replaceState(null, "", location.pathname);
     el(`<section class="card center">
       <div class="emoji">🧖</div>
@@ -42,6 +58,7 @@
     </section>`);
     app.querySelectorAll(".opt").forEach((b) => (b.onclick = () => {
       answers[qi] = Number(b.dataset.v);
+      store.save(i + 1);
       i + 1 < Q.length ? question(i + 1) : finish();
     }));
     const back = document.getElementById("back");
@@ -53,6 +70,7 @@
 
   function finish() {
     const code = codeOf(scores());
+    store.clear();
     history.replaceState(null, "", "#" + code + "-" + answers.map((v) => v + 2).join(""));
     result(code, scores());
   }
@@ -89,10 +107,20 @@
     document.getElementById("again").onclick = start;
   }
 
+  // キー 1〜5 で回答（1=とてもそう思う … 5=全くそう思わない）
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey || !/^[1-5]$/.test(e.key)) return;
+    const opt = app.querySelectorAll(".opt")[Number(e.key) - 1];
+    if (opt) opt.click();
+  });
+
   // 結果URL (#CODE-回答列) からの復元
   const m = location.hash.match(/^#([HS][WA][OT][RF])-([0-4]+)$/);
   if (m && TYPES[m[1]] && m[2].length === Q.length) {
     answers = m[2].split("").map((c) => Number(c) - 2);
     result(codeOf(scores()), scores());
-  } else start();
+  } else {
+    const saved = store.load();
+    if (saved) { answers = saved.a; question(saved.p); } else start();
+  }
 })();
