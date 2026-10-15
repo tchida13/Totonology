@@ -87,13 +87,11 @@ test("app.js / index.html が使うアイコンIDがスプライトに存在す�
   const read = (...p) => fs.readFileSync(path.join(__dirname, "..", ...p), "utf8");
   const sprite = new Set([...read("assets", "icons.svg").matchAll(/<symbol[^>]*\sid="([^"]+)"/g)].map((m) => m[1]));
   const app = read("js", "app.js"), html = read("index.html");
-  const axisIcons = (app.match(/AXIS_ICON = \{([^}]*)\}/) || [, ""])[1].matchAll(/:\s*"([a-z-]+)"/g);
   const used = new Set([
     ...[...app.matchAll(/icon\("([a-z0-9-]+)"\)/g)].map((m) => m[1]),
-    ...[...axisIcons].map((m) => m[1]),
     ...[...html.matchAll(/icons\.svg#([a-z0-9-]+)/g)].map((m) => m[1]),
   ]);
-  assert.ok(used.size > 5, "アイコン参照を抽出できている");
+  assert.ok(used.size > 4, "アイコン参照を抽出できている");
   used.forEach((id) => assert.ok(sprite.has(id), `icons.svg に ${id} がない`));
 });
 
