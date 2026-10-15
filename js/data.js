@@ -13,21 +13,29 @@ window.QUESTIONS = [
   { axis: "heat", dir: -1, decisive: true, text: "70〜80℃くらいの穏やかな室温で、長めにじっくり入りたい" },
   { axis: "heat", dir: 1,  text: "ロウリュやアウフグースで熱波を浴びるのが楽しみだ" },
   { axis: "heat", dir: -1, text: "熱すぎるサウナは苦手で、心地よさを優先したい" },
+  { axis: "heat", dir: 1,  text: "サウナ室では上段に座って、しっかり熱を浴びたい" },
+  { axis: "heat", dir: -1, text: "下段や中段で、ゆったり体を温めるほうが落ち着く" },
 
   { axis: "cool", dir: 1,  text: "キンキンの水風呂に肩までドボンと入るのが快感だ" },
   { axis: "cool", dir: -1, decisive: true, text: "水風呂よりも、外気浴でぼーっとする時間のほうが好きだ" },
   { axis: "cool", dir: 1,  text: "水風呂の温度や水質には、ちょっとこだわりがある" },
   { axis: "cool", dir: -1, text: "ととのい椅子で風を感じながら、空を眺めるのが至福だ" },
+  { axis: "cool", dir: 1,  text: "サウナのあとは、まず冷たい水で一気に体を締めたい" },
+  { axis: "cool", dir: -1, text: "冷たい水は苦手で、外気や水シャワーで少しずつ冷ましたい" },
 
   { axis: "mate", dir: 1, decisive: true, text: "サウナは基本ひとりで、自分と向き合う時間にしたい" },
   { axis: "mate", dir: -1, text: "友達や家族と一緒に行って、感想を言い合うのが楽しい" },
   { axis: "mate", dir: 1,  text: "サウナ室で話しかけられるより、静かに過ごしたい" },
   { axis: "mate", dir: -1, text: "サウナで知らない人と会話が弾むのも悪くない" },
+  { axis: "mate", dir: 1,  text: "サウナの感想は、自分の中だけで味わえれば十分だ" },
+  { axis: "mate", dir: -1, text: "ととのったあとは、誰かと飲み物を片手に語り合いたい" },
 
   { axis: "style", dir: 1, decisive: true, text: "「サウナ12分→水風呂1分→休憩10分」など、自分の黄金ルールがある" },
   { axis: "style", dir: -1, text: "その日の体調と気分で、入る時間も回数もなりゆきで決める" },
   { axis: "style", dir: 1,  text: "行く前に施設の情報やレビューをしっかり調べる" },
   { axis: "style", dir: -1, text: "旅先で偶然見つけたサウナにふらっと入るのが好きだ" },
+  { axis: "style", dir: 1,  text: "サウナの回数や時間を記録して、あとで振り返るのが好きだ" },
+  { axis: "style", dir: -1, text: "サウナ前後の予定も、その場の気分で決めたい" },
 ];
 
 // 16タイプ。コード = 熱(H/S) + 冷(W/A) + 人(O/T) + 流(R/F)

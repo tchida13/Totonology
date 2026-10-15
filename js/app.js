@@ -14,7 +14,7 @@
       <div class="emoji">🧖</div>
       <h1>Totonology</h1>
       <p>サウナ16タイプ診断</p>
-      <p class="sub">${Q.length}問・約2分。あなたのサウナの楽しみ方から、<br>16のサウナ性格タイプを診断します。</p>
+      <p class="sub">${Q.length}問・約${Math.max(1, Math.round(Q.length / 8))}分。あなたのサウナの楽しみ方から、<br>16のサウナ性格タイプを診断します。</p>
       <div class="actions"><button class="btn" id="go">診断をはじめる</button></div>
     </section>`);
     document.getElementById("go").onclick = () => question(0);

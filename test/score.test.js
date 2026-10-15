@@ -103,6 +103,22 @@ test("データ整合性: 全軸に質問があり dir は ±1", () => {
   });
 });
 
+test("データ整合性: 各軸で first 側・second 側の質問数が同数", () => {
+  AXES.forEach((ax) => {
+    const qs = Q.filter((q) => q.axis === ax.id);
+    assert.equal(qs.filter((q) => q.dir === 1).length, qs.filter((q) => q.dir === -1).length, ax.id);
+  });
+});
+
+test("データ整合性: 各軸の質問数が揃っている", () => {
+  const counts = AXES.map((ax) => Q.filter((q) => q.axis === ax.id).length);
+  assert.ok(counts.every((n) => n === counts[0]), counts.join(","));
+});
+
+test("データ整合性: 質問文が重複していない", () => {
+  assert.equal(new Set(Q.map((q) => q.text)).size, Q.length);
+});
+
 test("データ整合性: 各軸に決め手(decisive)の質問がちょうど1問ある", () => {
   AXES.forEach((ax) => assert.equal(Q.filter((q) => q.axis === ax.id && q.decisive).length, 1, ax.id));
 });
