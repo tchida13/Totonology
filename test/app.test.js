@@ -8,8 +8,8 @@ const read = (f) => fs.readFileSync(path.join(__dirname, "..", "js", f), "utf8")
 const SRC = ["data.js", "score.js", "app.js"].map(read);
 
 // 新しいスタブ環境を作り、app.js を読み込んで返す。storage は引き継げる
-function boot({ hash = "", storage = {}, storageBroken = false } = {}) {
-  const env = { html: "", storage, listeners: {} };
+function boot({ hash = "", search = "", storage = {}, storageBroken = false } = {}) {
+  const env = { html: "", storage, listeners: {}, urls: [], timers: [] };
   const btns = [2, 1, 0, -1, -2].map((v) => ({ dataset: { v: String(v) }, click() { this.onclick(); } }));
   const el = {}; // id -> 要素スタブ
   const app = {
@@ -17,19 +17,22 @@ function boot({ hash = "", storage = {}, storageBroken = false } = {}) {
     querySelectorAll: (s) => (s === ".opt" && /class="opt/.test(env.html) ? btns : []),
     querySelector: () => null,
   };
-  env.location = { hash, pathname: "/" };
+  env.location = { hash, pathname: "/", search };
   const g = {
     window: null,
     location: env.location,
-    history: { replaceState: (_s, _t, url) => { if (typeof url === "string") env.location.hash = url.startsWith("#") ? url : ""; } },
+    history: { replaceState: (_s, _t, url) => { env.urls.push(url); if (typeof url === "string") env.location.hash = url.startsWith("#") ? url : ""; } },
     sessionStorage: storageBroken
       ? { getItem() { throw new Error("blocked"); }, setItem() { throw new Error("blocked"); }, removeItem() { throw new Error("blocked"); } }
       : { getItem: (k) => storage[k] ?? null, setItem: (k, v) => (storage[k] = v), removeItem: (k) => delete storage[k] },
     document: {
-      getElementById: (id) => (id === "app" ? app : (el[id] = el[id] || { click() { this.onclick(); } })),
+      getElementById: (id) => (id === "app" ? app : (el[id] = el[id] || { innerHTML: "ORIG", click() { this.onclick(); } })),
       addEventListener: (t, f) => (env.listeners[t] = f),
     },
-    navigator: {},
+    confirm: () => env.confirmAnswer,
+    navigator: { clipboard: { writeText: () => Promise.resolve() } },
+    setTimeout: (fn) => { const t = { fn: () => { if (!t.off) fn(); } }; env.timers.push(t); return t; },
+    clearTimeout: (t) => { if (t) t.off = true; },
     scrollTo() {},
   };
   g.window = { ...g, QUESTIONS: undefined, addEventListener: (t, f) => (env.listeners[t] = f), scrollTo() {} };
@@ -102,4 +105,55 @@ test("結果ハッシュから結果を復元し、hashchange に追従する", 
   env.location.hash = hash;
   env.listeners.hashchange();
   assert.match(env.html, /強み/);
+});
+
+test("戻る操作の位置が保存され、リロードで戻った位置から再開する", () => {
+  const first = boot();
+  first.el.go.click();
+  first.key("1");
+  first.key("1");
+  first.el.back.click();
+  assert.match(first.html, /Q2 \//);
+  const second = boot({ storage: first.storage });
+  assert.match(second.html, /Q2 \//);
+});
+
+test("もう一度診断するでクエリ文字列を保持する", () => {
+  const env = boot({ search: "?utm_source=x" });
+  env.el.go.click();
+  for (let i = 0; i < 24; i++) env.key("1");
+  assert.match(env.urls.at(-1), /^#/); // 結果表示でハッシュが付く
+  env.el.again.click();
+  assert.equal(env.urls.at(-1), "/?utm_source=x");
+});
+
+test("コピーボタンは連打しても元の表示に戻る", async () => {
+  const env = boot();
+  env.el.go.click();
+  for (let i = 0; i < 24; i++) env.key("1");
+  const settle = () => new Promise((r) => setImmediate(r)); // clipboard の Promise を解決させる
+  env.el.copy.click();
+  await settle();
+  env.el.copy.click(); // 「コピーしました」表示中に再度押す
+  await settle();
+  assert.match(env.el.copy.innerHTML, /コピーしました/);
+  env.timers.forEach((t) => t.fn()); // 残っているタイマーを全部発火
+  assert.equal(env.el.copy.innerHTML, "ORIG");
+});
+
+test("回答中のロゴは確認してからトップへ戻る", () => {
+  const env = boot();
+  env.el.go.click();
+  env.key("1");
+  let prevented = 0;
+  const click = () => env.listeners.click({ target: { closest: () => ({}) }, preventDefault: () => prevented++ });
+  env.confirmAnswer = false;
+  click();
+  assert.match(env.html, /Q2 \//);
+  assert.ok(env.storage["totonology:progress"]);
+  env.confirmAnswer = true;
+  click();
+  assert.match(env.html, /診断をはじめる/);
+  assert.equal(env.storage["totonology:progress"], undefined);
+  assert.equal(prevented, 2);
 });
