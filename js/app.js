@@ -20,6 +20,26 @@
   const CHOICES = ["とてもそう思う", "ややそう思う", "どちらでもない", "あまり思わない", "全くそう思わない"];
   const ORDER = window.Score.order(Q, AXES); // 出題順 (質問インデックスの並び)
   let answers = []; // 各設問の回答 (+2..-2)。質問の定義順で保持
+  // 場面(start/quiz/ritual/result)を body に伝え、背景や配色を切り替える。--heat は室温(0〜1)
+  const scene = (name) => {
+    if (document.body) document.body.dataset.scene = name;
+    const meta = document.querySelector && document.querySelector('meta[name="theme-color"]'); // モバイルのブラウザバーも場面の色に合わせる
+    if (meta) meta.setAttribute("content", name === "quiz" || name === "ritual" ? "#1B1614" : "#F3F1EC");
+  };
+  const heat = (v) => { if (document.body) document.body.style.setProperty("--heat", v); };
+  const calm = () => typeof matchMedia !== "function" || matchMedia("(prefers-reduced-motion: reduce)").matches; // 動きを減らす設定(や matchMedia のない環境)
+  let loyly = false, fxTimer = 0; // ロウリュは質問の半分で一度だけ入る
+  const setLoyly = (on) => { loyly = on; if (document.body) on ? (document.body.dataset.loyly = "1") : delete document.body.dataset.loyly; };
+  const clearFx = () => { clearTimeout(fxTimer); document.getElementById("announce").textContent = ""; const fx = document.getElementById("fx"); if (fx) { fx.className = "fx"; fx.innerHTML = ""; } };
+  // 質問の半分に到達した瞬間のロウリュ演出。入力はブロックしない(オーバーレイは操作を通す)
+  function rouryu() {
+    const fx = document.getElementById("fx");
+    fx.innerHTML = `<div class="stones"></div><i class="ldrop"></i><i class="steam-burst b1"></i><i class="steam-burst b2"></i><i class="steam-burst b3"></i><i class="steam-burst b4"></i>
+      <p class="loyly-banner"><b>ロウリュ</b><span>熱気がぐっと増しました</span></p>`;
+    fx.className = "fx on";
+    document.getElementById("announce").textContent = "ロウリュ。熱気がぐっと増しました。"; // 常設の live region で読み上げる
+    fxTimer = setTimeout(clearFx, 3600);
+  }
   let shownP = 0; // 砂時計が直前に表示していた進捗(0〜1)。次の描画で砂が落ちるアニメーションに使う
   let view = ""; // 表示中の画面: start / quiz / result
 
@@ -63,6 +83,10 @@
     ritualSkip = null;
     answers = [];
     shownP = 0;
+    clearFx();
+    setLoyly(false);
+    scene("start");
+    heat(0);
     store.clear();
     view = "start";
     history.replaceState(null, "", location.pathname + location.search);
@@ -89,13 +113,22 @@
   }
 
   // i は出題順の位置。回答は質問インデックス(ORDER[i])に記録する
-  function question(i) {
+  // fresh: 直前の質問に回答して来たとき(復元・戻る操作ではロウリュを再生しない)
+  function question(i, fresh) {
     view = "quiz";
+    scene("quiz");
+    const half = Math.floor(Q.length / 2);
+    if (!loyly && i >= half) {
+      setLoyly(true);
+      if (fresh && i === half && !calm()) rouryu();
+    }
+    heat(i / Q.length);
     const qi = ORDER[i], q = Q[qi];
     el(`<section class="quiz">
       <div class="quizhead">
         <div class="progress" role="progressbar" aria-label="進捗" aria-valuemin="0" aria-valuemax="${Q.length}" aria-valuenow="${i}">${HOURGLASS(shownP)}</div>
         <p class="count">Q${i + 1} / ${Q.length}</p>
+        <p class="temp" aria-hidden="true">${80 + Math.round((i / Q.length) * 14) + (i >= half ? 6 : 0)}°C</p>
       </div>
       <p class="q" data-focus>${esc(q.text)}</p>
       <div class="scale" role="group" aria-label="回答">
@@ -116,7 +149,7 @@
     app.querySelectorAll(".opt").forEach((b) => (b.onclick = () => {
       answers[qi] = Number(b.dataset.v);
       store.save(i + 1);
-      i + 1 < Q.length ? question(i + 1) : finish();
+      i + 1 < Q.length ? question(i + 1, true) : finish();
     }));
     const back = document.getElementById("back");
     if (back) back.onclick = () => { store.save(i - 1); question(i - 1); };
@@ -131,8 +164,7 @@
     // 結果URLと保存の消去は先に済ませる（演出中にリロードしても結果が出る）
     history.replaceState(null, "", "#" + code + "-" + answers.map((v) => v + 2).join(""));
     // 動きを減らす設定(や matchMedia のない環境)では演出なしで結果を出す
-    const reduce = typeof matchMedia !== "function" || matchMedia("(prefers-reduced-motion: reduce)").matches;
-    reduce ? result(code, sc) : ritual(code, sc);
+    calm() ? result(code, sc) : ritual(code, sc);
   }
 
   // 結果の前の「ため」: ロウリュ→蒸気→水風呂→外気浴。スキップ(ボタン/Esc/タップ)で即結果へ
@@ -140,6 +172,8 @@
   let ritualTimer = 0, ritualSkip = null;
   function ritual(code, sc) {
     view = "ritual";
+    clearFx();
+    scene("ritual");
     const R = window.RITUAL;
     let n = 0;
     // ボタン→画面のクリックと二重に呼ばれても一度だけ結果を出す
@@ -202,6 +236,9 @@
     clearTimeout(ritualTimer);
     ritualSkip = null;
     view = "result";
+    clearFx();
+    scene("result");
+    heat(0);
     const t = TYPES[code];
     const m = TYPES[t.match];
     const grp = groupOf(code);
