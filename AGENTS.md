@@ -11,6 +11,7 @@ Totonology 開発における AI エージェント・人間共通の作業ル�
 |---|---|
 | `js/data.js` | 軸・質問・16タイプの定義（文言の編集はここ） |
 | `js/score.js` | スコア計算・タイプ判定（DOM非依存。ブラウザ/Node両対応） |
+| `js/share.js` | 結果のシェア用画像(canvas)の描画。`draw` は描画命令のみでテスト可能 |
 | `js/app.js` | 画面遷移・描画 |
 | `scripts/collect-site.sh` | Pages 公開ファイルを集めるスクリプト（deploy.yml と ci.yml が共用。assets/ を追加したらここも確認） |
 | `test/` | `node --test` で実行するテスト（外部依存なし） |

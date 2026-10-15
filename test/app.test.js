@@ -8,7 +8,7 @@ const read = (f) => fs.readFileSync(path.join(__dirname, "..", "js", f), "utf8")
 const SRC = ["data.js", "score.js", "app.js"].map(read);
 
 // 新しいスタブ環境を作り、app.js を読み込んで返す。storage は引き継げる
-function boot({ hash = "", search = "", reduce = false, ritual = false, storage = {}, storageBroken = false } = {}) {
+function boot({ hash = "", search = "", reduce = false, ritual = false, share = false, storage = {}, storageBroken = false } = {}) {
   const env = { html: "", storage, listeners: {}, urls: [], timers: [] };
   const btns = [2, 1, 0, -1, -2].map((v) => ({ dataset: { v: String(v) }, click() { this.onclick(); } }));
   const el = {}; // id -> 要素スタブ
@@ -36,7 +36,10 @@ function boot({ hash = "", search = "", reduce = false, ritual = false, storage 
     clearTimeout: (t) => { if (t) t.off = true; },
     scrollTo() {},
   };
-  g.window = { ...g, QUESTIONS: undefined, addEventListener: (t, f) => (env.listeners[t] = f), scrollTo() {} };
+  env.downloads = [];
+  g.document.createElement = () => ({ click() { env.downloads.push(this); } });
+  g.URL = { createObjectURL: () => "blob:test", revokeObjectURL() {} };
+  g.window = { ...g, ShareImage: share ? { render: (spec) => (env.shareSpec = spec, share === "fail" ? Promise.reject(new Error("x")) : Promise.resolve(new Blob(["x"]))) } : undefined, QUESTIONS: undefined, addEventListener: (t, f) => (env.listeners[t] = f), scrollTo() {} };
   // data.js/score.js は window / globalThis に定義するため、関数内で window を差し替えて評価する
   const run = new Function(...Object.keys(g), SRC.join("\n"));
   run(...Object.values(g));
@@ -256,4 +259,24 @@ test("ため演出: 演出中にリロードしても結果が出る", () => {
   answerAll(first);
   const second = boot({ ritual: true, hash: first.location.hash, storage: first.storage });
   assert.match(second.html, /強み/);
+});
+
+test("シェア画像: 結果に画像セクションが出て、生成後に保存できる(回答ハッシュは渡さない)", async () => {
+  const env = boot({ share: true, hash: "#SAOR-" + "4".repeat(24) });
+  assert.doesNotMatch(env.html, /id="share"[^>]*hidden/); // 領域は先に確保する(後から出てレイアウトがずれない)
+  assert.match(env.html, /id="save-img" hidden/);
+  await new Promise((r) => setImmediate(r));
+  assert.equal(env.el["save-img"].hidden, false);
+  assert.equal(env.el["share-img"].src, "blob:test");
+  assert.equal(env.shareSpec.code, "SAOR");
+  assert.ok(!JSON.stringify(env.shareSpec).includes("4444"));
+  env.el["save-img"].click();
+  assert.equal(env.downloads[0].download, "totonology-SAOR.png");
+});
+
+test("シェア画像: 生成に失敗しても結果表示は壊れず、セクションは隠れたまま", async () => {
+  const env = boot({ share: "fail", hash: "#SAOR-" + "4".repeat(24) });
+  await new Promise((r) => setImmediate(r));
+  assert.match(env.html, /強み/);
+  assert.equal(env.el.share.hidden, true);
 });
