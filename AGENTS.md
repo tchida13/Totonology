@@ -13,7 +13,7 @@ Totonology 開発における AI エージェント・人間共通の作業ル�
 | `js/score.js` | スコア計算・タイプ判定（DOM非依存。ブラウザ/Node両対応） |
 | `js/app.js` | 画面遷移・描画 |
 | `test/` | `node --test` で実行するテスト（外部依存なし） |
-| `style.css` | スタイル（ライト/ダーク対応） |
+| `style.css` | スタイル（ライトテーマ。演出は prefers-reduced-motion で停止） |
 | `index.html` | エントリポイント |
 
 ## 開発の進め方（ISSUE駆動開発）
