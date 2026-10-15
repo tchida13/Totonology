@@ -6,6 +6,7 @@
   // lucide のSVGスプライト(assets/icons.svg)から表示する。色は currentColor に追従
   const icon = (name) => `<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#${name}"/></svg>`;
   const AXIS_ICON = { heat: "thermometer", cool: "waves", mate: "users", style: "compass" };
+  const STEAM = '<div class="steam" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>';
   const groupOf = (code) => GROUPS[code[0] + code[2]];
   const avatar = (code, alt, size) => `<img class="avatar" src="assets/characters/${code}.svg" alt="${esc(alt)}" width="${size}" height="${size}">`;
   const CHOICES = ["とてもそう思う", "ややそう思う", "どちらでもない", "あまり思わない", "全くそう思わない"];
@@ -52,6 +53,7 @@
     history.replaceState(null, "", location.pathname);
     const mins = Math.max(1, Math.round(Q.length / 8));
     el(`<section class="hero">
+      ${STEAM}
       <span class="eyebrow">サウナ16タイプ診断</span>
       <h1 data-focus>あなたの<span class="nb">「ととのい方」</span>は、<br>どのタイプ？</h1>
       <p class="lead">${Q.length}問・約${mins}分。サウナの楽しみ方から、あなたにぴったりのサウナ性格タイプと、行ってみたい実在のサウナを見つけます。</p>
@@ -123,6 +125,7 @@
     const shareUrl = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE_URL);
     el(`<article class="result" style="--group:${grp.color}">
       <header class="r-hero" style="--photo:url(${grp.photo})">
+        ${STEAM}
         ${avatar(code, t.name + "のキャラクター", 240)}
         <p class="code">${code}</p>
         <h1 data-focus>${esc(t.name)}</h1>

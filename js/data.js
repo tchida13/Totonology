@@ -40,10 +40,10 @@ window.QUESTIONS = [
 
 // 4グループ(熱の好み × 過ごし方)。コードの 1文字目と 3文字目で決まる。color は結果画面のテーマ色、photo は結果ヒーローの背景写真
 window.GROUPS = {
-  HO: { photo: "assets/photos/loyly.jpg", name: "求道者", desc: "ひとりで熱と向き合う", color: "#E0532B" },
-  HT: { photo: "assets/photos/aufguss.jpg", name: "盛り上げ隊", desc: "熱さを仲間と分かち合う", color: "#F2A322" },
-  SO: { photo: "assets/photos/sauna-room.jpg", name: "静寂派", desc: "静けさの中でととのう", color: "#2F8FC4" },
-  ST: { photo: "assets/photos/goods.jpg", name: "ほっこり隊", desc: "ゆるく穏やかに寄り添う", color: "#4DAA78" },
+  HO: { photo: "assets/photos/loyly.jpg", name: "求道者", desc: "ひとりで熱と向き合う", color: "#C0553B" },
+  HT: { photo: "assets/photos/aufguss.jpg", name: "盛り上げ隊", desc: "熱さを仲間と分かち合う", color: "#C98A2B" },
+  SO: { photo: "assets/photos/sauna-room.jpg", name: "静寂派", desc: "静けさの中でととのう", color: "#4C86A8" },
+  ST: { photo: "assets/photos/goods.jpg", name: "ほっこり隊", desc: "ゆるく穏やかに寄り添う", color: "#5A9A74" },
 };
 
 // おすすめサウナの実在施設。各タイプの spots から id で参照する。
