@@ -124,12 +124,19 @@
     if (opt) opt.click();
   });
 
-  // 結果URL (#CODE-回答列) からの復元
-  const m = location.hash.match(/^#([HS][WA][OT][RF])-([0-4]+)$/);
-  if (m && TYPES[m[1]] && m[2].length === Q.length) {
+  // 結果URL (#CODE-回答列) からの復元。有効なら結果を表示して true を返す
+  function showResultFromHash() {
+    const m = location.hash.match(/^#([HS][WA][OT][RF])-([0-4]+)$/);
+    if (!(m && TYPES[m[1]] && m[2].length === Q.length)) return false;
     answers = m[2].split("").map((c) => Number(c) - 2);
     result(codeOf(scores()), scores());
-  } else {
+    return true;
+  }
+
+  // 手動のハッシュ変更や履歴操作に追従する（アプリ自身の replaceState では発火しない）
+  window.addEventListener("hashchange", () => { if (!showResultFromHash()) start(); });
+
+  if (!showResultFromHash()) {
     const saved = store.load();
     if (saved) { answers = saved.a; question(saved.p); } else start();
   }
