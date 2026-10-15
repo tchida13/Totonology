@@ -182,11 +182,12 @@ test("16タイプすべてで結果ハッシュから該当キャラ付きの結
   });
 });
 
-test("質問画面の進捗は砂時計で、progressbar の値と札(1〜5)が付く", () => {
+test("質問画面の進捗は砂時計で、progressbar の値とハット(1〜5)が付く", () => {
   const env = boot();
   env.el.go.click();
   assert.match(env.html, /role="progressbar"[^>]*aria-valuenow="0"[^>]*>\s*<svg class="hg"/);
   assert.equal((env.html.match(/class="opt/g) || []).length, 5);
+  assert.equal((env.html.match(/class="hat"/g) || []).length, 5); // 回答ボタンはサウナハット
   env.key("1");
   assert.match(env.html, /aria-valuenow="1"/);
   env.key("1");
