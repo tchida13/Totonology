@@ -1,6 +1,6 @@
 (function () {
   const app = document.getElementById("app");
-  const Q = window.QUESTIONS, AXES = window.AXES, TYPES = window.TYPES;
+  const Q = window.QUESTIONS, AXES = window.AXES, TYPES = window.TYPES, SPOTS = window.SPOTS;
   // シェアにはトップURLを使う（結果URLのハッシュには回答が含まれるため、投稿文には載せない）
   const SITE_URL = "https://tchida13.github.io/Totonology/";
   const CHOICES = ["とてもそう思う", "ややそう思う", "どちらでもない", "あまり思わない", "全くそう思わない"];
@@ -100,6 +100,8 @@
       <h2>強み</h2><ul>${t.strengths.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
       <h2>気をつけたいこと</h2><ul>${t.cautions.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
       <h2>おすすめのサウナ</h2><p>${esc(t.sauna)}</p>
+      <ul class="spots">${t.spots.map((id) => { const sp = SPOTS[id]; return `<li class="spot"><strong>${esc(sp.name)}</strong> <span class="sub">${esc(sp.area)}</span><br><span class="vibe">${esc(sp.vibe)}</span><br><span class="sub">${esc(sp.note)}</span></li>`; }).join("")}</ul>
+      <p class="sub" style="font-size:.8rem">※ 営業状況・料金・利用条件は変わることがあります。訪問前に公式情報をご確認ください。</p>
       <h2>相性のいいタイプ</h2><p>${m.emoji} ${esc(m.name)} <span class="sub">(${t.match})</span></p>
       <div class="actions">
         <a class="btn" target="_blank" rel="noopener" href="${shareUrl}">結果をシェア</a>

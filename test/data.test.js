@@ -47,3 +47,20 @@ test("match は自分以外の実在タイプを指す", () => {
     assert.notEqual(t.match, code);
   });
 });
+
+test("おすすめ施設: 各タイプに1〜2件の実在IDが紐づき、必須項目がある", () => {
+  const SPOTS = window.SPOTS;
+  Object.entries(TYPES).forEach(([code, t]) => {
+    assert.ok(Array.isArray(t.spots) && t.spots.length >= 1 && t.spots.length <= 2, `${code}.spots`);
+    t.spots.forEach((id) => assert.ok(SPOTS[id], `${code}: ${id}`));
+    assert.equal(new Set(t.spots).size, t.spots.length, `${code} の施設が重複`);
+  });
+  Object.entries(SPOTS).forEach(([id, sp]) => {
+    ["name", "area", "vibe", "note"].forEach((k) => assert.ok(sp[k], `${id}.${k}`));
+  });
+});
+
+test("すべての施設がいずれかのタイプから参照されている", () => {
+  const used = new Set(Object.values(TYPES).flatMap((t) => t.spots));
+  Object.keys(window.SPOTS).forEach((id) => assert.ok(used.has(id), id));
+});
