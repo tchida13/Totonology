@@ -5,7 +5,13 @@
   const ORDER = window.Score.order(Q, AXES); // 出題順 (質問インデックスの並び)
   let answers = []; // 各設問の回答 (+2..-2)。質問の定義順で保持
 
-  const el = (html) => { app.innerHTML = html; app.focus?.(); window.scrollTo(0, 0); };
+  // 描画後、[data-focus] の要素（質問文・見出し）へフォーカスを移して画面遷移を支援技術に伝える
+  const el = (html) => {
+    app.innerHTML = html;
+    window.scrollTo(0, 0);
+    const f = app.querySelector("[data-focus]");
+    if (f) { f.setAttribute("tabindex", "-1"); f.focus({ preventScroll: true }); }
+  };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   function start() {
@@ -13,7 +19,7 @@
     history.replaceState(null, "", location.pathname);
     el(`<section class="card center">
       <div class="emoji">🧖</div>
-      <h1>Totonology</h1>
+      <h1 data-focus>Totonology</h1>
       <p>サウナ16タイプ診断</p>
       <p class="sub">${Q.length}問・約${Math.max(1, Math.round(Q.length / 8))}分。あなたのサウナの楽しみ方から、<br>16のサウナ性格タイプを診断します。</p>
       <div class="actions"><button class="btn" id="go">診断をはじめる</button></div>
@@ -27,9 +33,9 @@
     el(`<section class="card">
       <div class="progress"><div style="width:${(i / Q.length) * 100}%"></div></div>
       <p class="sub">Q${i + 1} / ${Q.length}</p>
-      <p class="q">${esc(q.text)}</p>
+      <p class="q" data-focus>${esc(q.text)}</p>
       <div class="scale" role="group" aria-label="回答">
-        ${[2, 1, 0, -1, -2].map((v, k) => `<button class="opt" data-v="${v}" aria-label="${CHOICES[k]}" title="${CHOICES[k]}"></button>`).join("")}
+        ${[2, 1, 0, -1, -2].map((v, k) => `<button class="opt${answers[qi] === v ? " on" : ""}" data-v="${v}" aria-pressed="${answers[qi] === v}" aria-label="${CHOICES[k]}" title="${CHOICES[k]}"></button>`).join("")}
       </div>
       <div class="labels"><span>そう思う</span><span>思わない</span></div>
       <div class="actions">${i > 0 ? '<button class="btn ghost" id="back">戻る</button>' : ""}</div>
@@ -65,7 +71,7 @@
       <div class="center">
         <div class="emoji">${t.emoji}</div>
         <div class="code">${code}</div>
-        <h1>${esc(t.name)}</h1>
+        <h1 data-focus>${esc(t.name)}</h1>
         <p class="sub">${esc(t.en)} ― ${esc(t.tagline)}</p>
       </div>
       <p>${esc(t.desc)}</p>

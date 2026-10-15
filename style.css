@@ -20,6 +20,8 @@ button{font:inherit;cursor:pointer}
 .opt{width:46px;height:46px;border-radius:50%;border:2px solid var(--line);background:transparent;color:var(--fg)}
 .opt:nth-child(1),.opt:nth-child(5){width:56px;height:56px}
 .opt:hover{border-color:var(--accent)}
+.opt.on{background:var(--accent);border-color:var(--accent)}
+[data-focus]:focus{outline:none}
 .labels{display:flex;justify-content:space-between;font-size:.8rem;color:var(--sub)}
 .bar{margin:14px 0}
 .bar .row{display:flex;justify-content:space-between;font-size:.9rem}
