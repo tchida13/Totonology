@@ -5,8 +5,6 @@
   const SITE_URL = "https://tchida13.github.io/Totonology/";
   // lucide のSVGスプライト(assets/icons.svg)から表示する。色は currentColor に追従
   const icon = (name) => `<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#${name}"/></svg>`;
-  const AXIS_ICON = { heat: "thermometer", cool: "waves", mate: "users", style: "compass" };
-  const STEAM = '<div class="steam" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>';
   const groupOf = (code) => GROUPS[code[0] + code[2]];
   const avatar = (code, alt, size, lazy) => `<img class="avatar" src="assets/characters/${code}.svg" alt="${esc(alt)}" width="${size}" height="${size}"${lazy ? ' loading="lazy" decoding="async"' : ""}>`;
   const CHOICES = ["とてもそう思う", "ややそう思う", "どちらでもない", "あまり思わない", "全くそう思わない"];
@@ -55,7 +53,6 @@
     history.replaceState(null, "", location.pathname + location.search);
     const mins = Math.max(1, Math.round(Q.length / 8));
     el(`<section class="hero">
-      ${STEAM}
       <span class="eyebrow">サウナ16タイプ診断</span>
       <h1 data-focus>あなたの<span class="nb">「ととのい方」</span>は、<br>どのタイプ？</h1>
       <p class="lead">${Q.length}問・約${mins}分。サウナの楽しみ方から、あなたにぴったりのサウナ性格タイプと、行ってみたい実在のサウナを見つけます。</p>
@@ -63,9 +60,9 @@
     </section>
     <section class="intro">
       <ul class="steps">
-        <li>${icon("check")}${Q.length}問に直感で回答</li>
-        <li>${icon("sparkles")}16タイプから診断</li>
-        <li>${icon("map-pin")}おすすめのサウナを紹介</li>
+        <li><b>01</b>${Q.length}問に直感で回答</li>
+        <li><b>02</b>16タイプから診断</li>
+        <li><b>03</b>おすすめのサウナを紹介</li>
       </ul>
     </section>
     <section class="types">
@@ -118,7 +115,7 @@
     // 左=first側・右=second側。勝った側のラベルを強調する
     const bars = sc.map((s) => {
       const a = s.ax;
-      return `<div class="bar"><div class="title">${icon(AXIS_ICON[a.id])}${esc(a.title)}</div><div class="row"><span class="${s.side === "first" ? "win" : ""}">${esc(a.first.label)} ${s.pct}%</span><span class="${s.side === "second" ? "win" : ""}">${100 - s.pct}% ${esc(a.second.label)}</span></div>
+      return `<div class="bar"><div class="title">${esc(a.title)}</div><div class="row"><span class="${s.side === "first" ? "win" : ""}">${esc(a.first.label)} ${s.pct}%</span><span class="${s.side === "second" ? "win" : ""}">${100 - s.pct}% ${esc(a.second.label)}</span></div>
         <div class="track" role="img" aria-label="${esc(a.title)}: ${esc(a.first.label)} ${s.pct}%、${esc(a.second.label)} ${100 - s.pct}%"><div class="fill" style="width:${s.pct}%"></div></div></div>`;
     }).join("");
     const spots = t.spots.map((id) => {
@@ -129,7 +126,6 @@
     const shareUrl = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE_URL);
     el(`<article class="result" style="--group:${grp.color}">
       <header class="r-hero" style="--photo:url(${grp.photo})">
-        ${STEAM}
         ${avatar(code, t.name + "のキャラクター", 240)}
         <p class="code">${code}</p>
         <h1 data-focus>${esc(t.name)}</h1>
@@ -138,14 +134,14 @@
         <span class="group">${esc(grp.name)}タイプ ― ${esc(grp.desc)}</span>
       </header>
       <section class="panel"><p>${esc(t.desc)}</p></section>
-      <section class="panel"><h2>${icon("thermometer")}あなたの傾向</h2>${bars}</section>
+      <section class="panel"><h2>あなたの傾向</h2>${bars}</section>
       <div class="grid2">
-        <section class="panel"><h2>${icon("sparkles")}強み</h2><ul class="list">${t.strengths.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>
-        <section class="panel"><h2>${icon("triangle-alert")}気をつけたいこと</h2><ul class="list">${t.cautions.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>
+        <section class="panel"><h2>強み</h2><ul class="list">${t.strengths.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>
+        <section class="panel"><h2>気をつけたいこと</h2><ul class="list">${t.cautions.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>
       </div>
-      <section class="panel"><h2>${icon("map-pin")}おすすめのサウナ</h2><p>${esc(t.sauna)}</p><ul class="spots" style="margin-top:14px">${spots}</ul>
+      <section class="panel"><h2>おすすめのサウナ</h2><p>${esc(t.sauna)}</p><ul class="spots" style="margin-top:14px">${spots}</ul>
         <p class="note-small">※ 営業状況・料金・利用条件は変わることがあります。訪問前に公式情報をご確認ください。</p></section>
-      <section class="panel"><h2>${icon("heart-handshake")}相性のいいタイプ</h2>
+      <section class="panel"><h2>相性のいいタイプ</h2>
         <p class="match">${avatar(t.match, m.name + "のキャラクター", 72)}<span><strong>${esc(m.name)}</strong> <span class="sub">(${t.match})</span><br><span class="sub">${esc(m.tagline)}</span></span></p></section>
       <div class="actions">
         <a class="btn" target="_blank" rel="noopener" href="${shareUrl}">${icon("share-2")}結果をシェア</a>
