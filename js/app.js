@@ -7,9 +7,18 @@
   const icon = (name) => `<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#${name}"/></svg>`;
   const groupOf = (code) => GROUPS[code[0] + code[2]];
   const avatar = (code, alt, size, lazy) => `<img class="avatar" src="assets/characters/${code}.svg" alt="${esc(alt)}" width="${size}" height="${size}"${lazy ? ' loading="lazy" decoding="async"' : ""}>`;
+  // 砂時計。--p(0〜1)で上の砂が下へ落ちる。ガラスと砂は clipPath で切り抜く
+  const HOURGLASS = (p) => `<svg class="hg" viewBox="0 0 48 72" aria-hidden="true" focusable="false" style="--p:${p}">
+    <defs><clipPath id="hg-top"><path d="M10 6H38C38 22 27 29 25 36H23C21 29 10 22 10 6Z"/></clipPath><clipPath id="hg-bot"><path d="M23 36H25C27 43 38 50 38 66H10C10 50 21 43 23 36Z"/></clipPath></defs>
+    <g clip-path="url(#hg-top)"><rect class="sand-top" x="0" y="6" width="48" height="30"/></g>
+    <g clip-path="url(#hg-bot)"><rect class="sand-bot" x="0" y="36" width="48" height="30"/></g>
+    <line class="stream" x1="24" y1="34" x2="24" y2="64"/>
+    <path class="glass" d="M6 4H42M6 68H42M10 6C10 22 21 29 23 36C21 43 10 50 10 66M38 6C38 22 27 29 25 36C27 43 38 50 38 66"/>
+  </svg>`;
   const CHOICES = ["とてもそう思う", "ややそう思う", "どちらでもない", "あまり思わない", "全くそう思わない"];
   const ORDER = window.Score.order(Q, AXES); // 出題順 (質問インデックスの並び)
   let answers = []; // 各設問の回答 (+2..-2)。質問の定義順で保持
+  let shownP = 0; // 砂時計が直前に表示していた進捗(0〜1)。次の描画で砂が落ちるアニメーションに使う
   let view = ""; // 表示中の画面: start / quiz / result
 
   // 回答途中の保存・復元（sessionStorage が使えない環境でもそのまま動く）
@@ -48,6 +57,7 @@
 
   function start() {
     answers = [];
+    shownP = 0;
     store.clear();
     view = "start";
     history.replaceState(null, "", location.pathname + location.search);
@@ -78,16 +88,26 @@
     view = "quiz";
     const qi = ORDER[i], q = Q[qi];
     el(`<section class="quiz">
-      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${Q.length}" aria-valuenow="${i}"><div style="width:${(i / Q.length) * 100}%"></div></div>
-      <p class="count">Q${i + 1} / ${Q.length}</p>
+      <div class="quizhead">
+        <div class="progress" role="progressbar" aria-label="進捗" aria-valuemin="0" aria-valuemax="${Q.length}" aria-valuenow="${i}">${HOURGLASS(shownP)}</div>
+        <p class="count">Q${i + 1} / ${Q.length}</p>
+      </div>
       <p class="q" data-focus>${esc(q.text)}</p>
       <div class="scale" role="group" aria-label="回答">
-        ${[2, 1, 0, -1, -2].map((v, k) => `<button class="opt${answers[qi] === v ? " on" : ""}" data-v="${v}" aria-pressed="${answers[qi] === v}" aria-label="${CHOICES[k]}" title="${CHOICES[k]}"></button>`).join("")}
+        ${[2, 1, 0, -1, -2].map((v, k) => `<button class="opt${answers[qi] === v ? " on" : ""}" data-v="${v}" aria-pressed="${answers[qi] === v}" aria-label="${CHOICES[k]}" title="${CHOICES[k]}"><span aria-hidden="true">${k + 1}</span></button>`).join("")}
       </div>
       <div class="labels"><span class="agree">そう思う</span><span class="disagree">そう思わない</span></div>
       <p class="keyhint">キーボードの 1〜5 でも回答できます</p>
       <div class="actions">${i > 0 ? `<button class="btn ghost" id="back">${icon("arrow-left")}戻る</button>` : ""}</div>
     </section>`);
+    // 描画直後に進捗を更新して、砂が落ちる動きを見せる（演出なので、使えない環境では即時反映）
+    const hg = app.querySelector(".hg"), to = i / Q.length;
+    if (hg && hg.style) {
+      const set = () => hg.style.setProperty("--p", to);
+      if (typeof requestAnimationFrame === "function") requestAnimationFrame(() => requestAnimationFrame(set));
+      else set();
+    }
+    shownP = to;
     app.querySelectorAll(".opt").forEach((b) => (b.onclick = () => {
       answers[qi] = Number(b.dataset.v);
       store.save(i + 1);

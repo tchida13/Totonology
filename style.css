@@ -64,27 +64,41 @@ img{max-width:100%}
 
 /* ---- 質問 ---- */
 .quiz{padding-top:20px}
-.progress{height:4px;background:var(--line);overflow:hidden}
-.progress>div{height:100%;background:var(--fg);transition:width .3s}
-.count{margin:10px 0 0;color:var(--sub);font-weight:700;font-size:.9rem}
-.q{font-size:clamp(1.2rem,4.6vw,1.6rem);line-height:1.6;font-weight:600;min-height:6.4em;margin:18px 0 8px;display:flex;align-items:center}
-.scale{display:flex;justify-content:space-between;align-items:center;gap:6px;margin:12px 0 8px;padding:20px 12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
-.opt{border-radius:50%;border:3px solid var(--line);background:transparent;padding:0;transition:transform .12s,background .12s,border-color .12s}
-.opt:nth-child(1){width:68px;height:68px;border-color:var(--hot)}
-.opt:nth-child(2){width:52px;height:52px;border-color:var(--hot);opacity:.8}
-.opt:nth-child(3){width:42px;height:42px;border-color:var(--sub);opacity:.7}
-.opt:nth-child(4){width:52px;height:52px;border-color:var(--cool);opacity:.8}
-.opt:nth-child(5){width:68px;height:68px;border-color:var(--cool)}
-.opt:hover{transform:scale(1.08)}
-.opt:nth-child(1):hover,.opt:nth-child(2):hover,.opt:nth-child(1).on,.opt:nth-child(2).on{background:var(--hot)}
-.opt:nth-child(3):hover,.opt:nth-child(3).on{background:var(--sub)}
-.opt:nth-child(4):hover,.opt:nth-child(5):hover,.opt:nth-child(4).on,.opt:nth-child(5).on{background:var(--cool)}
-.opt.on{opacity:1;transform:scale(1.08);box-shadow:0 0 0 4px var(--surface),0 0 0 7px currentColor}
+.quizhead{display:flex;align-items:center;gap:14px}
+.progress{width:40px;flex:none}
+.hg{display:block;width:100%;height:auto;overflow:visible}
+.hg .glass{fill:none;stroke:var(--fg);stroke-width:3;stroke-linecap:round}
+.hg .sand-top,.hg .sand-bot{fill:var(--hot);transition:transform .7s cubic-bezier(.4,0,.2,1)}
+.hg .sand-top{transform:translateY(calc(var(--p) * 30px))}
+.hg .sand-bot{transform:translateY(calc((1 - var(--p)) * 30px))}
+.hg .stream{stroke:var(--hot);stroke-width:1.5;stroke-dasharray:3 3;animation:sand-fall .5s linear infinite}
+@keyframes sand-fall{to{stroke-dashoffset:-6}}
+.count{margin:0;color:var(--sub);font-weight:600;font-size:.9rem;letter-spacing:.12em}
+.q{font-size:clamp(1.2rem,4.6vw,1.6rem);line-height:1.6;font-weight:600;min-height:6.4em;margin:14px 0 8px;display:flex;align-items:center;animation:q-in .35s ease-out}
+@keyframes q-in{from{opacity:0;transform:translateY(8px)}}
+/* 回答: 温度札。レールから吊るされ、強い回答ほど長い札になる */
+.scale{position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin:12px 0 8px;padding:22px 12px 20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.scale::before{content:"";position:absolute;left:10px;right:10px;top:14px;height:2px;background:var(--fg);opacity:.7}
+.opt{position:relative;display:grid;place-items:center;padding:0;font-weight:600;font-size:1.1rem;font-variant-numeric:tabular-nums;border:2px solid var(--line);border-radius:var(--radius);background:var(--bg);color:var(--sub);transform-origin:50% -8px;transition:background .12s,color .12s,border-color .12s}
+.opt::before{content:"";position:absolute;top:6px;width:7px;height:7px;border-radius:50%;border:1.5px solid currentColor;opacity:.7}
+.opt span{margin-top:12px}
+.opt:nth-child(1){width:60px;height:96px;border-color:var(--hot);color:var(--hot)}
+.opt:nth-child(2){width:50px;height:78px;border-color:var(--hot);color:var(--hot)}
+.opt:nth-child(3){width:46px;height:64px;border-color:var(--sub)}
+.opt:nth-child(4){width:50px;height:78px;border-color:var(--cool);color:var(--cool)}
+.opt:nth-child(5){width:60px;height:96px;border-color:var(--cool);color:var(--cool)}
+@media (hover:hover){.opt:hover{animation:swing .7s ease-out}}
+@keyframes swing{20%{transform:rotate(5deg)}45%{transform:rotate(-3.5deg)}70%{transform:rotate(1.5deg)}}
+.opt:active{transform:translateY(2px)}
+.opt.on{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--fg)}
+.opt:nth-child(1).on,.opt:nth-child(2).on{background:var(--hot);color:#fff}
+.opt:nth-child(3).on{background:var(--sub);color:#fff}
+.opt:nth-child(4).on,.opt:nth-child(5).on{background:var(--cool);color:#fff}
 .labels{display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;padding:0 6px}
 .labels .agree{color:var(--hot)}
 .labels .disagree{color:var(--cool)}
 .keyhint{color:var(--sub);font-size:.75rem;text-align:center;margin-top:14px}
-@media (max-width:480px){.keyhint{display:none}.opt:nth-child(1),.opt:nth-child(5){width:58px;height:58px}.opt:nth-child(2),.opt:nth-child(4){width:46px;height:46px}.opt:nth-child(3){width:38px;height:38px}}
+@media (max-width:480px){.keyhint{display:none}.opt:nth-child(1),.opt:nth-child(5){width:56px;height:88px}.opt:nth-child(2),.opt:nth-child(4){width:48px;height:72px}.opt:nth-child(3){width:46px;height:58px}}
 
 /* ---- 結果 ---- */
 .result{--group:var(--accent);padding-top:12px}
