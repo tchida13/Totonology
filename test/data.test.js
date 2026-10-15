@@ -36,7 +36,7 @@ test("軸コードの全組み合わせ(16タイプ)が定義されている", (
 
 test("各タイプの必須項目が埋まっている", () => {
   Object.entries(TYPES).forEach(([code, t]) => {
-    ["name", "en", "emoji", "tagline", "desc", "sauna"].forEach((k) => assert.ok(t[k], `${code}.${k}`));
+    ["name", "en", "tagline", "desc", "sauna"].forEach((k) => assert.ok(t[k], `${code}.${k}`));
     ["strengths", "cautions"].forEach((k) => assert.ok(Array.isArray(t[k]) && t[k].length > 0, `${code}.${k}`));
   });
 });
@@ -63,4 +63,14 @@ test("おすすめ施設: 各タイプに1〜2件の実在IDが紐づき、必�
 test("すべての施設がいずれかのタイプから参照されている", () => {
   const used = new Set(Object.values(TYPES).flatMap((t) => t.spots));
   Object.keys(window.SPOTS).forEach((id) => assert.ok(used.has(id), id));
+});
+
+test("各タイプのキャラクター画像があり、所属グループが定義されている", () => {
+  const fs = require("node:fs"), path = require("node:path");
+  Object.keys(TYPES).forEach((code) => {
+    const f = path.join(__dirname, "..", "assets", "characters", code + ".svg");
+    assert.ok(fs.existsSync(f), `${code}.svg`);
+    const g = window.GROUPS[code[0] + code[2]];
+    assert.ok(g && g.name && g.desc && /^#[0-9A-Fa-f]{6}$/.test(g.color), `${code} のグループ`);
+  });
 });
