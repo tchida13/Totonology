@@ -133,3 +133,35 @@ img{max-width:100%}
 .match .avatar{width:72px;height:72px;border-radius:50%;border:3px solid var(--group)}
 .match strong{font-size:1.1rem}
 .disclaimer{margin-top:24px;text-align:center;color:var(--sub);font-size:.8rem}
+
+/* ---- ため演出: サウナ儀式（ロウリュ → 蒸気 → 水風呂 → 外気浴） ---- */
+.ritual{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:min(78vh,620px);margin-top:12px;padding:32px 20px;border-radius:var(--radius);text-align:center;color:#fff;background:#2B2321;transition:background 1s ease,color 1s ease}
+.ritual>*{position:relative;z-index:1}
+.ritual.s1{background:#4A4240}
+.ritual.s2{background:#1D4658}
+.ritual.s3{background:#E9EEEC;color:var(--fg)}
+.r-scene{position:absolute!important;inset:0;z-index:0!important;pointer-events:none}
+.r-temp{font-size:clamp(4rem,22vw,7rem);font-weight:200;line-height:1.1;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.r-status h2{font-size:1.4rem;letter-spacing:.3em;margin:6px 0 4px;padding-left:.3em}
+.r-status p{opacity:.85}
+.r-dots{display:flex;gap:10px;margin:18px 0 22px;padding:0;list-style:none}
+.r-dots li{width:26px;height:3px;background:currentColor;opacity:.25;transition:opacity .4s}
+.s0 .r-dots li:nth-child(-n+1),.s1 .r-dots li:nth-child(-n+2),.s2 .r-dots li:nth-child(-n+3),.s3 .r-dots li{opacity:1}
+.ritual .btn.ghost{color:inherit;border-color:currentColor;opacity:.85}
+@media (hover:hover){.ritual .btn.ghost:hover{background:rgba(255,255,255,.15);color:inherit;border-color:currentColor}}
+/* ロウリュ: 熱い石に水滴が落ちる */
+.drop{position:absolute;left:50%;top:-20px;width:10px;height:14px;margin-left:-5px;border-radius:50% 50% 50% 50%/65% 65% 35% 35%;background:#9CC9DC;opacity:0}
+.s0 .drop{animation:drop 1.1s cubic-bezier(.5,0,1,.6) forwards}
+@keyframes drop{0%{transform:translateY(0);opacity:1}85%{opacity:1}100%{transform:translateY(52vh);opacity:0}}
+/* 蒸気: 画面を包む */
+.puff{position:absolute;bottom:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0) 68%);filter:blur(14px);opacity:0}
+.p1{left:-4%}.p2{left:28%;width:260px;height:260px}.p3{left:55%}.p4{left:78%;width:260px;height:260px}
+.s0 .puff{animation:puff-rise 3.2s ease-out forwards}
+.s1 .puff{animation:puff-rise 2.6s ease-out forwards}
+@keyframes puff-rise{0%{transform:translateY(0) scale(.6);opacity:0}30%{opacity:.9}100%{transform:translateY(-70vh) scale(1.6);opacity:.35}}
+.s0 .p1{animation-delay:.9s}.s0 .p2{animation-delay:1.1s}.s0 .p3{animation-delay:1s}.s0 .p4{animation-delay:1.2s}
+.s1 .p2{animation-delay:.2s}.s1 .p3{animation-delay:.1s}.s1 .p4{animation-delay:.3s}
+/* 水風呂: 水位が上がり、外気浴で引いていく */
+.water{position:absolute;left:-10%;right:-10%;bottom:0;height:70%;border-radius:50% 50% 0 0/14px 14px 0 0;background:rgba(150,205,225,.28);transform:translateY(105%);transition:transform 1.1s cubic-bezier(.3,0,.2,1)}
+.s2 .water{transform:translateY(30%)}
+.s3 .water{transform:translateY(105%);transition-duration:1.6s}

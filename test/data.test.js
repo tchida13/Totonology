@@ -105,3 +105,8 @@ test("グループ色: 結果ヒーロー(色を60%黒と混ぜた背景)上の�
     assert.ok(1.05 / (lum(bg) + 0.05) >= 4.5, `${k} (${g.color})`);
   });
 });
+
+test("ため演出の段(RITUAL)が4段そろい、各段に name/line/temp がある", () => {
+  assert.equal(window.RITUAL.length, 4);
+  window.RITUAL.forEach((r, i) => ["name", "line", "temp"].forEach((k) => assert.ok(r[k], `RITUAL[${i}].${k}`)));
+});

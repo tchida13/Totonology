@@ -8,7 +8,7 @@ const read = (f) => fs.readFileSync(path.join(__dirname, "..", "js", f), "utf8")
 const SRC = ["data.js", "score.js", "app.js"].map(read);
 
 // 新しいスタブ環境を作り、app.js を読み込んで返す。storage は引き継げる
-function boot({ hash = "", search = "", storage = {}, storageBroken = false } = {}) {
+function boot({ hash = "", search = "", reduce = false, ritual = false, storage = {}, storageBroken = false } = {}) {
   const env = { html: "", storage, listeners: {}, urls: [], timers: [] };
   const btns = [2, 1, 0, -1, -2].map((v) => ({ dataset: { v: String(v) }, click() { this.onclick(); } }));
   const el = {}; // id -> 要素スタブ
@@ -30,6 +30,7 @@ function boot({ hash = "", search = "", storage = {}, storageBroken = false } = 
       addEventListener: (t, f) => (env.listeners[t] = f),
     },
     confirm: () => env.confirmAnswer,
+    matchMedia: ritual ? () => ({ matches: reduce }) : undefined,
     navigator: { clipboard: { writeText: () => Promise.resolve() } },
     setTimeout: (fn) => { const t = { fn: () => { if (!t.off) fn(); } }; env.timers.push(t); return t; },
     clearTimeout: (t) => { if (t) t.off = true; },
@@ -187,4 +188,72 @@ test("質問画面の進捗は砂時計で、progressbar の値と札(1〜5)が�
   assert.match(env.html, /aria-valuenow="1"/);
   env.key("1");
   assert.match(env.html, /aria-valuenow="2"[^>]*>\s*<svg class="hg"[^>]*--p:0\.0416/); // 直前の進捗(1/24)から始め、描画後に更新して砂を落とす
+});
+
+// ため演出: matchMedia がある環境(=ブラウザ相当)でだけ流れる
+function answerAll(env) { env.el.go.click(); for (let i = 0; i < 24; i++) env.key("1"); }
+function tick(env) { env.timers.filter((t) => !t.done).slice(-1).forEach((t) => { t.done = true; t.fn(); }); }
+
+test("ため演出: 最終回答後に演出が流れ、その間に結果URLは確定・保存は消えている", () => {
+  const env = boot({ ritual: true });
+  answerAll(env);
+  assert.match(env.html, /class="ritual s0"/);
+  assert.doesNotMatch(env.html, /強み/);
+  assert.match(env.location.hash, /^#[HS][WA][OT][RF]-[0-4]{24}$/);
+  assert.equal(env.storage["totonology:progress"], undefined);
+  assert.match(env.html, /ロウリュ/);
+});
+
+test("ため演出: 4段を経て自動で結果が表示される", () => {
+  const env = boot({ ritual: true });
+  answerAll(env);
+  for (let i = 0; i < 3; i++) { tick(env); assert.doesNotMatch(env.html, /強み/); }
+  assert.equal(env.el["r-name"].textContent, "外気浴");
+  tick(env);
+  assert.match(env.html, /強み/);
+});
+
+test("ため演出: スキップ・Esc・タップで即結果になり、演出中の回答キーは無視される", () => {
+  for (const skip of [(e) => e.el.skip.click(), (e) => e.key("Escape"), (e) => e.el.ritual.click()]) {
+    const env = boot({ ritual: true });
+    answerAll(env);
+    env.key("1"); // 演出中の数字キーは何も起こさない
+    assert.match(env.html, /class="ritual/);
+    skip(env);
+    assert.match(env.html, /強み/);
+    // スキップ後にタイマーが残っていても二重描画しない
+    env.timers.forEach((t) => t.fn());
+    assert.match(env.html, /強み/);
+  }
+});
+
+test("ため演出: 最後の回答クリックがバブリングしても即スキップされない", () => {
+  const env = boot({ ritual: true });
+  env.el.go.click();
+  for (let i = 0; i < 23; i++) env.key("1");
+  env.btns[0].click();
+  env.listeners.click({ target: {} }); // 同じクリックが document まで届く
+  assert.match(env.html, /class="ritual s0"/);
+  assert.doesNotMatch(env.html, /強み/);
+});
+
+test("ため演出: 動きを減らす設定では演出なしで結果を出す", () => {
+  const env = boot({ ritual: true, reduce: true });
+  answerAll(env);
+  assert.match(env.html, /強み/);
+});
+
+test("ため演出: 結果ハッシュからの復元では演出しない", () => {
+  const done = boot();
+  answerAll(done);
+  const env = boot({ ritual: true, hash: done.location.hash });
+  assert.match(env.html, /強み/);
+  assert.doesNotMatch(env.html, /class="ritual/);
+});
+
+test("ため演出: 演出中にリロードしても結果が出る", () => {
+  const first = boot({ ritual: true });
+  answerAll(first);
+  const second = boot({ ritual: true, hash: first.location.hash, storage: first.storage });
+  assert.match(second.html, /強み/);
 });
