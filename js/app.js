@@ -53,9 +53,11 @@
     const mins = Math.max(1, Math.round(Q.length / 8));
     el(`<section class="hero">
       <span class="eyebrow">サウナ16タイプ診断</span>
-      <h1 data-focus>あなたの「ととのい方」は、<br>どのタイプ？</h1>
+      <h1 data-focus>あなたの<span class="nb">「ととのい方」</span>は、<br>どのタイプ？</h1>
       <p class="lead">${Q.length}問・約${mins}分。サウナの楽しみ方から、あなたにぴったりのサウナ性格タイプと、行ってみたい実在のサウナを見つけます。</p>
       <button class="btn lg" id="go">診断をはじめる${icon("arrow-right")}</button>
+    </section>
+    <section class="intro">
       <ul class="steps">
         <li>${icon("check")}${Q.length}問に直感で回答</li>
         <li>${icon("sparkles")}16タイプから診断</li>
@@ -120,7 +122,7 @@
     const text = `私のサウナタイプは【${t.name}】(${code})でした！ #Totonology`;
     const shareUrl = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE_URL);
     el(`<article class="result" style="--group:${grp.color}">
-      <header class="r-hero">
+      <header class="r-hero" style="--photo:url(${grp.photo})">
         ${avatar(code, t.name + "のキャラクター", 240)}
         <p class="code">${code}</p>
         <h1 data-focus>${esc(t.name)}</h1>

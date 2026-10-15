@@ -74,3 +74,10 @@ test("各タイプのキャラクター画像があり、所属グループが�
     assert.ok(g && g.name && g.desc && /^#[0-9A-Fa-f]{6}$/.test(g.color), `${code} のグループ`);
   });
 });
+
+test("グループの背景写真ファイルが存在する", () => {
+  const fs = require("node:fs"), path = require("node:path");
+  Object.entries(window.GROUPS).forEach(([k, g]) => {
+    assert.ok(g.photo && fs.existsSync(path.join(__dirname, "..", g.photo)), `${k}.photo`);
+  });
+});
