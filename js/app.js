@@ -8,7 +8,7 @@
   const AXIS_ICON = { heat: "thermometer", cool: "waves", mate: "users", style: "compass" };
   const STEAM = '<div class="steam" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>';
   const groupOf = (code) => GROUPS[code[0] + code[2]];
-  const avatar = (code, alt, size) => `<img class="avatar" src="assets/characters/${code}.svg" alt="${esc(alt)}" width="${size}" height="${size}">`;
+  const avatar = (code, alt, size, lazy) => `<img class="avatar" src="assets/characters/${code}.svg" alt="${esc(alt)}" width="${size}" height="${size}"${lazy ? ' loading="lazy" decoding="async"' : ""}>`;
   const CHOICES = ["とてもそう思う", "ややそう思う", "どちらでもない", "あまり思わない", "全くそう思わない"];
   const ORDER = window.Score.order(Q, AXES); // 出題順 (質問インデックスの並び)
   let answers = []; // 各設問の回答 (+2..-2)。質問の定義順で保持
@@ -44,7 +44,7 @@
     Object.keys(TYPES).forEach((code) => (byGroup[code[0] + code[2]] = byGroup[code[0] + code[2]] || []).push(code));
     return Object.keys(GROUPS).map((gk) => `<div class="tgroup" style="--group:${GROUPS[gk].color}">
       <h3>${esc(GROUPS[gk].name)} <span>${esc(GROUPS[gk].desc)}</span></h3>
-      <ul class="tgrid">${byGroup[gk].map((code) => `<li class="tcard">${avatar(code, "", 96)}${esc(TYPES[code].name)}</li>`).join("")}</ul>
+      <ul class="tgrid">${byGroup[gk].map((code) => `<li class="tcard">${avatar(code, "", 96, true)}${esc(TYPES[code].name)}</li>`).join("")}</ul>
     </div>`).join("");
   }
 

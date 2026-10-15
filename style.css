@@ -18,7 +18,6 @@ button{font:inherit;cursor:pointer;color:inherit}
 img{max-width:100%}
 .avatar{display:block;margin:0 auto;height:auto}
 .sub{color:var(--sub)}
-.center{text-align:center}
 .icon{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
 [data-focus]:focus{outline:none}
 :focus-visible{outline:3px solid var(--cool);outline-offset:3px;border-radius:8px}
@@ -88,15 +87,14 @@ img{max-width:100%}
 
 /* ---- 結果 ---- */
 .result{--group:var(--accent);padding-top:12px}
-.r-hero{position:relative;overflow:hidden;text-align:center;color:#fff;border-radius:28px;padding:28px 20px 30px;background:linear-gradient(160deg,color-mix(in srgb,var(--group) 82%,transparent),color-mix(in srgb,var(--group) 45%,#000) 92%),var(--photo) center/cover}
-.r-hero>:not(.steam){position:relative}
-.hero>:not(.steam){position:relative}
+.r-hero{position:relative;overflow:hidden;text-align:center;color:#fff;border-radius:28px;padding:28px 20px 30px;background:linear-gradient(160deg,color-mix(in srgb,color-mix(in srgb,var(--group) 60%,#000) 92%,transparent),color-mix(in srgb,var(--group) 40%,#000) 94%),var(--photo) center/cover}
+.r-hero>:not(.steam),.hero>:not(.steam){position:relative}
 .r-hero .avatar{width:min(240px,64vw);height:auto;border-radius:50%;box-shadow:0 0 0 6px rgba(255,255,255,.55),0 14px 30px rgba(0,0,0,.25)}
 .code{margin-top:16px;letter-spacing:.3em;font-weight:800;opacity:.9}
 .r-hero h1{font-size:clamp(2rem,8vw,3rem);line-height:1.25;font-weight:800;margin:2px 0}
 .r-hero .en{opacity:.9;font-weight:600}
 .r-hero .tagline{margin-top:6px;opacity:.95}
-.group{display:inline-block;margin-top:14px;padding:3px 14px;border-radius:999px;background:rgba(255,255,255,.22);font-size:.85rem;font-weight:700}
+.group{display:inline-block;margin-top:14px;padding:3px 14px;border-radius:999px;background:rgba(0,0,0,.28);font-size:.85rem;font-weight:700}
 .panel{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow)}
 .panel h2{display:flex;align-items:center;gap:8px;font-size:1.15rem;margin-bottom:12px}
 .panel h2 .icon{color:var(--group)}
@@ -134,7 +132,7 @@ img{max-width:100%}
 @keyframes steam-rise{0%{transform:translate(0,0) scale(.6);opacity:0}18%{opacity:.85}60%{opacity:.4}100%{transform:translate(24px,-340px) scale(1.7);opacity:0}}
 
 body::after{content:"";position:fixed;left:50%;bottom:-34vmax;width:110vmax;height:56vmax;transform:translateX(-50%);pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse at center,rgba(232,128,52,.20),rgba(232,128,52,0) 62%);animation:fire-glow 7s ease-in-out infinite alternate}
+  background:radial-gradient(ellipse at center,rgba(232,128,52,.20),rgba(232,128,52,0) 62%);animation:fire-glow 7s ease-in-out infinite alternate;will-change:opacity}
 @keyframes fire-glow{from{opacity:.55}to{opacity:1}}
 
 .stove{text-align:center;padding:36px 16px 8px}
@@ -144,11 +142,10 @@ body::after{content:"";position:fixed;left:50%;bottom:-34vmax;width:110vmax;heig
 .stove .flame.f2{animation-duration:1.7s;animation-delay:-.6s}
 .stove .flame.f3{animation-duration:1.1s;animation-delay:-.3s}
 .stove .glow{animation:glow 2.6s ease-in-out infinite alternate}
-.stove .kettle-steam i{position:absolute}
 .stove .wisp{transform-box:fill-box;transform-origin:50% 100%;opacity:0;animation:wisp 4.2s ease-in infinite}
 .stove .wisp.w2{animation-delay:-1.4s}
 .stove .wisp.w3{animation-delay:-2.8s}
 @keyframes flick{from{transform:scale(1,.9) skewX(-3deg)}to{transform:scale(1.08,1.1) skewX(3deg)}}
 @keyframes glow{from{opacity:.55}to{opacity:1}}
 @keyframes wisp{0%{transform:translate(0,2px) scale(.7);opacity:0}25%{opacity:.8}100%{transform:translate(-6px,-26px) scale(1.4);opacity:0}}
-@media (prefers-reduced-motion: reduce){.steam,.stove .wisp{display:none}body::after{animation:none;opacity:.7}}
+@media (prefers-reduced-motion: reduce){.steam,.stove .wisp{display:none}body::after{animation:none;opacity:.7;will-change:auto}}
