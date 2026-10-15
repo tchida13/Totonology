@@ -22,6 +22,7 @@
 
 - `js/data.js` … 軸・質問・16タイプの定義（文言の編集はここ）
 - `js/score.js` … スコア計算・タイプ判定
+- `js/share.js` … 結果のシェア用画像（canvas）の描画
 - `js/app.js` … 画面遷移・描画
 - `test/` … テスト（`node --test`）
 - `style.css` … スタイル（北欧テイストのライトテーマ）

@@ -56,6 +56,7 @@
   }
 
   function start() {
+    freeShareUrl();
     clearTimeout(ritualTimer);
     ritualSkip = null;
     answers = [];
@@ -163,7 +164,39 @@
     ritualTimer = setTimeout(step, RITUAL_STEP_MS);
   }
 
+  // 結果のシェア用画像を canvas で生成してプレビューし、保存・共有できるようにする（失敗したらセクションごと隠す）
+  let shareObjectUrl = "";
+  let shareSeq = 0; // 生成の世代。結果が切り替わったら古い生成結果を捨てる
+  const freeShareUrl = () => { if (shareObjectUrl) { URL.revokeObjectURL(shareObjectUrl); shareObjectUrl = ""; } };
+  function shareImage(code, t, grp, sc, text) {
+    const seq = ++shareSeq;
+    const spec = {
+      code, name: t.name, en: t.en, tagline: t.tagline, groupName: grp.name, color: grp.color,
+      letters: sc.map((x) => x.ax[x.side]), siteLabel: SITE_URL.replace(/^https?:\/\//, "").replace(/\/$/, ""),
+      avatarSrc: `assets/characters/${code}.svg`, photoSrc: grp.photo,
+    };
+    window.ShareImage.render(spec).then((blob) => {
+      if (seq !== shareSeq || view !== "result" || !document.getElementById("share")) return; // 生成中に画面や結果が変わった
+      freeShareUrl();
+      shareObjectUrl = URL.createObjectURL(blob);
+      document.getElementById("share-img").src = shareObjectUrl;
+      document.getElementById("save-img").hidden = false;
+      document.getElementById("save-img").onclick = () => {
+        const a = document.createElement("a");
+        a.href = shareObjectUrl; a.download = `totonology-${code}.png`;
+        a.click();
+      };
+      const file = new File([blob], `totonology-${code}.png`, { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        const b = document.getElementById("share-files");
+        b.hidden = false;
+        b.onclick = () => navigator.share({ files: [file], text: `${text} ${SITE_URL}` }).catch(() => {}); // キャンセルは無視
+      }
+    }).catch(() => { const sec = document.getElementById("share"); if (sec && seq === shareSeq) sec.hidden = true; }); // 失敗したらセクションごと隠す
+  }
+
   function result(code, sc) {
+    freeShareUrl();
     clearTimeout(ritualTimer);
     ritualSkip = null;
     view = "result";
@@ -203,6 +236,10 @@
         <p class="note-small">※ 営業状況・料金・利用条件は変わることがあります。訪問前に公式情報をご確認ください。</p></section>
       <section class="panel"><h2>相性のいいタイプ</h2>
         <p class="match">${avatar(t.match, m.name + "のキャラクター", 72)}<span><strong>${esc(m.name)}</strong> <span class="sub">(${t.match})</span><br><span class="sub">${esc(m.tagline)}</span></span></p></section>
+      ${window.ShareImage ? `<section class="panel share" id="share"><h2>シェア用の画像</h2>
+        <img class="share-img" id="share-img" alt="${esc(t.name)}の結果のシェア用画像" width="1200" height="630">
+        <div class="actions"><button class="btn ghost" id="save-img" hidden>画像を保存</button><button class="btn ghost" id="share-files" hidden>画像つきでシェア</button></div>
+        <p class="note-small">保存した画像は、結果をシェアする投稿に添付できます。</p></section>` : ""}
       <div class="actions">
         <a class="btn" target="_blank" rel="noopener" href="${shareUrl}">${icon("share-2")}結果をシェア</a>
         <button class="btn ghost" id="copy">${icon("link")}結果リンクをコピー</button>
@@ -211,6 +248,7 @@
       <p class="disclaimer">※ 娯楽目的の診断です。サウナは体調に合わせて無理せず、水分補給をしてお楽しみください。</p>
     </article>`);
     document.getElementById("again").onclick = start;
+    if (window.ShareImage) shareImage(code, t, grp, sc, text);
     const copy = document.getElementById("copy");
     const orig = copy.innerHTML; // 連打しても元の表示に戻せるよう、描画直後に保持する
     let timer;
