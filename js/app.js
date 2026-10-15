@@ -183,15 +183,17 @@
     const text = `私のサウナタイプは【${t.name}】(${code})でした！ #Totonology`;
     const shareUrl = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE_URL);
     el(`<article class="result" style="--group:${grp.color}">
-      <header class="r-hero" style="--photo:url(${grp.photo})">
-        ${avatar(code, t.name + "のキャラクター", 240)}
-        <p class="code">${code}</p>
+      <header class="pass" style="--photo:url(${grp.photo})">
+        <div class="pass-band" aria-hidden="true"><span>SAUNA PASS</span><span>入館証</span></div>
+        ${avatar(code, t.name + "のキャラクター", 200)}
+        <ul class="code" aria-label="タイプコード ${code}">${sc.map((x, i) => `<li style="--i:${i}"><b>${x.ax[x.side].code}</b><small>${esc(x.ax[x.side].label)}</small></li>`).join("")}</ul>
         <h1 data-focus>${esc(t.name)}</h1>
         <p class="en">${esc(t.en)}</p>
         <p class="tagline">${esc(t.tagline)}</p>
-        <span class="group">${esc(grp.name)}タイプ ― ${esc(grp.desc)}</span>
+        <p class="group">${esc(grp.desc)}</p>
+        <span class="stamp">${esc(grp.name)}タイプ</span>
       </header>
-      <section class="panel"><p>${esc(t.desc)}</p></section>
+      <p class="lead">${esc(t.desc)}</p>
       <section class="panel"><h2>あなたの傾向</h2>${bars}</section>
       <div class="grid2">
         <section class="panel"><h2>強み</h2><ul class="list">${t.strengths.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>
