@@ -56,6 +56,8 @@
   }
 
   function start() {
+    clearTimeout(ritualTimer);
+    ritualSkip = null;
     answers = [];
     shownP = 0;
     store.clear();
@@ -121,13 +123,49 @@
   const codeOf = window.Score.codeOf;
 
   function finish() {
-    const code = codeOf(scores());
+    const sc = scores(), code = codeOf(sc);
     store.clear();
+    // 結果URLと保存の消去は先に済ませる（演出中にリロードしても結果が出る）
     history.replaceState(null, "", "#" + code + "-" + answers.map((v) => v + 2).join(""));
-    result(code, scores());
+    // 動きを減らす設定(や matchMedia のない環境)では演出なしで結果を出す
+    const reduce = typeof matchMedia !== "function" || matchMedia("(prefers-reduced-motion: reduce)").matches;
+    reduce ? result(code, sc) : ritual(code, sc);
+  }
+
+  // 結果の前の「ため」: ロウリュ→蒸気→水風呂→外気浴。スキップ(ボタン/Esc/タップ)で即結果へ
+  const RITUAL_STEP_MS = 1200;
+  let ritualTimer = 0, ritualSkip = null;
+  function ritual(code, sc) {
+    view = "ritual";
+    const R = window.RITUAL;
+    let n = 0;
+    // ボタン→画面のクリックと二重に呼ばれても一度だけ結果を出す
+    const skip = () => { if (ritualSkip !== skip) return; result(code, sc); };
+    ritualSkip = skip;
+    el(`<section class="ritual s0" id="ritual">
+      <div class="r-scene" aria-hidden="true"><i class="drop"></i><i class="puff p1"></i><i class="puff p2"></i><i class="puff p3"></i><i class="puff p4"></i><div class="water"></div></div>
+      <p class="r-temp" id="r-temp" aria-hidden="true">${esc(R[0].temp)}</p>
+      <div class="r-status" role="status"><h2 id="r-name">${esc(R[0].name)}</h2><p id="r-line">${esc(R[0].line)}</p></div>
+      <ol class="r-dots" aria-hidden="true">${R.map(() => "<li></li>").join("")}</ol>
+      <button class="btn ghost" id="skip" data-focus>スキップ</button>
+    </section>`);
+    document.getElementById("skip").onclick = skip;
+    // 演出の画面内ならどこをタップしてもスキップ。document で拾うと、最後の回答クリック自身がバブリングして即スキップされる
+    document.getElementById("ritual").onclick = skip;
+    const step = () => {
+      if (++n >= R.length) return skip();
+      document.getElementById("ritual").className = "ritual s" + n;
+      document.getElementById("r-temp").textContent = R[n].temp;
+      document.getElementById("r-name").textContent = R[n].name;
+      document.getElementById("r-line").textContent = R[n].line;
+      ritualTimer = setTimeout(step, RITUAL_STEP_MS);
+    };
+    ritualTimer = setTimeout(step, RITUAL_STEP_MS);
   }
 
   function result(code, sc) {
+    clearTimeout(ritualTimer);
+    ritualSkip = null;
     view = "result";
     const t = TYPES[code];
     const m = TYPES[t.match];
@@ -191,6 +229,7 @@
 
   // キー 1〜5 で回答（1=とてもそう思う … 5=全くそう思わない）
   document.addEventListener("keydown", (e) => {
+    if (view === "ritual" && ritualSkip && !e.repeat && (e.key === "Escape" || e.key === "Enter")) return ritualSkip();
     if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || !/^[1-5]$/.test(e.key)) return;
     const opt = app.querySelectorAll(".opt")[Number(e.key) - 1];
     if (opt) opt.click();

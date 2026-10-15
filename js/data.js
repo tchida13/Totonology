@@ -130,3 +130,11 @@ window.TYPES = {
     strengths: ["癒し系", "協調性", "誰とでも居心地が良い"], cautions: ["意見を言うことも時には大切"],
     sauna: "ファミリー向け・ゆったりスパ", spots: ["koganeyu", "laqua"], match: "HWOR" },
 };
+
+// 結果発表前の「ため演出」(サウナ儀式)。上から順に表示する。temp は大きく見せる数値
+window.RITUAL = [
+  { name: "ロウリュ", line: "熱い石に、水をひとかけ…", temp: "90°C" },
+  { name: "蒸気", line: "じわりと、熱が全身を包みます", temp: "95°C" },
+  { name: "水風呂", line: "ざぶん。心拍がすっと落ち着きます", temp: "16°C" },
+  { name: "外気浴", line: "風にあたって、ととのい中…", temp: "整い" },
+];
