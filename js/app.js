@@ -12,6 +12,7 @@
   const CHOICES = ["とてもそう思う", "ややそう思う", "どちらでもない", "あまり思わない", "全くそう思わない"];
   const ORDER = window.Score.order(Q, AXES); // 出題順 (質問インデックスの並び)
   let answers = []; // 各設問の回答 (+2..-2)。質問の定義順で保持
+  let view = ""; // 表示中の画面: start / quiz / result
 
   // 回答途中の保存・復元（sessionStorage が使えない環境でもそのまま動く）
   const KEY = "totonology:progress";
@@ -21,7 +22,7 @@
     load: () => {
       try {
         const d = JSON.parse(sessionStorage.getItem(KEY));
-        const ok = d && Array.isArray(d.a) && d.a.length === Q.length && Number.isInteger(d.p) && d.p > 0 && d.p < Q.length
+        const ok = d && Array.isArray(d.a) && d.a.length === Q.length && Number.isInteger(d.p) && d.p >= 0 && d.p < Q.length
           && d.a.every((v, i) => ORDER.indexOf(i) >= d.p || [-2, -1, 0, 1, 2].includes(v));
         return ok ? d : null;
       } catch (e) { return null; }
@@ -50,7 +51,8 @@
   function start() {
     answers = [];
     store.clear();
-    history.replaceState(null, "", location.pathname);
+    view = "start";
+    history.replaceState(null, "", location.pathname + location.search);
     const mins = Math.max(1, Math.round(Q.length / 8));
     el(`<section class="hero">
       ${STEAM}
@@ -76,6 +78,7 @@
 
   // i は出題順の位置。回答は質問インデックス(ORDER[i])に記録する
   function question(i) {
+    view = "quiz";
     const qi = ORDER[i], q = Q[qi];
     el(`<section class="quiz">
       <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${Q.length}" aria-valuenow="${i}"><div style="width:${(i / Q.length) * 100}%"></div></div>
@@ -94,7 +97,7 @@
       i + 1 < Q.length ? question(i + 1) : finish();
     }));
     const back = document.getElementById("back");
-    if (back) back.onclick = () => question(i - 1);
+    if (back) back.onclick = () => { store.save(i - 1); question(i - 1); };
   }
 
   const scores = () => window.Score.scores(answers, Q, AXES);
@@ -108,6 +111,7 @@
   }
 
   function result(code, sc) {
+    view = "result";
     const t = TYPES[code];
     const m = TYPES[t.match];
     const grp = groupOf(code);
@@ -152,13 +156,22 @@
     </article>`);
     document.getElementById("again").onclick = start;
     const copy = document.getElementById("copy");
+    const orig = copy.innerHTML; // 連打しても元の表示に戻せるよう、描画直後に保持する
+    let timer;
     copy.onclick = () => {
-      const orig = copy.innerHTML;
-      const done = (msg) => { copy.innerHTML = icon("check") + msg; setTimeout(() => (copy.innerHTML = orig), 2000); };
-      (navigator.clipboard ? navigator.clipboard.writeText(location.href) : Promise.reject())
+      const done = (msg) => { copy.innerHTML = icon("check") + msg; clearTimeout(timer); timer = setTimeout(() => (copy.innerHTML = orig), 2000); };
+      Promise.resolve().then(() => navigator.clipboard.writeText(location.href))
         .then(() => done("コピーしました"), () => done("コピーできませんでした"));
     };
   }
+
+  // 回答中のロゴは確認してからトップへ戻る（誤クリックで途中経過を失わないように）
+  document.addEventListener("click", (e) => {
+    if (view !== "quiz" || e.button || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return; // 新規タブ等の操作は妨げない
+    if (!(e.target.closest && e.target.closest(".brand"))) return;
+    e.preventDefault();
+    if (!answers.some((v) => v != null) || confirm("回答を破棄してトップに戻りますか？")) start();
+  });
 
   // キー 1〜5 で回答（1=とてもそう思う … 5=全くそう思わない）
   document.addEventListener("keydown", (e) => {
