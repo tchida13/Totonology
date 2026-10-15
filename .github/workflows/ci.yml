@@ -32,3 +32,19 @@ jobs:
             if [ ! -f "$f" ]; then echo "missing: $f"; status=1; fi
           done
           exit $status
+
+      - name: 公開ファイルの確認（HTML/CSS/JS が参照するファイルが公開対象に含まれるか）
+        run: |
+          scripts/collect-site.sh _site
+          status=0
+          refs=$(grep -ohE '(src|href)="[^"#:]+"' index.html | sed -E 's/^(src|href)="(.*)"$/\2/')
+          refs="$refs $(grep -ohE 'assets/[A-Za-z0-9_./-]+\.(svg|jpe?g|png|webp|gif|ico)' index.html style.css js/*.js | sort -u)"
+          for f in $refs; do
+            if [ ! -f "_site/$f" ]; then echo "not published: $f"; status=1; fi
+          done
+          codes=$(node -e 'globalThis.window=globalThis;require("./js/data.js");console.log(Object.keys(window.TYPES).join(" "))')
+          if [ -z "$codes" ]; then echo "no type codes found"; exit 1; fi
+          for code in $codes; do
+            if [ ! -f "_site/assets/characters/$code.svg" ]; then echo "not published: assets/characters/$code.svg"; status=1; fi
+          done
+          exit $status
