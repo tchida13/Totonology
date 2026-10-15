@@ -81,3 +81,29 @@ test("グループの背景写真ファイルが存在する", () => {
     assert.ok(g.photo && fs.existsSync(path.join(__dirname, "..", g.photo)), `${k}.photo`);
   });
 });
+
+test("app.js / index.html が使うアイコンIDがスプライトに存在する", () => {
+  const fs = require("node:fs"), path = require("node:path");
+  const read = (...p) => fs.readFileSync(path.join(__dirname, "..", ...p), "utf8");
+  const sprite = new Set([...read("assets", "icons.svg").matchAll(/<symbol[^>]*\sid="([^"]+)"/g)].map((m) => m[1]));
+  const app = read("js", "app.js"), html = read("index.html");
+  const axisIcons = (app.match(/AXIS_ICON = \{([^}]*)\}/) || [, ""])[1].matchAll(/:\s*"([a-z-]+)"/g);
+  const used = new Set([
+    ...[...app.matchAll(/icon\("([a-z0-9-]+)"\)/g)].map((m) => m[1]),
+    ...[...axisIcons].map((m) => m[1]),
+    ...[...html.matchAll(/icons\.svg#([a-z0-9-]+)/g)].map((m) => m[1]),
+  ]);
+  assert.ok(used.size > 5, "アイコン参照を抽出できている");
+  used.forEach((id) => assert.ok(sprite.has(id), `icons.svg に ${id} がない`));
+});
+
+test("グループ色: 結果ヒーロー(色を60%黒と混ぜた背景)上の白文字が WCAG AA(4.5:1)以上", () => {
+  const lum = (rgb) => {
+    const [r, g, b] = rgb.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  Object.entries(window.GROUPS).forEach(([k, g]) => {
+    const bg = [1, 3, 5].map((i) => parseInt(g.color.slice(i, i + 2), 16) * 0.6);
+    assert.ok(1.05 / (lum(bg) + 0.05) >= 4.5, `${k} (${g.color})`);
+  });
+});

@@ -157,3 +157,23 @@ test("回答中のロゴは確認してからトップへ戻る", () => {
   assert.equal(env.storage["totonology:progress"], undefined);
   assert.equal(prevented, 2);
 });
+
+test("16タイプすべてで結果ハッシュから該当キャラ付きの結果を復元できる", () => {
+  const Score = require("../js/score.js");
+  globalThis.window = globalThis;
+  require("../js/data.js");
+  const { QUESTIONS: Q, AXES } = window;
+  const codes = AXES.reduce((cs, ax) => cs.flatMap((c) => [c + ax.first.code, c + ax.second.code]), [""]);
+  assert.equal(codes.length, 16);
+  codes.forEach((code) => {
+    // 各軸で目的の側に +2 / -2 を振る (first 側が正)
+    const ans = Q.map((q) => {
+      const ax = AXES.find((a) => a.id === q.axis), idx = AXES.indexOf(ax);
+      return (code[idx] === ax.first.code ? 2 : -2) * q.dir;
+    });
+    assert.equal(Score.codeOf(Score.scores(ans, Q, AXES)), code);
+    const env = boot({ hash: "#" + code + "-" + ans.map((v) => v + 2).join("") });
+    assert.match(env.html, new RegExp(`characters/${code}\\.svg`), code);
+    assert.match(env.html, /強み/, code);
+  });
+});
