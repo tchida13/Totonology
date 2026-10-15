@@ -1,11 +1,13 @@
 (function () {
   const app = document.getElementById("app");
-  const Q = window.QUESTIONS, AXES = window.AXES, TYPES = window.TYPES, SPOTS = window.SPOTS;
+  const Q = window.QUESTIONS, AXES = window.AXES, TYPES = window.TYPES, SPOTS = window.SPOTS, GROUPS = window.GROUPS;
   // シェアにはトップURLを使う（結果URLのハッシュには回答が含まれるため、投稿文には載せない）
   const SITE_URL = "https://tchida13.github.io/Totonology/";
   // lucide のSVGスプライト(assets/icons.svg)から表示する。色は currentColor に追従
   const icon = (name) => `<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#${name}"/></svg>`;
   const AXIS_ICON = { heat: "thermometer", cool: "waves", mate: "users", style: "compass" };
+  const groupOf = (code) => GROUPS[code[0] + code[2]];
+  const avatar = (code, alt, size) => `<img class="avatar" src="assets/characters/${code}.svg" alt="${esc(alt)}" width="${size}" height="${size}">`;
   const CHOICES = ["とてもそう思う", "ややそう思う", "どちらでもない", "あまり思わない", "全くそう思わない"];
   const ORDER = window.Score.order(Q, AXES); // 出題順 (質問インデックスの並び)
   let answers = []; // 各設問の回答 (+2..-2)。質問の定義順で保持
@@ -91,10 +93,12 @@
     }).join("");
     const text = `私のサウナタイプは【${t.name}】(${code})でした！ #Totonology`;
     const shareUrl = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE_URL);
-    el(`<section class="card">
+    const grp = groupOf(code);
+    el(`<section class="card" style="--group:${grp.color}">
       <div class="center">
-        <div class="emoji">${t.emoji}</div>
+        ${avatar(code, t.name + "のキャラクター", 240)}
         <div class="code">${code}</div>
+        <p class="group">${esc(grp.name)}タイプ ― ${esc(grp.desc)}</p>
         <h1 data-focus>${esc(t.name)}</h1>
         <p class="sub">${esc(t.en)} ― ${esc(t.tagline)}</p>
       </div>
@@ -105,7 +109,7 @@
       <h2>${icon("map-pin")}おすすめのサウナ</h2><p>${esc(t.sauna)}</p>
       <ul class="spots">${t.spots.map((id) => { const sp = SPOTS[id]; return `<li class="spot"><strong>${esc(sp.name)}</strong> <span class="sub">${esc(sp.area)}</span><br><span class="vibe">${esc(sp.vibe)}</span><br><span class="sub">${esc(sp.note)}</span></li>`; }).join("")}</ul>
       <p class="sub" style="font-size:.8rem">※ 営業状況・料金・利用条件は変わることがあります。訪問前に公式情報をご確認ください。</p>
-      <h2>${icon("heart-handshake")}相性のいいタイプ</h2><p>${m.emoji} ${esc(m.name)} <span class="sub">(${t.match})</span></p>
+      <h2>${icon("heart-handshake")}相性のいいタイプ</h2><p class="match">${avatar(t.match, m.name + "のキャラクター", 56)}<span>${esc(m.name)} <span class="sub">(${t.match})</span></span></p>
       <div class="actions">
         <a class="btn" target="_blank" rel="noopener" href="${shareUrl}">${icon("share-2")}結果をシェア</a>
         <button class="btn ghost" id="copy">${icon("link")}結果リンクをコピー</button>

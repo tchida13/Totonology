@@ -12,7 +12,10 @@ h2 .icon{color:var(--accent)}
 .icon{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
 .hero-icon{display:inline-grid;place-items:center;width:84px;height:84px;border-radius:24px;color:#fff;background:linear-gradient(180deg,#ff9142,#e5481b)}
 .hero-icon .icon{width:48px;height:48px}
-.emoji{font-size:3.5rem}
+.avatar{display:block;margin:0 auto;max-width:100%;height:auto}
+.group{display:inline-block;margin:.2em 0 0;padding:2px 12px;border-radius:999px;background:var(--group);color:#fff;font-size:.8rem;font-weight:700}
+.match{display:flex;align-items:center;gap:12px}
+.match .avatar{margin:0;width:56px;height:56px}
 button{font:inherit;cursor:pointer}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:var(--accent);color:#2b1305;border:0;border-radius:999px;padding:12px 28px;font-weight:700}
 .btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
@@ -34,5 +37,5 @@ button{font:inherit;cursor:pointer}
 .bar .track{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--cool)}
 .bar .fill{background:var(--accent)}
 ul{padding-left:1.2em}
-.code{letter-spacing:.2em;color:var(--accent);font-weight:700}
+.code{letter-spacing:.2em;color:var(--group,var(--accent));font-weight:700}
 .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:24px}
