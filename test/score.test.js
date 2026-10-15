@@ -136,3 +136,11 @@ test("データ整合性: 16タイプが揃い match が実在する", () => {
     assert.ok(TYPES[t.match], `${code} の match ${t.match} が未定義`);
   });
 });
+
+test("order: 全質問を1回ずつ含み、同じ軸が連続しない", () => {
+  const { order } = require("../js/score.js");
+  const o = order(Q, AXES);
+  assert.deepEqual([...o].sort((a, b) => a - b), Q.map((_, i) => i));
+  o.slice(1).forEach((qi, k) => assert.notEqual(Q[qi].axis, Q[o[k]].axis));
+  assert.deepEqual(o.slice(0, AXES.length).map((qi) => Q[qi].axis), AXES.map((ax) => ax.id));
+});

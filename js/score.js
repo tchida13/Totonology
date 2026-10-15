@@ -24,7 +24,17 @@
     return sc.map((s) => s.ax[s.side].code).join("");
   }
 
-  const api = { scores, codeOf };
+  // 出題順（質問インデックスの並び）。軸が交互になるよう、各軸の n 問目ずつを軸順に並べる。
+  // 回答は質問の定義順(インデックス)で保持するため、結果URLの互換性は変わらない
+  function order(questions, axes) {
+    const byAxis = axes.map((ax) => questions.map((q, i) => (q.axis === ax.id ? i : -1)).filter((i) => i >= 0));
+    const rounds = Math.max(...byAxis.map((a) => a.length));
+    const out = [];
+    for (let r = 0; r < rounds; r++) byAxis.forEach((a) => { if (r < a.length) out.push(a[r]); });
+    return out;
+  }
+
+  const api = { scores, codeOf, order };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.Score = api;
 })(typeof window !== "undefined" ? window : globalThis);
