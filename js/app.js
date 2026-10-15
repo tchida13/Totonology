@@ -7,7 +7,6 @@
   const ORDER = window.Score.order(Q, AXES); // 出題順 (質問インデックスの並び)
   let answers = []; // 各設問の回答 (+2..-2)。質問の定義順で保持
 
-  // 描画後、[data-focus] の要素（質問文・見出し）へフォーカスを移して画面遷移を支援技術に伝える
   // 回答途中の保存・復元（sessionStorage が使えない環境でもそのまま動く）
   const KEY = "totonology:progress";
   const store = {
@@ -23,6 +22,7 @@
     },
   };
 
+  // 描画後、[data-focus] の要素（質問文・見出し）へフォーカスを移して画面遷移を支援技術に伝える
   const el = (html) => {
     app.innerHTML = html;
     window.scrollTo(0, 0);
@@ -119,7 +119,7 @@
 
   // キー 1〜5 で回答（1=とてもそう思う … 5=全くそう思わない）
   document.addEventListener("keydown", (e) => {
-    if (e.ctrlKey || e.metaKey || e.altKey || !/^[1-5]$/.test(e.key)) return;
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || !/^[1-5]$/.test(e.key)) return;
     const opt = app.querySelectorAll(".opt")[Number(e.key) - 1];
     if (opt) opt.click();
   });
