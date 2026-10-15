@@ -60,11 +60,11 @@
   function result(code, sc) {
     const t = TYPES[code];
     const m = TYPES[t.match];
+    // 左=first側・右=second側。勝った側のラベルを強調する
     const bars = sc.map((s) => {
-      const pct = s.side === "first" ? s.pct : 100 - s.pct;
-      const main = s.ax[s.side];
-      return `<div class="bar"><div class="row"><span>${esc(s.ax.title)}</span><span>${esc(main.label)} ${pct}%</span></div>
-        <div class="track"><div class="fill" style="width:${pct}%"></div></div></div>`;
+      const a = s.ax;
+      return `<div class="bar"><div class="title sub">${esc(a.title)}</div><div class="row"><span class="${s.side === "first" ? "win" : ""}">${esc(a.first.label)} ${s.pct}%</span><span class="${s.side === "second" ? "win" : ""}">${100 - s.pct}% ${esc(a.second.label)}</span></div>
+        <div class="track" role="img" aria-label="${esc(a.title)}: ${esc(a.first.label)} ${s.pct}%、${esc(a.second.label)} ${100 - s.pct}%"><div class="fill" style="width:${s.pct}%"></div></div></div>`;
     }).join("");
     const text = `私のサウナタイプは【${t.name}】(${code})でした！ #Totonology`;
     el(`<section class="card">
