@@ -208,3 +208,17 @@ body[data-scene="quiz"][data-loyly]::after{content:"";position:fixed;inset:0;z-i
 .loyly-banner b{font-size:1.6rem;font-weight:600;letter-spacing:.4em;padding-left:.4em}
 .loyly-banner span{font-size:.8rem;letter-spacing:.1em;opacity:.85}
 @keyframes banner{0%{opacity:0;transform:translate(-50%,8px)}15%,75%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+
+/* ---- 整いタイム: 結果確認中の、明るく穏やかな時間 ---- */
+body[data-scene="result"]{background:radial-gradient(90% 55% at 50% 0%,rgba(255,226,170,.45),transparent 70%),linear-gradient(180deg,#FBF7EC,#E9F0EE),var(--bg);background-attachment:fixed}
+.motes{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.motes i{position:absolute;bottom:-30px;left:var(--x);width:var(--s);height:var(--s);border-radius:50%;background:radial-gradient(circle,rgba(255,200,120,.95),rgba(255,200,120,0) 70%);opacity:0;animation:mote var(--t) linear infinite;animation-delay:var(--d)}
+@keyframes mote{0%{transform:translate(0,0);opacity:0}15%{opacity:.85}85%{opacity:.5}100%{transform:translate(24px,-112vh);opacity:0}}
+.tototime{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 14px;color:var(--sub);font-size:.8rem;font-weight:600;letter-spacing:.4em;animation:breathe-label 4.5s ease-in-out infinite alternate}
+.tototime::before,.tototime::after{content:"";width:34px;height:1px;background:currentColor;opacity:.6}
+@keyframes breathe-label{from{opacity:.55}to{opacity:1}}
+.pass{animation:pass-in 1.2s ease-out both}
+@keyframes pass-in{from{opacity:0;transform:translateY(12px)}}
+.pass .avatar{animation:float 5.5s ease-in-out infinite alternate}
+@keyframes float{from{transform:translateY(0);box-shadow:0 0 0 0 rgba(255,205,140,0)}to{transform:translateY(-7px);box-shadow:0 0 30px 10px rgba(255,205,140,.5)}}
+@media (prefers-reduced-motion: reduce){.motes{display:none}}

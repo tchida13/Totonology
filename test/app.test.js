@@ -346,3 +346,10 @@ test("ロウリュ: 動きを減らす設定では演出を出さず、もう一
   assert.equal(env.body.dataset.loyly, undefined);
   assert.equal(env.body.dataset.scene, "start");
 });
+
+test("整いタイム: 結果画面に「整いタイム」の表示と光の粒(10個)が出る", () => {
+  const env = boot({ hash: "#SAOR-" + "4".repeat(24) });
+  assert.match(env.html, /class="tototime">整いタイム</);
+  assert.equal((env.html.match(/<i style="--x:/g) || []).length, 10);
+  assert.equal(env.body.dataset.scene, "result");
+});
