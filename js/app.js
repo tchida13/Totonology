@@ -2,7 +2,8 @@
   const app = document.getElementById("app");
   const Q = window.QUESTIONS, AXES = window.AXES, TYPES = window.TYPES;
   const CHOICES = ["とてもそう思う", "ややそう思う", "どちらでもない", "あまり思わない", "全くそう思わない"];
-  let answers = []; // 各設問の回答 (+2..-2)
+  const ORDER = window.Score.order(Q, AXES); // 出題順 (質問インデックスの並び)
+  let answers = []; // 各設問の回答 (+2..-2)。質問の定義順で保持
 
   const el = (html) => { app.innerHTML = html; app.focus?.(); window.scrollTo(0, 0); };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -20,8 +21,9 @@
     document.getElementById("go").onclick = () => question(0);
   }
 
+  // i は出題順の位置。回答は質問インデックス(ORDER[i])に記録する
   function question(i) {
-    const q = Q[i];
+    const qi = ORDER[i], q = Q[qi];
     el(`<section class="card">
       <div class="progress"><div style="width:${(i / Q.length) * 100}%"></div></div>
       <p class="sub">Q${i + 1} / ${Q.length}</p>
@@ -33,7 +35,7 @@
       <div class="actions">${i > 0 ? '<button class="btn ghost" id="back">戻る</button>' : ""}</div>
     </section>`);
     app.querySelectorAll(".opt").forEach((b) => (b.onclick = () => {
-      answers[i] = Number(b.dataset.v);
+      answers[qi] = Number(b.dataset.v);
       i + 1 < Q.length ? question(i + 1) : finish();
     }));
     const back = document.getElementById("back");
