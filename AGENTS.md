@@ -12,6 +12,7 @@ Totonology 開発における AI エージェント・人間共通の作業ル�
 | `js/data.js` | 軸・質問・16タイプの定義（文言の編集はここ） |
 | `js/score.js` | スコア計算・タイプ判定（DOM非依存。ブラウザ/Node両対応） |
 | `js/app.js` | 画面遷移・描画 |
+| `scripts/collect-site.sh` | Pages 公開ファイルを集めるスクリプト（deploy.yml と ci.yml が共用。assets/ を追加したらここも確認） |
 | `test/` | `node --test` で実行するテスト（外部依存なし） |
 | `style.css` | スタイル（ライトテーマ。演出は prefers-reduced-motion で停止） |
 | `index.html` | エントリポイント |
@@ -71,7 +72,7 @@ fix(score): 同点時にタイプ判定が偏る問題を修正
 
 ## CI/CD
 
-- `.github/workflows/ci.yml` … PR と `main` への push で実行。JS の構文チェック、`node --test`、`index.html` が参照するファイルの存在確認
+- `.github/workflows/ci.yml` … PR と `main` への push で実行。JS の構文チェック、`node --test`、`index.html` が参照するファイルの存在確認、HTML/CSS/JS が参照するファイルが公開対象（`_site`）に含まれるかの確認
 - `.github/workflows/deploy.yml` … `main` への push で GitHub Pages にデプロイ
 
 PR は CI が成功してからマージする。
