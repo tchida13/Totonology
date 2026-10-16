@@ -32,11 +32,12 @@
   let loyly = false, fxTimer = 0; // ロウリュは質問の半分で一度だけ入る
   const setLoyly = (on) => { loyly = on; if (document.body) on ? (document.body.dataset.loyly = "1") : delete document.body.dataset.loyly; };
   const clearFx = () => { clearTimeout(fxTimer); document.getElementById("announce").textContent = ""; const fx = document.getElementById("fx"); if (fx) { fx.className = "fx"; fx.innerHTML = ""; } };
-  // 質問の半分に到達した瞬間のロウリュ演出。入力はブロックしない(オーバーレイは操作を通す)
+  // 質問の半分に到達した瞬間のオートロウリュ演出。入力はブロックしない(オーバーレイは操作を通す)
   function rouryu() {
     const fx = document.getElementById("fx");
-    fx.innerHTML = `<i class="ldrop"></i><i class="steam-burst b1"></i><i class="steam-burst b2"></i><i class="steam-burst b3"></i><i class="steam-burst b4"></i>
-      <p class="loyly-banner"><b>ロウリュ</b><span>熱気がぐっと増しました</span></p>`;
+    // ストーブ上のアームのノズルから石にミスト → 石から蒸気。画面下部のストーブ周辺だけで完結し、質問文に被らない
+    fx.innerHTML = `<div class="auto"><i class="mist"></i><i class="steam-burst b1"></i><i class="steam-burst b2"></i><i class="steam-burst b3"></i>
+      <p class="loyly-banner"><b>オートロウリュ</b><span>熱気がぐっと増しました</span></p></div>`;
     fx.className = "fx on";
     document.getElementById("announce").textContent = "ロウリュ。熱気がぐっと増しました。"; // 常設の live region で読み上げる
     fxTimer = setTimeout(clearFx, 3400);

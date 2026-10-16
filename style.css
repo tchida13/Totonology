@@ -210,17 +210,20 @@ body[data-scene="quiz"][data-loyly]::after{content:"";position:fixed;inset:0;z-i
 .temp{margin:0 0 0 auto;font-size:1.5rem;font-weight:300;letter-spacing:.04em;color:var(--sub)}
 .fx{position:fixed;inset:0;z-index:20;overflow:hidden;pointer-events:none;display:none}
 .fx.on{display:block}
-.fx.on::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(255,190,130,.42),transparent 62%);animation:flash 1.8s ease-out .8s both}
+.fx.on::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(255,190,130,.3),transparent 62%);animation:flash 1.8s ease-out .8s both}
 @keyframes flash{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
-.ldrop{position:absolute;left:50%;top:-20px;width:12px;height:16px;margin-left:-6px;border-radius:50% 50% 50% 50%/65% 65% 35% 35%;background:#A8D2E4;animation:ldrop .8s cubic-bezier(.5,0,1,.6) forwards}
-@keyframes ldrop{to{transform:translateY(calc(100vh - 215px));opacity:.2}}
-.steam-burst{position:absolute;bottom:40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,0) 68%);filter:blur(14px);opacity:0;animation:burst 2.6s ease-out .8s forwards}
-.b1{left:-6%}.b2{left:26%;animation-delay:.9s}.b3{left:54%;animation-delay:.85s}.b4{left:78%;animation-delay:1s}
-@keyframes burst{0%{transform:translateY(0) scale(.5);opacity:0}25%{opacity:.4}100%{transform:translateY(-75vh) scale(1.7);opacity:0}}
-.loyly-banner{position:absolute;left:50%;bottom:250px;transform:translateX(-50%);display:flex;align-items:baseline;gap:12px;padding:8px 18px;border:1px solid rgba(255,255,255,.45);background:rgba(20,14,12,.7);color:#fff;white-space:nowrap;animation:banner 2.6s ease-out .7s both}
-.loyly-banner b{font-size:1.15rem;font-weight:600;letter-spacing:.3em}
-.loyly-banner span{font-size:.78rem;letter-spacing:.08em;opacity:.85}
-@keyframes banner{0%{opacity:0;transform:translate(-50%,8px)}15%,70%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+/* オートロウリュ: ストーブ上のアームのノズルから石にミストが吹き、石から蒸気が少し立つ。動きはすべてストーブ周辺（画面下部）に収める */
+.auto{position:absolute;left:50%;bottom:42px;width:min(100%,560px);aspect-ratio:480/232;transform:translateX(-50%)}
+.mist{position:absolute;left:37.5%;top:19.8%;width:25%;height:31%;clip-path:polygon(46% 0,54% 0,100% 100%,0 100%);background:repeating-linear-gradient(180deg,rgba(235,245,255,.6) 0 5px,rgba(235,245,255,.12) 5px 13px);filter:blur(1px);opacity:0;animation:mist 2.2s ease-out .2s both,mist-flow .45s linear infinite}
+@keyframes mist{0%{opacity:0}15%{opacity:.9}75%{opacity:.8}100%{opacity:0}}
+@keyframes mist-flow{to{background-position:0 13px}}
+.steam-burst{position:absolute;top:24%;width:150px;height:150px;margin-left:-75px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0) 68%);filter:blur(10px);opacity:0;animation:burst 2.4s ease-out 1s forwards}
+.b1{left:36%}.b2{left:50%;animation-delay:1.15s}.b3{left:64%;animation-delay:1.3s}
+@keyframes burst{0%{transform:translateY(0) scale(.5);opacity:0}30%{opacity:.5}100%{transform:translateY(-90px) scale(1.4);opacity:0}}
+.loyly-banner{position:absolute;left:1%;top:1%;display:flex;flex-direction:column;gap:0;padding:6px 12px;border:1px solid rgba(255,255,255,.4);background:rgba(20,14,12,.72);color:#fff;white-space:nowrap;animation:banner 2.8s ease-out .3s both}
+.loyly-banner b{font-size:.95rem;font-weight:600;letter-spacing:.2em}
+.loyly-banner span{font-size:.7rem;letter-spacing:.06em;opacity:.85}
+@keyframes banner{0%{opacity:0;transform:translateY(4px)}15%,70%{opacity:1;transform:none}100%{opacity:0}}
 
 /* ---- 整いタイム: 結果確認中の、穏やかでスピリチュアルな時間（Apple Watch のマインドフルネスを参考に） ---- */
 body[data-scene="result"]{overflow-x:clip;background:radial-gradient(62% 42% at 18% 8%,rgba(196,181,253,.55),transparent 70%),radial-gradient(60% 45% at 88% 26%,rgba(125,211,252,.42),transparent 70%),radial-gradient(75% 50% at 50% 100%,rgba(253,186,170,.5),transparent 70%),linear-gradient(180deg,#F5F1FB,#E9F2F6);background-attachment:fixed}
@@ -250,10 +253,10 @@ body[data-scene="result"] .pass{background:color-mix(in srgb,var(--surface) 80%,
 body[data-scene="result"] .panel{background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 
 /* ---- 質問ページ下部のサウナストーン: 熱気(--heat)に応じて足元が赤く光る ---- */
-.stones-deco{--stones-h:190px;display:none;position:fixed;left:0;right:0;bottom:42px;height:var(--stones-h);z-index:-1;pointer-events:none}
+.stones-deco{--stones-h:232px;display:none;position:fixed;left:0;right:0;bottom:42px;height:var(--stones-h);z-index:-1;pointer-events:none}
 body[data-scene="quiz"] .stones-deco{display:block}
-.stones-deco::before{content:"";position:absolute;left:0;right:0;bottom:0;height:170px;background:radial-gradient(ellipse at 50% 100%,rgba(240,110,50,calc(.2 + var(--heat) * .45)),transparent 70%)}
-.stones-deco svg{position:absolute;left:50%;bottom:0;width:min(100%,560px);height:auto;aspect-ratio:480/170;transform:translateX(-50%);overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.stones-deco::before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--stones-h);background:radial-gradient(ellipse at 50% 100%,rgba(240,110,50,calc(.2 + var(--heat) * .45)),transparent 70%)}
+.stones-deco svg{position:absolute;left:50%;bottom:0;width:min(100%,560px);height:auto;aspect-ratio:480/232;transform:translateX(-50%);overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
 .st{stroke:rgba(255,140,70,calc(.2 + var(--heat) * .6));stroke-width:1;stroke-linejoin:round}
 /* 質問画面のフッターは画面最下部に固定（石の上に小さく重ねる）。本文が隠れないよう main に余白 */
 body[data-scene="quiz"] .foot{position:fixed;left:0;right:0;bottom:0;z-index:5;width:auto;max-width:none;margin:0;padding:18px 12px calc(6px + env(safe-area-inset-bottom));color:#B9AEA4;opacity:.85;background:linear-gradient(transparent,rgba(12,9,8,.82) 55%)}
