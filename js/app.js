@@ -35,7 +35,7 @@
   // 質問の半分に到達した瞬間のロウリュ演出。入力はブロックしない(オーバーレイは操作を通す)
   function rouryu() {
     const fx = document.getElementById("fx");
-    fx.innerHTML = `<div class="stones"></div><i class="ldrop"></i><i class="steam-burst b1"></i><i class="steam-burst b2"></i><i class="steam-burst b3"></i><i class="steam-burst b4"></i>
+    fx.innerHTML = `<i class="ldrop"></i><i class="steam-burst b1"></i><i class="steam-burst b2"></i><i class="steam-burst b3"></i><i class="steam-burst b4"></i>
       <p class="loyly-banner"><b>ロウリュ</b><span>熱気がぐっと増しました</span></p>`;
     fx.className = "fx on";
     document.getElementById("announce").textContent = "ロウリュ。熱気がぐっと増しました。"; // 常設の live region で読み上げる
