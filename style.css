@@ -151,54 +151,48 @@ body[data-scene="ritual"] .foot{opacity:.5}
 .match strong{font-size:1.1rem}
 .disclaimer{margin-top:24px;text-align:center;color:var(--sub);font-size:.8rem}
 
-/* ---- ため演出: 扉を開けて、だんだん明るくなる（扉 → 水風呂 → 休憩 → 外気浴 → 整い） ---- */
-.ritual{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:min(78vh,620px);margin-top:12px;padding:32px 20px;border-radius:var(--radius);text-align:center;color:#fff;background:#2B2321;transition:background 1.4s ease,color 1.4s ease}
+/* ---- ため演出: 暗い所から明るい所へ。水風呂でゆっくり意識がほどけていく（水風呂 → 休憩 → 外気浴 → 整い） ---- */
+.ritual{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:min(78vh,620px);margin-top:12px;padding:32px 20px;border-radius:var(--radius);text-align:center;color:#fff;background:#0C2230;transition:background 2.6s ease,color 2.6s ease}
 .ritual>*{position:relative;z-index:1}
 /* スキップは誤操作を避けるため、カード右下の小さな文字リンクにする */
 .skip{position:absolute;right:4px;bottom:2px;z-index:2;padding:10px 12px;border:0;background:none;color:inherit;font-size:.7rem;letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px;opacity:.55;cursor:pointer}
-.skip:hover{opacity:1}
-.ritual.s1{background:#0F2B38}
-.ritual.s2{background:#245B72}
-.ritual.s3{background:#9EC8D6;color:#25292C}
-.ritual.s4{background:#E9EEEC;color:#25292C}
+.skip:hover{opacity:.9}
+.ritual.s1{background:#1F5870}
+.ritual.s2{background:#8FBFD0;color:#25292C}
+.ritual.s3{background:#EAF0EE;color:#25292C}
 .r-scene{position:absolute!important;inset:0;z-index:0!important;pointer-events:none}
 .r-temp{font-size:clamp(4rem,22vw,7rem);font-weight:200;line-height:1.1;letter-spacing:.02em;font-variant-numeric:tabular-nums}
 .r-status h2{font-size:1.4rem;letter-spacing:.3em;margin:6px 0 4px;padding-left:.3em}
 .r-status p{opacity:.85}
+/* 段が変わるたび、文字をゆっくり浮かび上がらせる（A/B で名前を変えてアニメーションを再生する） */
+.s0 .r-temp,.s0 .r-status,.s2 .r-temp,.s2 .r-status{animation:soft-a 2.4s ease-out both}
+.s1 .r-temp,.s1 .r-status,.s3 .r-temp,.s3 .r-status{animation:soft-b 2.4s ease-out both}
+@keyframes soft-a{from{opacity:0;transform:translateY(6px)}}
+@keyframes soft-b{from{opacity:0;transform:translateY(6px)}}
 .r-dots{display:flex;gap:10px;margin:18px 0 22px;padding:0;list-style:none}
-.r-dots li{width:26px;height:3px;background:currentColor;opacity:.25;transition:opacity .4s}
-.s0 .r-dots li:nth-child(-n+1),.s1 .r-dots li:nth-child(-n+2),.s2 .r-dots li:nth-child(-n+3),.s3 .r-dots li:nth-child(-n+4),.s4 .r-dots li{opacity:1}
-/* 水: 画面を満たしたところから、段階的に引いていく */
-.water{position:absolute;left:-10%;right:-10%;bottom:0;height:100%;border-radius:50% 50% 0 0/18px 18px 0 0;background:linear-gradient(180deg,rgba(160,215,235,.22),rgba(160,215,235,.06));transform:translateY(8%);transition:transform 1.4s cubic-bezier(.3,0,.2,1),opacity 1.2s}
-.s2 .water{transform:translateY(38%)}
-.s3 .water{transform:translateY(76%)}
-.s4 .water{transform:translateY(112%);opacity:0}
-.bub{position:absolute;bottom:-20px;width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(255,255,255,.55);opacity:0;animation:bub 3.4s ease-in infinite}
-.b1{left:12%}.b2{left:30%;animation-delay:-1.2s;width:9px;height:9px}.b3{left:52%;animation-delay:-2.2s}.b4{left:70%;animation-delay:-.6s;width:10px;height:10px}.b5{left:88%;animation-delay:-1.8s}
-.s3 .bub,.s4 .bub{animation:none;opacity:0}
-@keyframes bub{0%{transform:translateY(0);opacity:0}20%{opacity:.8}100%{transform:translateY(-60vh);opacity:0}}
-/* 光: 外気浴に向けて、斜めの陽が差してくる */
-.rays{position:absolute;inset:-20% -10%;opacity:0;background:repeating-linear-gradient(105deg,rgba(255,255,255,.5) 0 26px,rgba(255,255,255,0) 26px 90px);mask-image:linear-gradient(180deg,#000,transparent 75%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 75%);transition:opacity 1.6s ease;animation:sway 6s ease-in-out infinite alternate}
-.s2 .rays{opacity:.12}
-.s3 .rays{opacity:.4}
-.s4 .rays{opacity:.7}
+.r-dots li{width:26px;height:3px;background:currentColor;opacity:.25;transition:opacity .8s}
+.s0 .r-dots li:nth-child(-n+1),.s1 .r-dots li:nth-child(-n+2),.s2 .r-dots li:nth-child(-n+3),.s3 .r-dots li{opacity:1}
+/* 水: 画面を満たしたところから、ゆっくり引いていく */
+.water{position:absolute;left:-10%;right:-10%;bottom:0;height:100%;border-radius:50% 50% 0 0/18px 18px 0 0;background:linear-gradient(180deg,rgba(160,215,235,.2),rgba(160,215,235,.05));transform:translateY(8%);transition:transform 3s cubic-bezier(.3,0,.2,1),opacity 2.4s}
+.s1 .water{transform:translateY(38%)}
+.s2 .water{transform:translateY(76%)}
+.s3 .water{transform:translateY(112%);opacity:0}
+/* 波紋: 水面にゆっくり広がる */
+.rip{position:absolute;left:50%;top:46%;width:260px;height:260px;margin:-130px 0 0 -130px;border-radius:50%;border:1.5px solid rgba(255,255,255,.38);opacity:0;animation:ripple 8s ease-out infinite;transition:visibility 0s 2s}
+.p2{animation-delay:2.7s}.p3{animation-delay:5.4s}
+@keyframes ripple{0%{transform:scale(.25);opacity:0}15%{opacity:.7}100%{transform:scale(1.9);opacity:0}}
+.s2 .rip,.s3 .rip{visibility:hidden}
+/* 呼吸する光の輪: 休憩〜外気浴でゆっくり膨らんだり縮んだりする */
+.orb{position:absolute;left:50%;top:46%;width:300px;height:300px;margin:-150px 0 0 -150px;border-radius:50%;background:radial-gradient(circle,rgba(205,238,250,.55),rgba(205,238,250,0) 68%);opacity:0;transform:scale(.7);animation:breathe 7s ease-in-out infinite alternate;transition:opacity 2.4s}
+.s1 .orb{opacity:.9}
+.s2 .orb{opacity:.7}
+@keyframes breathe{to{transform:scale(1.25)}}
+/* 光: 外気浴に向けて、斜めの陽がやわらかく差してくる */
+.rays{position:absolute;inset:-20% -10%;opacity:0;background:repeating-linear-gradient(105deg,rgba(255,255,255,.5) 0 26px,rgba(255,255,255,0) 26px 90px);mask-image:linear-gradient(180deg,#000,transparent 75%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 75%);transition:opacity 2.8s ease;animation:sway 12s ease-in-out infinite alternate}
+.s1 .rays{opacity:.1}
+.s2 .rays{opacity:.38}
+.s3 .rays{opacity:.65}
 @keyframes sway{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
-
-/* 扉: 水風呂に入る前の溜め。サウナ室の木の扉がゆっくり開き、向こうから冷たい光が差し込む */
-.door,.door-light{position:absolute;inset:0}
-.door-light{background:radial-gradient(ellipse at 72% 50%,rgba(176,226,244,.95),rgba(96,170,200,.55) 38%,#0F2B38 82%);opacity:0}
-.door{transform-origin:0 50%;background:repeating-linear-gradient(90deg,#6E4C31 0 36px,#5B3E27 36px 38px),#6E4C31;box-shadow:inset 0 0 40px rgba(0,0,0,.5),inset -6px 0 0 rgba(0,0,0,.25)}
-.handle{position:absolute;right:9%;top:50%;width:10px;height:74px;margin-top:-37px;border-radius:5px;background:linear-gradient(90deg,#E2C9A0,#A8875C)}
-/* 扉の開く時間(0.5s+2.1s)は data.js の RITUAL[0].ms(2600)に合わせている。変えるときは両方を直す */
-.s0 .door{animation:door-open 2.1s cubic-bezier(.55,0,.25,1) .5s forwards}
-.s0 .door-light{animation:door-light 2.1s ease-in .5s forwards}
-@keyframes door-open{to{transform:perspective(1100px) rotateY(-80deg)}}
-@keyframes door-light{from{opacity:0}to{opacity:1}}
-.ritual:not(.s0) .door{transform:perspective(1100px) rotateY(-80deg);opacity:0;transition:opacity .8s}
-.ritual:not(.s0) .door-light{opacity:0;transition:opacity 1s}
-.s0 .r-temp,.s0 .r-status{text-shadow:0 1px 10px rgba(0,0,0,.65)}
-.s0 .water,.s0 .rays{opacity:0}
-.s0 .bub{animation:none;opacity:0}
 
 /* ---- シェア用画像 ---- */
 .share-img{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface2)}
