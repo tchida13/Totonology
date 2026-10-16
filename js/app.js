@@ -15,8 +15,8 @@
     <line class="stream" x1="24" y1="34" x2="24" y2="64"/>
     <path class="glass" d="M6 4H42M6 68H42M10 6C10 22 21 29 23 36C21 43 10 50 10 66M38 6C38 22 27 29 25 36C27 43 38 50 38 66"/>
   </svg>`;
-  // サウナハット(ウールフェルトの帽子)。色は button 側の --hat(currentColor)。折り返しのつばだけ少し暗くする
-  const HAT = '<svg class="hat" viewBox="0 0 64 56" aria-hidden="true" focusable="false"><path class="dome" d="M9 38C9 15 21 6 32 6C43 6 55 15 55 38Z"/><path class="fold" d="M5 37H59V46C59 48.500 57.500 50 55 50H9C6.500 50 5 48.500 5 46Z"/><path class="seam" d="M12 43.500H52"/></svg>';
+  // サウナハット(ウールフェルトの帽子)。色は button 側の --hat(currentColor)。折り返しのつばだけ少し暗くする。n は表示する番号(キー操作と同じ)
+  const HAT = (n) => `<svg class="hat" viewBox="0 0 64 56" aria-hidden="true" focusable="false"><path class="dome" d="M9 38C9 15 21 6 32 6C43 6 55 15 55 38Z"/><path class="fold" d="M5 37H59V46C59 48.500 57.500 50 55 50H9C6.500 50 5 48.500 5 46Z"/><path class="seam" d="M12 43.500H52"/><text class="num" x="32" y="31" text-anchor="middle">${n}</text></svg>`;
   // 左から右へ「そう思わない → そう思う」。データの値は +2..-2 のまま(保存・結果URLの互換性を保つ)
   const CHOICES = ["全くそう思わない", "あまり思わない", "どちらでもない", "ややそう思う", "とてもそう思う"];
   const ORDER = window.Score.order(Q, AXES); // 出題順 (質問インデックスの並び)
@@ -133,7 +133,7 @@
       </div>
       <p class="q" data-focus>${esc(q.text)}</p>
       <div class="scale" role="group" aria-label="回答">
-        ${[-2, -1, 0, 1, 2].map((v, k) => `<button class="opt${answers[qi] === v ? " on" : ""}" data-v="${v}" aria-pressed="${answers[qi] === v}" aria-label="${CHOICES[k]}" title="${CHOICES[k]}">${HAT}<span aria-hidden="true">${k + 1}</span></button>`).join("")}
+        ${[-2, -1, 0, 1, 2].map((v, k) => `<button class="opt${answers[qi] === v ? " on" : ""}" data-v="${v}" aria-pressed="${answers[qi] === v}" aria-label="${CHOICES[k]}" title="${CHOICES[k]}">${HAT(k + 1)}</button>`).join("")}
       </div>
       <div class="labels"><span class="disagree">そう思わない</span><span class="agree">そう思う</span></div>
       <p class="keyhint">キーボードの 1〜5 でも回答できます</p>
