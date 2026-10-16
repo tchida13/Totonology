@@ -259,11 +259,14 @@
     }).join("");
     const text = `私のサウナタイプは【${t.name}】(${code})でした！ #Totonology`;
     const shareUrl = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE_URL);
-    // 整いタイム: 光の粒がゆっくり昇る(位置・速さは固定の並びで、毎回同じ見え方にする)
-    const motes = Array.from({ length: 10 }, (_, k) => `<i style="--x:${(k * 37 + 8) % 96}%;--s:${10 + (k * 7) % 16}px;--t:${14 + (k * 5) % 9}s;--d:${-(k * 3) % 14}s"></i>`).join("");
+    // 整いタイム: Apple Watch のマインドフルネスのように、呼吸に合わせて花びら状の光が開いたり閉じたりする
+    const petals = Array.from({ length: 8 }, (_, k) => `<i style="--r:${k * 45}deg"></i>`).join("");
     el(`<article class="result" style="--group:${grp.color}">
-      <div class="motes" aria-hidden="true">${motes}</div>
-      <p class="tototime">整いタイム</p>
+      <div class="stage">
+        <div class="bloom" aria-hidden="true">${petals}</div>
+        <p class="tototime">整いタイム</p>
+        <p class="breath-guide" aria-hidden="true"><span>吸って</span><span>吐いて</span></p>
+      </div>
       <header class="pass" style="--photo:url(${grp.photo})">
         <div class="pass-band" aria-hidden="true"><span>SAUNA PASS</span><span>入館証</span></div>
         ${avatar(code, t.name + "のキャラクター", 200)}
