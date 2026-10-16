@@ -201,13 +201,12 @@ body[data-scene="quiz"][data-loyly]::after{content:"";position:fixed;inset:0;z-i
 .fx.on{display:block}
 .fx.on::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(255,190,130,.42),transparent 62%);animation:flash 1.8s ease-out .8s both}
 @keyframes flash{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
-.stones{position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(180deg,#5a3a2a,#1b1210);box-shadow:0 -6px 30px rgba(255,120,50,.55)}
 .ldrop{position:absolute;left:50%;top:-20px;width:12px;height:16px;margin-left:-6px;border-radius:50% 50% 50% 50%/65% 65% 35% 35%;background:#A8D2E4;animation:ldrop .8s cubic-bezier(.5,0,1,.6) forwards}
-@keyframes ldrop{to{transform:translateY(calc(100vh - 80px));opacity:.2}}
+@keyframes ldrop{to{transform:translateY(calc(100vh - 118px));opacity:.2}}
 .steam-burst{position:absolute;bottom:40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,0) 68%);filter:blur(14px);opacity:0;animation:burst 2.6s ease-out .8s forwards}
 .b1{left:-6%}.b2{left:26%;animation-delay:.9s}.b3{left:54%;animation-delay:.85s}.b4{left:78%;animation-delay:1s}
 @keyframes burst{0%{transform:translateY(0) scale(.5);opacity:0}25%{opacity:.4}100%{transform:translateY(-75vh) scale(1.7);opacity:0}}
-.loyly-banner{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:baseline;gap:12px;padding:8px 18px;border:1px solid rgba(255,255,255,.45);background:rgba(20,14,12,.7);color:#fff;white-space:nowrap;animation:banner 2.6s ease-out .7s both}
+.loyly-banner{position:absolute;left:50%;bottom:136px;transform:translateX(-50%);display:flex;align-items:baseline;gap:12px;padding:8px 18px;border:1px solid rgba(255,255,255,.45);background:rgba(20,14,12,.7);color:#fff;white-space:nowrap;animation:banner 2.6s ease-out .7s both}
 .loyly-banner b{font-size:1.15rem;font-weight:600;letter-spacing:.3em}
 .loyly-banner span{font-size:.78rem;letter-spacing:.08em;opacity:.85}
 @keyframes banner{0%{opacity:0;transform:translate(-50%,8px)}15%,70%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
@@ -225,3 +224,12 @@ body[data-scene="result"]{background:radial-gradient(90% 55% at 50% 0%,rgba(255,
 .pass .avatar{animation:float 5.5s ease-in-out infinite alternate}
 @keyframes float{from{transform:translateY(0);box-shadow:0 0 0 0 rgba(255,205,140,0)}to{transform:translateY(-7px);box-shadow:0 0 30px 10px rgba(255,205,140,.5)}}
 @media (prefers-reduced-motion: reduce){.motes{display:none}}
+
+/* ---- 質問ページ下部のサウナストーン: 熱気(--heat)に応じて足元が赤く光る ---- */
+.stones-deco{--stones-h:120px;display:none;position:fixed;left:0;right:0;bottom:0;height:var(--stones-h);z-index:-1;pointer-events:none}
+body[data-scene="quiz"] .stones-deco{display:block}
+.stones-deco::before{content:"";position:absolute;left:0;right:0;bottom:0;height:170px;background:radial-gradient(ellipse at 50% 100%,rgba(240,110,50,calc(.2 + var(--heat) * .45)),transparent 70%)}
+.stones-deco svg{position:absolute;left:50%;bottom:0;width:min(100%,560px);height:auto;aspect-ratio:480/110;transform:translateX(-50%);overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.st{fill:url(#stg);stroke:rgba(255,150,80,calc(.25 + var(--heat) * .55));stroke-width:1.5}
+.st.f{filter:brightness(.85)}
+body[data-scene="quiz"] .foot{padding-bottom:124px}
