@@ -33,7 +33,7 @@ function boot({ hash = "", search = "", reduce = false, ritual = false, share = 
     confirm: () => env.confirmAnswer,
     matchMedia: ritual ? () => ({ matches: reduce }) : undefined,
     navigator: { clipboard: { writeText: () => Promise.resolve() } },
-    setTimeout: (fn) => { const t = { fn: () => { if (!t.off) fn(); } }; env.timers.push(t); return t; },
+    setTimeout: (fn, ms) => { const t = { ms, fn: () => { if (!t.off) fn(); } }; env.timers.push(t); return t; },
     clearTimeout: (t) => { if (t) t.off = true; },
     scrollTo() {},
   };
@@ -231,12 +231,16 @@ test("ため演出: 5段(扉→水風呂→休憩→外気浴→整い)を経て
   assert.match(env.html, /強み/);
 });
 
-test("ため演出: スキップ・Esc・タップで即結果になり、演出中の回答キーは無視される", () => {
-  for (const skip of [(e) => e.el.skip.click(), (e) => e.key("Escape"), (e) => e.el.ritual.click()]) {
+// 演出の開始直後は連打でスキップされないよう操作を受け付けない。arm はその解除(開始時の2つのタイマーの手前)
+function arm(env) { env.timers.filter((t) => t.ms === 1500).forEach((t) => t.fn()); }
+
+test("ため演出: 小さなスキップボタンと Esc で即結果になり、演出中の回答キーは無視される", () => {
+  for (const skip of [(e) => e.el.skip.click(), (e) => e.key("Escape")]) {
     const env = boot({ ritual: true });
     answerAll(env);
     env.key("1"); // 演出中の数字キーは何も起こさない
     assert.match(env.html, /class="ritual/);
+    arm(env);
     skip(env);
     assert.match(env.html, /強み/);
     // スキップ後にタイマーが残っていても二重描画しない
@@ -245,14 +249,24 @@ test("ため演出: スキップ・Esc・タップで即結果になり、演出
   }
 });
 
-test("ため演出: 最後の回答クリックがバブリングしても即スキップされない", () => {
+test("ため演出: 開始直後の連打(スキップ・Esc・Enter・画面クリック)では飛ばされない", () => {
   const env = boot({ ritual: true });
-  env.el.go.click();
-  for (let i = 0; i < 23; i++) env.key("1");
-  env.btns[0].click();
-  env.listeners.click({ target: {} }); // 同じクリックが document まで届く
+  answerAll(env);
+  env.el.skip.click();
+  env.key("Escape");
+  env.key("Enter");
+  env.listeners.click({ target: {} });
   assert.match(env.html, /class="ritual s0"/);
   assert.doesNotMatch(env.html, /強み/);
+});
+
+test("ため演出: 解除後も Enter や画面タップではスキップされない", () => {
+  const env = boot({ ritual: true });
+  answerAll(env);
+  arm(env);
+  env.key("Enter");
+  env.listeners.click({ target: {} });
+  assert.match(env.html, /class="ritual s0"/);
 });
 
 test("ため演出: 動きを減らす設定では演出なしで結果を出す", () => {
@@ -304,6 +318,7 @@ test("場面: 開始→質問→(演出)→結果で body の data-scene が切�
   assert.equal(env.body.dataset.scene, "quiz");
   for (let i = 0; i < 24; i++) env.key("1");
   assert.equal(env.body.dataset.scene, "ritual");
+  arm(env);
   env.el.skip.click();
   assert.equal(env.body.dataset.scene, "result");
 });

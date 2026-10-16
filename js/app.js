@@ -81,6 +81,7 @@
   function start() {
     freeShareUrl();
     clearTimeout(ritualTimer);
+    clearTimeout(ritualArm);
     ritualSkip = null;
     answers = [];
     shownP = 0;
@@ -168,30 +169,32 @@
     calm() ? result(code, sc) : ritual(code, sc);
   }
 
-  // 結果の前の「ため」: 扉を開け、水風呂→休憩→外気浴→整いと、だんだん明るくなる。スキップ(ボタン/Esc/タップ)で即結果へ
+  // 結果の前の「ため」: 扉を開け、水風呂→休憩→外気浴→整いと、だんだん明るくなる。スキップ(右下のボタン/Esc)で即結果へ
   const RITUAL_STEP_MS = 1200;
-  let ritualTimer = 0, ritualSkip = null;
+  let ritualTimer = 0, ritualArm = 0, ritualSkip = null;
+  const RITUAL_ARM_MS = 1500; // 演出の開始直後は、連打でスキップしてしまわないよう操作を受け付けない
   function ritual(code, sc) {
     view = "ritual";
     clearFx();
     scene("ritual");
     const R = window.RITUAL;
     let n = 0;
-    // ボタン→画面のクリックと二重に呼ばれても一度だけ結果を出す
-    const skip = () => { if (ritualSkip !== skip) return; result(code, sc); };
+    // スキップは小さなボタン(と Esc)だけ。画面タップや Enter では飛ばさない。開始直後は受け付けない。二重に呼ばれても一度だけ結果を出す
+    let armed = false;
+    const finish = () => { if (ritualSkip !== skip) return; result(code, sc); };
+    const skip = () => { if (armed) finish(); };
     ritualSkip = skip;
+    ritualArm = setTimeout(() => { armed = true; }, RITUAL_ARM_MS);
     el(`<section class="ritual s0" id="ritual">
       <div class="r-scene" aria-hidden="true"><div class="door-light"></div><div class="rays"></div><div class="water"></div><i class="bub b1"></i><i class="bub b2"></i><i class="bub b3"></i><i class="bub b4"></i><i class="bub b5"></i><div class="door"><i class="handle"></i></div></div>
       <p class="r-temp" id="r-temp" aria-hidden="true">${esc(R[0].temp)}</p>
-      <div class="r-status" role="status"><h2 id="r-name">${esc(R[0].name)}</h2><p id="r-line">${esc(R[0].line)}</p></div>
+      <div class="r-status" role="status" data-focus><h2 id="r-name">${esc(R[0].name)}</h2><p id="r-line">${esc(R[0].line)}</p></div>
       <ol class="r-dots" aria-hidden="true">${R.map(() => "<li></li>").join("")}</ol>
-      <button class="btn ghost" id="skip" data-focus>スキップ</button>
+      <button class="skip" id="skip">スキップ</button>
     </section>`);
     document.getElementById("skip").onclick = skip;
-    // 演出の画面内ならどこをタップしてもスキップ。document で拾うと、最後の回答クリック自身がバブリングして即スキップされる
-    document.getElementById("ritual").onclick = skip;
     const step = () => {
-      if (++n >= R.length) return skip();
+      if (++n >= R.length) return finish();
       document.getElementById("ritual").className = "ritual s" + n;
       document.getElementById("r-temp").textContent = R[n].temp;
       document.getElementById("r-name").textContent = R[n].name;
@@ -235,6 +238,7 @@
   function result(code, sc) {
     freeShareUrl();
     clearTimeout(ritualTimer);
+    clearTimeout(ritualArm);
     ritualSkip = null;
     view = "result";
     clearFx();
@@ -313,7 +317,7 @@
 
   // キー 1〜5 で回答（1=全くそう思わない … 5=とてもそう思う。画面の左から右の並びと同じ）
   document.addEventListener("keydown", (e) => {
-    if (view === "ritual" && ritualSkip && !e.repeat && (e.key === "Escape" || e.key === "Enter")) return ritualSkip();
+    if (view === "ritual" && ritualSkip && !e.repeat && e.key === "Escape") return ritualSkip();
     if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || !/^[1-5]$/.test(e.key)) return;
     const opt = app.querySelectorAll(".opt")[Number(e.key) - 1];
     if (opt) opt.click();
