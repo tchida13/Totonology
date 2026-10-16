@@ -34,7 +34,7 @@ img{max-width:100%}
 /* フッターはページ最下部に小さく控えめに（短い画面でも下に寄せる） */
 .foot{width:100%;max-width:760px;margin:auto auto 0;padding:24px 16px 14px;color:var(--sub);font-size:.68rem;line-height:1.6;text-align:center;opacity:.8}
 .foot p{margin:2px 0}
-body[data-scene="quiz"] .foot,body[data-scene="ritual"] .foot{opacity:.5}
+body[data-scene="ritual"] .foot{opacity:.5}
 
 /* ---- ボタン ---- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:var(--accent);color:var(--on-accent);border:1.5px solid var(--accent);border-radius:var(--radius);padding:12px 26px;font-weight:600;letter-spacing:.06em;transition:background .15s,color .15s,border-color .15s}
@@ -219,11 +219,11 @@ body[data-scene="quiz"][data-loyly]::after{content:"";position:fixed;inset:0;z-i
 .fx.on::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(255,190,130,.42),transparent 62%);animation:flash 1.8s ease-out .8s both}
 @keyframes flash{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
 .ldrop{position:absolute;left:50%;top:-20px;width:12px;height:16px;margin-left:-6px;border-radius:50% 50% 50% 50%/65% 65% 35% 35%;background:#A8D2E4;animation:ldrop .8s cubic-bezier(.5,0,1,.6) forwards}
-@keyframes ldrop{to{transform:translateY(calc(100vh - 118px));opacity:.2}}
+@keyframes ldrop{to{transform:translateY(calc(100vh - 138px));opacity:.2}}
 .steam-burst{position:absolute;bottom:40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,0) 68%);filter:blur(14px);opacity:0;animation:burst 2.6s ease-out .8s forwards}
 .b1{left:-6%}.b2{left:26%;animation-delay:.9s}.b3{left:54%;animation-delay:.85s}.b4{left:78%;animation-delay:1s}
 @keyframes burst{0%{transform:translateY(0) scale(.5);opacity:0}25%{opacity:.4}100%{transform:translateY(-75vh) scale(1.7);opacity:0}}
-.loyly-banner{position:absolute;left:50%;bottom:136px;transform:translateX(-50%);display:flex;align-items:baseline;gap:12px;padding:8px 18px;border:1px solid rgba(255,255,255,.45);background:rgba(20,14,12,.7);color:#fff;white-space:nowrap;animation:banner 2.6s ease-out .7s both}
+.loyly-banner{position:absolute;left:50%;bottom:160px;transform:translateX(-50%);display:flex;align-items:baseline;gap:12px;padding:8px 18px;border:1px solid rgba(255,255,255,.45);background:rgba(20,14,12,.7);color:#fff;white-space:nowrap;animation:banner 2.6s ease-out .7s both}
 .loyly-banner b{font-size:1.15rem;font-weight:600;letter-spacing:.3em}
 .loyly-banner span{font-size:.78rem;letter-spacing:.08em;opacity:.85}
 @keyframes banner{0%{opacity:0;transform:translate(-50%,8px)}15%,70%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
@@ -248,4 +248,6 @@ body[data-scene="quiz"] .stones-deco{display:block}
 .stones-deco::before{content:"";position:absolute;left:0;right:0;bottom:0;height:170px;background:radial-gradient(ellipse at 50% 100%,rgba(240,110,50,calc(.2 + var(--heat) * .45)),transparent 70%)}
 .stones-deco svg{position:absolute;left:50%;bottom:0;width:min(100%,560px);height:auto;aspect-ratio:480/150;transform:translateX(-50%);overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
 .st{stroke:rgba(255,140,70,calc(.2 + var(--heat) * .6));stroke-width:1;stroke-linejoin:round}
-body[data-scene="quiz"] .foot{padding-bottom:124px}
+/* 質問画面のフッターは画面最下部に固定（石の上に小さく重ねる）。本文が隠れないよう main に余白 */
+body[data-scene="quiz"] .foot{position:fixed;left:0;right:0;bottom:0;z-index:5;width:auto;max-width:none;margin:0;padding:18px 12px calc(6px + env(safe-area-inset-bottom));color:#B9AEA4;opacity:.85;background:linear-gradient(transparent,rgba(12,9,8,.82) 55%)}
+body[data-scene="quiz"] main{padding-bottom:64px}
