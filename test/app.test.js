@@ -207,22 +207,24 @@ test("ため演出: 最終回答後に演出が流れ、その間に結果URLは
   assert.doesNotMatch(env.html, /強み/);
   assert.match(env.location.hash, /^#[HS][WA][OT][RF]-[0-4]{24}$/);
   assert.equal(env.storage["totonology:progress"], undefined);
-  assert.match(env.html, /水風呂/);
-  // 演出の見た目(CSS)が頼る構造: 光・水・泡5個・段階表示
+  assert.match(env.html, /扉/); // 最初は水風呂の前の「扉を開ける」溜め
+  // 演出の見た目(CSS)が頼る構造: 扉・光・水・泡5個・段階表示
+  assert.match(env.html, /class="door"/);
+  assert.match(env.html, /class="door-light"/);
   assert.match(env.html, /class="rays"/);
   assert.match(env.html, /class="water"/);
   assert.equal((env.html.match(/class="bub /g) || []).length, 5);
-  assert.equal((env.html.match(/<li><\/li>/g) || []).length, 4);
+  assert.equal((env.html.match(/<li><\/li>/g) || []).length, 5);
 });
 
-test("ため演出: 4段を経て自動で結果が表示される", () => {
+test("ため演出: 5段(扉→水風呂→休憩→外気浴→整い)を経て自動で結果が表示される", () => {
   const env = boot({ ritual: true });
   answerAll(env);
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 4; i++) {
     tick(env);
     assert.doesNotMatch(env.html, /強み/);
     assert.equal(env.el.ritual.className, "ritual s" + i); // だんだん明るくなる段階
-    assert.equal(env.el["r-temp"].textContent, ["16°C", "18°C", "22°C", "24°C"][i]);
+    assert.equal(env.el["r-temp"].textContent, ["98°C", "16°C", "18°C", "22°C", "24°C"][i]);
   }
   assert.equal(env.el["r-name"].textContent, "整い");
   tick(env);
