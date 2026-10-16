@@ -80,27 +80,28 @@ body[data-scene="quiz"] .foot,body[data-scene="ritual"] .foot{opacity:.5}
 .count{margin:0;color:var(--sub);font-weight:600;font-size:.9rem;letter-spacing:.12em}
 .q{font-size:clamp(1.2rem,4.6vw,1.6rem);line-height:1.6;font-weight:600;min-height:6.4em;margin:14px 0 8px;display:flex;align-items:center;animation:q-in .35s ease-out}
 @keyframes q-in{from{opacity:0;transform:translateY(8px)}}
-/* 回答: サウナハット。強い回答ほど大きく、そう思う側は赤・思わない側は青。選択中は持ち上がって輪郭が付く */
-.scale{position:relative;display:flex;justify-content:space-between;align-items:flex-end;gap:4px;margin:12px 0 8px;padding:26px 10px 28px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
-.scale::after{content:"";position:absolute;left:10px;right:10px;bottom:18px;height:3px;border-radius:2px;background:var(--line)}
-.opt{position:relative;display:block;padding:0;border:0;background:none;color:var(--hat);flex:none;transition:transform .18s cubic-bezier(.3,1.4,.5,1),opacity .2s}
-.opt::before{content:"";position:absolute;inset:-8px -2px}/* タップ領域を広げる(見た目は変えない) */
+/* 回答: サウナハット。サウナ室前の板壁のフックに、紐で吊るされている。強い回答ほど大きく、右ほど「そう思う」(赤)。選択中は輪郭が付いて揺れる */
+.scale{position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin:12px 0 8px;padding:34px 10px 22px;border:1px solid var(--line);border-radius:var(--radius);background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 2px,transparent 2px 36px),linear-gradient(180deg,rgba(0,0,0,.18),transparent 40%),var(--surface)}
+.scale::before{content:"";position:absolute;left:8px;right:8px;top:30px;height:8px;border-radius:4px;background:linear-gradient(180deg,#8a6a48,#5d442c);box-shadow:0 2px 3px rgba(0,0,0,.35)}
+.opt{position:relative;display:block;box-sizing:content-box;padding:18px 0 0;border:0;color:var(--hat);flex:none;transform-origin:50% 0;
+  background:linear-gradient(#C9AE86,#C9AE86) 50% 0/2px 18px no-repeat,radial-gradient(circle at 50% 0,#B8956A 0 4.5px,transparent 5px) no-repeat;transition:transform .18s ease-out,opacity .2s}
+.opt::before{content:"";position:absolute;inset:-6px -2px -2px}/* タップ領域を広げる(見た目は変えない) */
 .opt .hat{display:block;width:100%;height:auto;overflow:visible}
 .opt .dome{fill:currentColor}
 .opt .fold{fill:currentColor;filter:brightness(.8)}
 .opt .seam{fill:none;stroke:var(--seam,rgba(0,0,0,.3));stroke-width:1.5;stroke-dasharray:3 3}
-.opt span{position:absolute;left:0;right:0;top:34%;text-align:center;font-weight:600;font-size:1rem;line-height:1;font-variant-numeric:tabular-nums;color:var(--num,#25292C)}
+.opt .num{fill:var(--num,#25292C);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
 .opt:nth-child(1){width:76px;--hat:#3E7C96;--num:#fff;--seam:rgba(255,255,255,.6)}
 .opt:nth-child(2){width:64px;--hat:#72ABC6}
 .opt:nth-child(3){width:54px;--hat:#CFC7B6}
 .opt:nth-child(4){width:64px;--hat:#DB8460}
 .opt:nth-child(5){width:76px;--hat:#C4492C;--num:#fff;--seam:rgba(255,255,255,.6)}
-@media (hover:hover){.opt:hover{transform:translateY(-6px) rotate(-3deg)}}
-.opt:active{transform:translateY(-2px) scale(.96)}
-.opt.on{transform:translateY(-10px)}
+@media (hover:hover){.opt:hover{animation:swing 1s ease-out}}
+@keyframes swing{15%{transform:rotate(6deg)}35%{transform:rotate(-4.5deg)}55%{transform:rotate(3deg)}75%{transform:rotate(-1.5deg)}}
+.opt:active{transform:scale(.96)}
+.opt.on{animation:swing 1.4s ease-out}
 .opt.on .hat{filter:drop-shadow(1.5px 0 0 var(--fg)) drop-shadow(-1.5px 0 0 var(--fg)) drop-shadow(0 1.5px 0 var(--fg)) drop-shadow(0 -1.5px 0 var(--fg))}
-.opt.on::after{content:"";position:absolute;left:50%;bottom:-17px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--fg)}
-.scale:has(.opt.on) .opt:not(.on){opacity:.55}
+.scale:has(.opt.on) .opt:not(.on){opacity:.75}
 .labels{display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;padding:0 6px}
 .labels .agree{color:var(--hot)}
 .labels .disagree{color:var(--cool)}
