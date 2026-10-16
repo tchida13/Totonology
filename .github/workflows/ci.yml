@@ -28,7 +28,7 @@ jobs:
       - name: index.html の参照ファイル確認
         run: |
           status=0
-          for f in $(grep -oE '(src|href)="[^"#:]+"' index.html | sed -E 's/^(src|href)="(.*)"$/\2/'); do
+          for f in $(grep -oE '(src|href)="[^"#:]+"' index.html | sed -E 's/^(src|href)="(.*)"$/\2/; s/\?.*$//'); do
             if [ ! -f "$f" ]; then echo "missing: $f"; status=1; fi
           done
           exit $status
@@ -37,7 +37,7 @@ jobs:
         run: |
           scripts/collect-site.sh _site
           status=0
-          refs=$(grep -ohE '(src|href)="[^"#:]+"' index.html | sed -E 's/^(src|href)="(.*)"$/\2/')
+          refs=$(grep -ohE '(src|href)="[^"#:]+"' index.html | sed -E 's/^(src|href)="(.*)"$/\2/; s/\?.*$//')
           refs="$refs $(grep -ohE 'assets/[A-Za-z0-9_./-]+\.(svg|jpe?g|png|webp|gif|ico)' index.html style.css js/*.js | sort -u)"
           for f in $refs; do
             if [ ! -f "_site/$f" ]; then echo "not published: $f"; status=1; fi
