@@ -35,12 +35,12 @@
   // 質問の半分に到達した瞬間のオートロウリュ演出。入力はブロックしない(オーバーレイは操作を通す)
   function rouryu() {
     const fx = document.getElementById("fx");
-    // ストーブ上のアームのノズルから石にミスト → 石から蒸気。画面下部のストーブ周辺だけで完結し、質問文に被らない
-    fx.innerHTML = `<div class="auto"><i class="mist"></i><i class="steam-burst b1"></i><i class="steam-burst b2"></i><i class="steam-burst b3"></i>
-      <p class="loyly-banner"><b>オートロウリュ</b><span>熱気がぐっと増しました</span></p></div>`;
+    // ストーブ上のアームのノズルから霧がふわっと広がって石へ → 石から蒸気。画面下部のストーブ周辺だけで完結し、質問文に被らない。メッセージは出さない(読み上げ用の通知だけ)
+    fx.innerHTML = `<div class="auto"><i class="puff m1"></i><i class="puff m2"></i><i class="puff m3"></i><i class="puff m4"></i><i class="puff m5"></i><i class="puff m6"></i>
+      <i class="steam-burst b1"></i><i class="steam-burst b2"></i><i class="steam-burst b3"></i></div>`;
     fx.className = "fx on";
     document.getElementById("announce").textContent = "ロウリュ。熱気がぐっと増しました。"; // 常設の live region で読み上げる
-    fxTimer = setTimeout(clearFx, 3400);
+    fxTimer = setTimeout(clearFx, 3800);
   }
   let shownP = 0; // 砂時計が直前に表示していた進捗(0〜1)。次の描画で砂が落ちるアニメーションに使う
   let view = ""; // 表示中の画面: start / quiz / result

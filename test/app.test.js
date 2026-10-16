@@ -332,9 +332,9 @@ test("ロウリュ: 半分(12問回答)で一度だけ入り、以降は熱気�
   assert.match(env.html, /class="temp"[^>]*>(8\d)°C/);
   env.key("1"); // 12問目に回答 → 13問目へ
   assert.match(env.fx.className, /on/);
-  assert.match(env.fx.innerHTML, /ロウリュ/);
   assert.match(env.fx.innerHTML, /class="auto"/); // 画面下部のストーブ周辺で完結する
-  assert.match(env.fx.innerHTML, /class="mist"/); // ノズルからのミスト
+  assert.match(env.fx.innerHTML, /class="puff /); // ノズル先端から広がる霧
+  assert.doesNotMatch(env.fx.innerHTML, /ロウリュ|熱気がぐっと/); // メッセージは出さない
   assert.doesNotMatch(env.fx.innerHTML, /ldrop/); // 上から水滴は落とさない(質問文の邪魔になる)
   assert.match(env.announce.textContent, /ロウリュ/); // 読み上げ用
   assert.equal(env.body.dataset.loyly, "1");
