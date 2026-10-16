@@ -205,11 +205,11 @@ body[data-scene="quiz"][data-loyly]::after{content:"";position:fixed;inset:0;z-i
 @keyframes ldrop{to{transform:translateY(calc(100vh - 80px));opacity:.2}}
 .steam-burst{position:absolute;bottom:40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.55),rgba(255,255,255,0) 68%);filter:blur(14px);opacity:0;animation:burst 2.6s ease-out .8s forwards}
 .b1{left:-6%}.b2{left:26%;animation-delay:.9s}.b3{left:54%;animation-delay:.85s}.b4{left:78%;animation-delay:1s}
-@keyframes burst{0%{transform:translateY(0) scale(.5);opacity:0}25%{opacity:.85}100%{transform:translateY(-75vh) scale(1.7);opacity:0}}
-.loyly-banner{position:absolute;left:50%;top:22%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 22px;border:1px solid rgba(255,255,255,.5);background:rgba(20,14,12,.55);color:#fff;text-align:center;white-space:nowrap;animation:banner 3s ease-out .7s both}
-.loyly-banner b{font-size:1.6rem;font-weight:600;letter-spacing:.4em;padding-left:.4em}
-.loyly-banner span{font-size:.8rem;letter-spacing:.1em;opacity:.85}
-@keyframes banner{0%{opacity:0;transform:translate(-50%,8px)}15%,75%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+@keyframes burst{0%{transform:translateY(0) scale(.5);opacity:0}25%{opacity:.4}100%{transform:translateY(-75vh) scale(1.7);opacity:0}}
+.loyly-banner{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:baseline;gap:12px;padding:8px 18px;border:1px solid rgba(255,255,255,.45);background:rgba(20,14,12,.7);color:#fff;white-space:nowrap;animation:banner 2.6s ease-out .7s both}
+.loyly-banner b{font-size:1.15rem;font-weight:600;letter-spacing:.3em}
+.loyly-banner span{font-size:.78rem;letter-spacing:.08em;opacity:.85}
+@keyframes banner{0%{opacity:0;transform:translate(-50%,8px)}15%,70%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
 
 /* ---- 整いタイム: 結果確認中の、明るく穏やかな時間 ---- */
 body[data-scene="result"]{background:radial-gradient(90% 55% at 50% 0%,rgba(255,226,170,.45),transparent 70%),linear-gradient(180deg,#FBF7EC,#E9F0EE),var(--bg);background-attachment:fixed}
