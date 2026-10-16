@@ -8,9 +8,9 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.75;font-size:16px;font-variant-numeric:tabular-nums}
+body{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.75;font-size:16px;font-variant-numeric:tabular-nums}
 a{color:inherit}
-main{max-width:760px;margin:0 auto;padding:8px 16px 24px}
+main{flex:1 0 auto;width:100%;max-width:760px;margin:0 auto;padding:8px 16px 24px}
 h1,h2,h3,p{margin:0}
 h1,h2,h3{font-weight:600;letter-spacing:.04em}
 h1,h2{text-wrap:balance}
@@ -27,12 +27,14 @@ img{max-width:100%}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 
 /* ---- ヘッダー・フッター ---- */
-.top{max-width:760px;margin:0 auto;padding:14px 16px 6px}
+.top{width:100%;max-width:760px;margin:0 auto;padding:14px 16px 6px}
 .brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:1rem;letter-spacing:.14em;text-transform:uppercase}
 .brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:2px;color:var(--bg);background:var(--fg)}
 .brand-mark .icon{width:20px;height:20px}
-.foot{max-width:760px;margin:0 auto;padding:0 16px 40px;color:var(--sub);font-size:.8rem;text-align:center}
-.foot p{margin:4px 0}
+/* フッターはページ最下部に小さく控えめに（短い画面でも下に寄せる） */
+.foot{width:100%;max-width:760px;margin:auto auto 0;padding:24px 16px 14px;color:var(--sub);font-size:.68rem;line-height:1.6;text-align:center;opacity:.8}
+.foot p{margin:2px 0}
+body[data-scene="quiz"] .foot,body[data-scene="ritual"] .foot{opacity:.5}
 
 /* ---- ボタン ---- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:var(--accent);color:var(--on-accent);border:1.5px solid var(--accent);border-radius:var(--radius);padding:12px 26px;font-weight:600;letter-spacing:.06em;transition:background .15s,color .15s,border-color .15s}
