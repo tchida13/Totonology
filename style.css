@@ -151,36 +151,53 @@ body[data-scene="quiz"] .foot,body[data-scene="ritual"] .foot{opacity:.5}
 .match strong{font-size:1.1rem}
 .disclaimer{margin-top:24px;text-align:center;color:var(--sub);font-size:.8rem}
 
-/* ---- ため演出: 水風呂から始まり、だんだん明るくなる（水風呂 → 休憩 → 外気浴 → 整い） ---- */
-.ritual{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:min(78vh,620px);margin-top:12px;padding:32px 20px;border-radius:var(--radius);text-align:center;color:#fff;background:#0F2B38;transition:background 1.4s ease,color 1.4s ease}
+/* ---- ため演出: 扉を開けて、だんだん明るくなる（扉 → 水風呂 → 休憩 → 外気浴 → 整い） ---- */
+.ritual{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:min(78vh,620px);margin-top:12px;padding:32px 20px;border-radius:var(--radius);text-align:center;color:#fff;background:#2B2321;transition:background 1.4s ease,color 1.4s ease}
 .ritual>*{position:relative;z-index:1}
-.ritual.s1{background:#245B72}
-.ritual.s2{background:#9EC8D6;color:#25292C}
-.ritual.s3{background:#E9EEEC;color:#25292C}
+.ritual.s1{background:#0F2B38}
+.ritual.s2{background:#245B72}
+.ritual.s3{background:#9EC8D6;color:#25292C}
+.ritual.s4{background:#E9EEEC;color:#25292C}
 .r-scene{position:absolute!important;inset:0;z-index:0!important;pointer-events:none}
 .r-temp{font-size:clamp(4rem,22vw,7rem);font-weight:200;line-height:1.1;letter-spacing:.02em;font-variant-numeric:tabular-nums}
 .r-status h2{font-size:1.4rem;letter-spacing:.3em;margin:6px 0 4px;padding-left:.3em}
 .r-status p{opacity:.85}
 .r-dots{display:flex;gap:10px;margin:18px 0 22px;padding:0;list-style:none}
 .r-dots li{width:26px;height:3px;background:currentColor;opacity:.25;transition:opacity .4s}
-.s0 .r-dots li:nth-child(-n+1),.s1 .r-dots li:nth-child(-n+2),.s2 .r-dots li:nth-child(-n+3),.s3 .r-dots li{opacity:1}
+.s0 .r-dots li:nth-child(-n+1),.s1 .r-dots li:nth-child(-n+2),.s2 .r-dots li:nth-child(-n+3),.s3 .r-dots li:nth-child(-n+4),.s4 .r-dots li{opacity:1}
 .ritual .btn.ghost{color:inherit;border-color:currentColor;opacity:.85}
 @media (hover:hover){.ritual .btn.ghost:hover{background:rgba(255,255,255,.2);color:inherit;border-color:currentColor}}
 /* 水: 画面を満たしたところから、段階的に引いていく */
 .water{position:absolute;left:-10%;right:-10%;bottom:0;height:100%;border-radius:50% 50% 0 0/18px 18px 0 0;background:linear-gradient(180deg,rgba(160,215,235,.22),rgba(160,215,235,.06));transform:translateY(8%);transition:transform 1.4s cubic-bezier(.3,0,.2,1),opacity 1.2s}
-.s1 .water{transform:translateY(38%)}
-.s2 .water{transform:translateY(76%)}
-.s3 .water{transform:translateY(112%);opacity:0}
+.s2 .water{transform:translateY(38%)}
+.s3 .water{transform:translateY(76%)}
+.s4 .water{transform:translateY(112%);opacity:0}
 .bub{position:absolute;bottom:-20px;width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(255,255,255,.55);opacity:0;animation:bub 3.4s ease-in infinite}
 .b1{left:12%}.b2{left:30%;animation-delay:-1.2s;width:9px;height:9px}.b3{left:52%;animation-delay:-2.2s}.b4{left:70%;animation-delay:-.6s;width:10px;height:10px}.b5{left:88%;animation-delay:-1.8s}
-.s2 .bub,.s3 .bub{animation:none;opacity:0}
+.s3 .bub,.s4 .bub{animation:none;opacity:0}
 @keyframes bub{0%{transform:translateY(0);opacity:0}20%{opacity:.8}100%{transform:translateY(-60vh);opacity:0}}
 /* 光: 外気浴に向けて、斜めの陽が差してくる */
 .rays{position:absolute;inset:-20% -10%;opacity:0;background:repeating-linear-gradient(105deg,rgba(255,255,255,.5) 0 26px,rgba(255,255,255,0) 26px 90px);mask-image:linear-gradient(180deg,#000,transparent 75%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 75%);transition:opacity 1.6s ease;animation:sway 6s ease-in-out infinite alternate}
-.s1 .rays{opacity:.12}
-.s2 .rays{opacity:.4}
-.s3 .rays{opacity:.7}
+.s2 .rays{opacity:.12}
+.s3 .rays{opacity:.4}
+.s4 .rays{opacity:.7}
 @keyframes sway{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
+
+/* 扉: 水風呂に入る前の溜め。サウナ室の木の扉がゆっくり開き、向こうから冷たい光が差し込む */
+.door,.door-light{position:absolute;inset:0}
+.door-light{background:radial-gradient(ellipse at 72% 50%,rgba(176,226,244,.95),rgba(96,170,200,.55) 38%,#0F2B38 82%);opacity:0}
+.door{transform-origin:0 50%;background:repeating-linear-gradient(90deg,#6E4C31 0 36px,#5B3E27 36px 38px),#6E4C31;box-shadow:inset 0 0 40px rgba(0,0,0,.5),inset -6px 0 0 rgba(0,0,0,.25)}
+.handle{position:absolute;right:9%;top:50%;width:10px;height:74px;margin-top:-37px;border-radius:5px;background:linear-gradient(90deg,#E2C9A0,#A8875C)}
+/* 扉の開く時間(0.5s+2.1s)は data.js の RITUAL[0].ms(2600)に合わせている。変えるときは両方を直す */
+.s0 .door{animation:door-open 2.1s cubic-bezier(.55,0,.25,1) .5s forwards}
+.s0 .door-light{animation:door-light 2.1s ease-in .5s forwards}
+@keyframes door-open{to{transform:perspective(1100px) rotateY(-80deg)}}
+@keyframes door-light{from{opacity:0}to{opacity:1}}
+.ritual:not(.s0) .door{transform:perspective(1100px) rotateY(-80deg);opacity:0;transition:opacity .8s}
+.ritual:not(.s0) .door-light{opacity:0;transition:opacity 1s}
+.s0 .r-temp,.s0 .r-status{text-shadow:0 1px 10px rgba(0,0,0,.65)}
+.s0 .water,.s0 .rays{opacity:0}
+.s0 .bub{animation:none;opacity:0}
 
 /* ---- シェア用画像 ---- */
 .share-img{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface2)}
@@ -190,7 +207,6 @@ body[data-scene="quiz"] .foot,body[data-scene="ritual"] .foot{opacity:.5}
 @property --heat{syntax:"<number>";inherits:true;initial-value:0}
 body{transition:--heat 1s ease,background-color .8s ease,color .8s ease}
 body[data-scene="quiz"],body[data-scene="ritual"]{--bg:#1B1614;--surface:#2A2220;--surface2:#352B28;--fg:#F1E8DF;--sub:#BDB1A6;--line:#4C403A;--hot:#E4694A;--cool:#7DB7D0}
-body[data-scene="ritual"]{--bg:#0B2029}
 body[data-scene="quiz"]{background:radial-gradient(120% 70% at 50% 118%,rgba(228,105,60,calc(.12 + var(--heat) * .34)),transparent 62%),repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 2px,transparent 2px 54px),var(--bg)}
 body[data-scene="quiz"]::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.5));animation:endure 6s ease-in-out infinite alternate}
 @keyframes endure{from{opacity:.55}to{opacity:1}}
