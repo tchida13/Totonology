@@ -10,7 +10,7 @@ const SRC = ["data.js", "score.js", "app.js"].map(read);
 // 新しいスタブ環境を作り、app.js を読み込んで返す。storage は引き継げる
 function boot({ hash = "", search = "", reduce = false, ritual = false, share = false, storage = {}, storageBroken = false } = {}) {
   const env = { html: "", storage, listeners: {}, urls: [], timers: [], vars: {}, fx: { className: "", innerHTML: "" }, announce: { textContent: "" } };
-  const btns = [2, 1, 0, -1, -2].map((v) => ({ dataset: { v: String(v) }, click() { this.onclick(); } }));
+  const btns = [-2, -1, 0, 1, 2].map((v) => ({ dataset: { v: String(v) }, click() { this.onclick(); } }));
   const el = {}; // id -> 要素スタブ
   const app = {
     set innerHTML(v) { env.html = v; for (const k of Object.keys(el)) delete el[k]; },
@@ -352,4 +352,20 @@ test("整いタイム: 結果画面に「整いタイム」の表示と光の粒
   assert.match(env.html, /class="tototime">整いタイム</);
   assert.equal((env.html.match(/<i style="--x:/g) || []).length, 10);
   assert.equal(env.body.dataset.scene, "result");
+});
+
+test("回答の並び: 右へ行くほど「そう思う」。キー1=全くそう思わない(-2)、5=とてもそう思う(+2)", () => {
+  const saved = (key) => {
+    const env = boot();
+    env.el.go.click();
+    env.key(key);
+    return JSON.parse(env.storage["totonology:progress"]).a.filter((v) => v !== null);
+  };
+  assert.deepEqual(saved("1"), [-2]);
+  assert.deepEqual(saved("3"), [0]);
+  assert.deepEqual(saved("5"), [2]);
+  const env = boot();
+  env.el.go.click();
+  assert.ok(env.html.indexOf("そう思わない</span><span class=\"agree\">そう思う") > 0, "ラベルは左=そう思わない、右=そう思う");
+  assert.ok(env.html.indexOf("全くそう思わない") < env.html.indexOf("とてもそう思う"), "ボタンも左から右へ");
 });

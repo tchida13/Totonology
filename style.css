@@ -90,11 +90,11 @@ body[data-scene="quiz"] .foot,body[data-scene="ritual"] .foot{opacity:.5}
 .opt .fold{fill:currentColor;filter:brightness(.8)}
 .opt .seam{fill:none;stroke:var(--seam,rgba(0,0,0,.3));stroke-width:1.5;stroke-dasharray:3 3}
 .opt span{position:absolute;left:0;right:0;top:34%;text-align:center;font-weight:600;font-size:1rem;line-height:1;font-variant-numeric:tabular-nums;color:var(--num,#25292C)}
-.opt:nth-child(1){width:76px;--hat:#C4492C;--num:#fff;--seam:rgba(255,255,255,.6)}
-.opt:nth-child(2){width:64px;--hat:#DB8460}
+.opt:nth-child(1){width:76px;--hat:#3E7C96;--num:#fff;--seam:rgba(255,255,255,.6)}
+.opt:nth-child(2){width:64px;--hat:#72ABC6}
 .opt:nth-child(3){width:54px;--hat:#CFC7B6}
-.opt:nth-child(4){width:64px;--hat:#72ABC6}
-.opt:nth-child(5){width:76px;--hat:#3E7C96;--num:#fff;--seam:rgba(255,255,255,.6)}
+.opt:nth-child(4){width:64px;--hat:#DB8460}
+.opt:nth-child(5){width:76px;--hat:#C4492C;--num:#fff;--seam:rgba(255,255,255,.6)}
 @media (hover:hover){.opt:hover{transform:translateY(-6px) rotate(-3deg)}}
 .opt:active{transform:translateY(-2px) scale(.96)}
 .opt.on{transform:translateY(-10px)}
