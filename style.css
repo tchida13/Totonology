@@ -154,6 +154,9 @@ body[data-scene="quiz"] .foot,body[data-scene="ritual"] .foot{opacity:.5}
 /* ---- ため演出: 扉を開けて、だんだん明るくなる（扉 → 水風呂 → 休憩 → 外気浴 → 整い） ---- */
 .ritual{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:min(78vh,620px);margin-top:12px;padding:32px 20px;border-radius:var(--radius);text-align:center;color:#fff;background:#2B2321;transition:background 1.4s ease,color 1.4s ease}
 .ritual>*{position:relative;z-index:1}
+/* スキップは誤操作を避けるため、カード右下の小さな文字リンクにする */
+.skip{position:absolute;right:4px;bottom:2px;z-index:2;padding:10px 12px;border:0;background:none;color:inherit;font-size:.7rem;letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px;opacity:.55;cursor:pointer}
+.skip:hover{opacity:1}
 .ritual.s1{background:#0F2B38}
 .ritual.s2{background:#245B72}
 .ritual.s3{background:#9EC8D6;color:#25292C}
@@ -165,8 +168,6 @@ body[data-scene="quiz"] .foot,body[data-scene="ritual"] .foot{opacity:.5}
 .r-dots{display:flex;gap:10px;margin:18px 0 22px;padding:0;list-style:none}
 .r-dots li{width:26px;height:3px;background:currentColor;opacity:.25;transition:opacity .4s}
 .s0 .r-dots li:nth-child(-n+1),.s1 .r-dots li:nth-child(-n+2),.s2 .r-dots li:nth-child(-n+3),.s3 .r-dots li:nth-child(-n+4),.s4 .r-dots li{opacity:1}
-.ritual .btn.ghost{color:inherit;border-color:currentColor;opacity:.85}
-@media (hover:hover){.ritual .btn.ghost:hover{background:rgba(255,255,255,.2);color:inherit;border-color:currentColor}}
 /* 水: 画面を満たしたところから、段階的に引いていく */
 .water{position:absolute;left:-10%;right:-10%;bottom:0;height:100%;border-radius:50% 50% 0 0/18px 18px 0 0;background:linear-gradient(180deg,rgba(160,215,235,.22),rgba(160,215,235,.06));transform:translateY(8%);transition:transform 1.4s cubic-bezier(.3,0,.2,1),opacity 1.2s}
 .s2 .water{transform:translateY(38%)}
