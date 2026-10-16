@@ -39,7 +39,7 @@
       <p class="loyly-banner"><b>ロウリュ</b><span>熱気がぐっと増しました</span></p>`;
     fx.className = "fx on";
     document.getElementById("announce").textContent = "ロウリュ。熱気がぐっと増しました。"; // 常設の live region で読み上げる
-    fxTimer = setTimeout(clearFx, 3600);
+    fxTimer = setTimeout(clearFx, 3400);
   }
   let shownP = 0; // 砂時計が直前に表示していた進捗(0〜1)。次の描画で砂が落ちるアニメーションに使う
   let view = ""; // 表示中の画面: start / quiz / result
