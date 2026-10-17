@@ -106,9 +106,9 @@ test("グループ色: 結果ヒーロー(色を60%黒と混ぜた背景)上の�
   });
 });
 
-test("ため演出の段(RITUAL)が4段(水風呂→休憩→外気浴→整い)そろい、各段に name/line/temp とゆったりした長さ(ms)がある", () => {
+test("ため演出の段(RITUAL)が4段(水風呂→休憩→外気浴→整い)そろい、各段に name/line とゆったりした長さ(ms)がある", () => {
   assert.equal(window.RITUAL.length, 4);
   assert.equal(window.RITUAL[0].name, "水風呂");
   window.RITUAL.forEach((r) => assert.ok(r.ms >= 2000, "慌ただしくならないよう各段は2秒以上"));
-  window.RITUAL.forEach((r, i) => ["name", "line", "temp"].forEach((k) => assert.ok(r[k], `RITUAL[${i}].${k}`)));
+  window.RITUAL.forEach((r, i) => ["name", "line"].forEach((k) => assert.ok(r[k], `RITUAL[${i}].${k}`)));
 });

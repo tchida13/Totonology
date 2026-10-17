@@ -151,48 +151,20 @@ body[data-scene="ritual"] .foot{opacity:.5}
 .match strong{font-size:1.1rem}
 .disclaimer{margin-top:24px;text-align:center;color:var(--sub);font-size:.8rem}
 
-/* ---- ため演出: 暗い所から明るい所へ。水風呂でゆっくり意識がほどけていく（水風呂 → 休憩 → 外気浴 → 整い） ---- */
-.ritual{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:min(78vh,620px);margin-top:12px;padding:32px 20px;border-radius:var(--radius);text-align:center;color:#fff;background:#0C2230;transition:background 2.6s ease,color 2.6s ease}
-.ritual>*{position:relative;z-index:1}
+/* ---- ため演出: 暗い所から明るい所へ。ゆっくり呼吸するように、背景のグラデーションの色が変わるだけ（水風呂 → 休憩 → 外気浴 → 整い） ---- */
+@property --g1{syntax:"<color>";inherits:false;initial-value:#0A1F2C}
+@property --g2{syntax:"<color>";inherits:false;initial-value:#153B4F}
+.ritual{--g1:#0A1F2C;--g2:#153B4F;position:relative;overflow:hidden;min-height:min(78vh,620px);margin-top:12px;border-radius:var(--radius);color:#fff;background:linear-gradient(180deg,var(--g1),var(--g2));transition:--g1 3.4s ease,--g2 3.4s ease,color 3s ease}
+.ritual.s1{--g1:#17475E;--g2:#2D7590}
+.ritual.s2{--g1:#6FA9BE;--g2:#BCD9E2;color:#25292C}
+.ritual.s3{--g1:#DCE9EA;--g2:#F1F4F0;color:#25292C}
+.r-scene{position:absolute;inset:0;pointer-events:none}
+/* 呼吸する光: ゆっくり膨らんで縮む、やわらかなグラデーションの光だけ */
+.orb{position:absolute;left:50%;top:50%;width:150%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(225,242,250,.34),rgba(225,242,250,0) 62%);transform:translate(-50%,-50%) scale(.75);animation:breathe 7s ease-in-out infinite alternate}
+@keyframes breathe{to{transform:translate(-50%,-50%) scale(1.15);opacity:.6}}
 /* スキップは誤操作を避けるため、カード右下の小さな文字リンクにする */
 .skip{position:absolute;right:4px;bottom:2px;z-index:2;padding:10px 12px;border:0;background:none;color:inherit;font-size:.7rem;letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px;opacity:.55;cursor:pointer}
 .skip:hover{opacity:.9}
-.ritual.s1{background:#1F5870}
-.ritual.s2{background:#8FBFD0;color:#25292C}
-.ritual.s3{background:#EAF0EE;color:#25292C}
-.r-scene{position:absolute!important;inset:0;z-index:0!important;pointer-events:none}
-.r-temp{font-size:clamp(4rem,22vw,7rem);font-weight:200;line-height:1.1;letter-spacing:.02em;font-variant-numeric:tabular-nums}
-.r-status h2{font-size:1.4rem;letter-spacing:.3em;margin:6px 0 4px;padding-left:.3em}
-.r-status p{opacity:.85}
-/* 段が変わるたび、文字をゆっくり浮かび上がらせる（A/B で名前を変えてアニメーションを再生する） */
-.s0 .r-temp,.s0 .r-status,.s2 .r-temp,.s2 .r-status{animation:soft-a 2.4s ease-out both}
-.s1 .r-temp,.s1 .r-status,.s3 .r-temp,.s3 .r-status{animation:soft-b 2.4s ease-out both}
-@keyframes soft-a{from{opacity:0;transform:translateY(6px)}}
-@keyframes soft-b{from{opacity:0;transform:translateY(6px)}}
-.r-dots{display:flex;gap:10px;margin:18px 0 22px;padding:0;list-style:none}
-.r-dots li{width:26px;height:3px;background:currentColor;opacity:.25;transition:opacity .8s}
-.s0 .r-dots li:nth-child(-n+1),.s1 .r-dots li:nth-child(-n+2),.s2 .r-dots li:nth-child(-n+3),.s3 .r-dots li{opacity:1}
-/* 水: 画面を満たしたところから、ゆっくり引いていく */
-.water{position:absolute;left:-10%;right:-10%;bottom:0;height:100%;border-radius:50% 50% 0 0/18px 18px 0 0;background:linear-gradient(180deg,rgba(160,215,235,.2),rgba(160,215,235,.05));transform:translateY(8%);transition:transform 3s cubic-bezier(.3,0,.2,1),opacity 2.4s}
-.s1 .water{transform:translateY(38%)}
-.s2 .water{transform:translateY(76%)}
-.s3 .water{transform:translateY(112%);opacity:0}
-/* 波紋: 水面にゆっくり広がる */
-.rip{position:absolute;left:50%;top:46%;width:260px;height:260px;margin:-130px 0 0 -130px;border-radius:50%;border:1.5px solid rgba(255,255,255,.38);opacity:0;animation:ripple 8s ease-out infinite;transition:visibility 0s 2s}
-.p2{animation-delay:2.7s}.p3{animation-delay:5.4s}
-@keyframes ripple{0%{transform:scale(.25);opacity:0}15%{opacity:.7}100%{transform:scale(1.9);opacity:0}}
-.s2 .rip,.s3 .rip{visibility:hidden}
-/* 呼吸する光の輪: 休憩〜外気浴でゆっくり膨らんだり縮んだりする */
-.orb{position:absolute;left:50%;top:46%;width:300px;height:300px;margin:-150px 0 0 -150px;border-radius:50%;background:radial-gradient(circle,rgba(205,238,250,.55),rgba(205,238,250,0) 68%);opacity:0;transform:scale(.7);animation:breathe 7s ease-in-out infinite alternate;transition:opacity 2.4s}
-.s1 .orb{opacity:.9}
-.s2 .orb{opacity:.7}
-@keyframes breathe{to{transform:scale(1.25)}}
-/* 光: 外気浴に向けて、斜めの陽がやわらかく差してくる */
-.rays{position:absolute;inset:-20% -10%;opacity:0;background:repeating-linear-gradient(105deg,rgba(255,255,255,.5) 0 26px,rgba(255,255,255,0) 26px 90px);mask-image:linear-gradient(180deg,#000,transparent 75%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 75%);transition:opacity 2.8s ease;animation:sway 12s ease-in-out infinite alternate}
-.s1 .rays{opacity:.1}
-.s2 .rays{opacity:.38}
-.s3 .rays{opacity:.65}
-@keyframes sway{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
 
 /* ---- シェア用画像 ---- */
 .share-img{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface2)}
