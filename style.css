@@ -197,25 +197,13 @@ body[data-scene="quiz"][data-loyly]::after{content:"";position:fixed;inset:0;z-i
 /* ---- 整いタイム: 結果確認中の、穏やかでスピリチュアルな時間（Apple Watch のマインドフルネスを参考に） ---- */
 body[data-scene="result"]{overflow-x:clip;background:radial-gradient(62% 42% at 18% 8%,rgba(196,181,253,.55),transparent 70%),radial-gradient(60% 45% at 88% 26%,rgba(125,211,252,.42),transparent 70%),radial-gradient(75% 50% at 50% 100%,rgba(253,186,170,.5),transparent 70%),linear-gradient(180deg,#F5F1FB,#E9F2F6);background-attachment:fixed}
 /* 呼吸する花びら: 8枚の半透明の円が、ゆっくり開いて閉じながら回る。色はタイプのグループ色 */
-.stage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;height:340px;margin-bottom:0}
-.bloom{position:absolute;left:50%;top:50%;width:min(100vw,420px);aspect-ratio:1;margin:calc(min(100vw,420px) / -2) 0 0 calc(min(100vw,420px) / -2);pointer-events:none;animation:bloom-turn 90s linear infinite}
-.bloom i{position:absolute;inset:0;margin:auto;width:54%;height:54%;border-radius:50%;border:1.5px solid rgba(255,255,255,.95);background:radial-gradient(circle at 50% 36%,color-mix(in srgb,var(--group) 38%,transparent),color-mix(in srgb,var(--group) 8%,transparent) 75%);transform:rotate(var(--r)) translateY(-24%) scale(.9);animation:petal 4.5s ease-in-out infinite alternate}
-.bloom::after{content:"";position:absolute;inset:34%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,255,255,0) 70%);animation:glow-breathe 4.5s ease-in-out infinite alternate}
+/* 花びら: 全体の背景にうっすら置くだけ。薄く、ゆっくり開閉して回る。色はタイプのグループ色 */
+.bloom{position:fixed;left:50%;top:42vh;z-index:-1;width:min(150vw,780px);aspect-ratio:1;margin:calc(min(150vw,780px) / -2) 0 0 calc(min(150vw,780px) / -2);opacity:.4;pointer-events:none;animation:bloom-turn 180s linear infinite}
+.bloom i{position:absolute;inset:0;margin:auto;width:54%;height:54%;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);background:radial-gradient(circle at 50% 36%,color-mix(in srgb,var(--group) 38%,transparent),color-mix(in srgb,var(--group) 8%,transparent) 75%);transform:rotate(var(--r)) translateY(-24%) scale(.9);animation:petal 9s ease-in-out infinite alternate}
 @keyframes bloom-turn{to{transform:rotate(360deg)}}
-@keyframes petal{from{transform:rotate(var(--r)) translateY(-4%) scale(.5)}to{transform:rotate(var(--r)) translateY(-34%) scale(.98)}}
-@keyframes glow-breathe{from{opacity:.5;transform:scale(.8)}to{opacity:1;transform:scale(1.25)}}
-.tototime{position:relative;display:flex;align-items:center;justify-content:center;gap:14px;margin:0;color:var(--fg);font-size:.8rem;font-weight:600;letter-spacing:.4em}
+@keyframes petal{from{transform:rotate(var(--r)) translateY(-8%) scale(.62)}to{transform:rotate(var(--r)) translateY(-34%) scale(.98)}}
+.tototime{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 14px;color:var(--sub);font-size:.8rem;font-weight:600;letter-spacing:.4em}
 .tototime::before,.tototime::after{content:"";width:34px;height:1px;background:currentColor;opacity:.6}
-/* 呼吸のガイド: 花びらが開くあいだ「吸って」、閉じるあいだ「吐いて」 */
-.breath-guide{position:relative;width:100%;height:1.6em;margin:2px 0 0;color:var(--fg);font-size:.75rem;letter-spacing:.3em;text-align:center}
-.breath-guide span{position:absolute;left:0;right:0;opacity:0;animation:guide 9s ease-in-out infinite}
-.breath-guide span:nth-child(2){animation-delay:4.5s}
-@keyframes guide{0%{opacity:0}12%,40%{opacity:.9}52%,100%{opacity:0}}
-.pass{animation:pass-in 1.4s ease-out both}
-@keyframes pass-in{from{opacity:0;transform:translateY(14px)}}
-.pass .avatar{animation:float 5.5s ease-in-out infinite alternate}
-@keyframes float{from{transform:translateY(0);box-shadow:0 0 0 0 rgba(255,205,140,0)}to{transform:translateY(-7px);box-shadow:0 0 30px 10px rgba(255,205,140,.5)}}
-@media (prefers-reduced-motion: reduce){.breath-guide{display:none}}
 
 /* カードは少し透けるガラス調にして、背景の花びらがやわらかく見えるように（結果表示の間だけ） */
 body[data-scene="result"] .pass{background:color-mix(in srgb,var(--surface) 80%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}

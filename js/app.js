@@ -258,14 +258,11 @@
     }).join("");
     const text = `私のサウナタイプは【${t.name}】(${code})でした！ #Totonology`;
     const shareUrl = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE_URL);
-    // 整いタイム: Apple Watch のマインドフルネスのように、呼吸に合わせて花びら状の光が開いたり閉じたりする
+    // 整いタイム: Apple Watch のマインドフルネスのような花びら状の光を、全体の背景にうっすら置くだけ(主張しない)
     const petals = Array.from({ length: 8 }, (_, k) => `<i style="--r:${k * 45}deg"></i>`).join("");
     el(`<article class="result" style="--group:${grp.color}">
-      <div class="stage">
-        <div class="bloom" aria-hidden="true">${petals}</div>
-        <p class="tototime">整いタイム</p>
-        <p class="breath-guide" aria-hidden="true"><span>吸って</span><span>吐いて</span></p>
-      </div>
+      <div class="bloom" aria-hidden="true">${petals}</div>
+      <p class="tototime">整いタイム</p>
       <header class="pass" style="--photo:url(${grp.photo})">
         <div class="pass-band" aria-hidden="true"><span>SAUNA PASS</span><span>入館証</span></div>
         ${avatar(code, t.name + "のキャラクター", 200)}

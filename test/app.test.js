@@ -363,12 +363,12 @@ test("ロウリュ: 動きを減らす設定では演出を出さず、もう一
   assert.equal(env.body.dataset.scene, "start");
 });
 
-test("整いタイム: 結果画面に「整いタイム」の表示、呼吸する花びら(8枚)と呼吸のガイドが出る", () => {
+test("整いタイム: 「整いタイム」の表示と、背景のうっすらした花びら(8枚)が出る。主張する演出(ステージ・呼吸ガイド)は出さない", () => {
   const env = boot({ hash: "#SAOR-" + "4".repeat(24) });
   assert.match(env.html, /class="tototime">整いタイム</);
   assert.match(env.html, /class="bloom"/);
   assert.equal((env.html.match(/<i style="--r:/g) || []).length, 8);
-  assert.match(env.html, /class="breath-guide"[^>]*><span>吸って<\/span><span>吐いて<\/span>/);
+  assert.doesNotMatch(env.html, /breath-guide|class="stage"|吸って|吐いて/);
   assert.equal(env.body.dataset.scene, "result");
 });
 
