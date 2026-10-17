@@ -186,10 +186,10 @@
     const skip = () => { if (armed) finish(); };
     ritualSkip = skip;
     ritualArm = setTimeout(() => { armed = true; }, RITUAL_ARM_MS);
-    // 見た目は背景のグラデーションがゆっくり呼吸するように変わるだけ。段の名前と一言は読み上げ用の非表示テキストで伝える
+    // 見た目は背景のグラデーションがゆっくり呼吸するように変わるだけ。「回答を分析しています」と段ごとの一言を、うっすら小さく添える
     el(`<section class="ritual s0" id="ritual">
       <div class="r-scene" aria-hidden="true"><i class="orb"></i></div>
-      <div class="r-status sr-only" role="status" data-focus><h2 id="r-name">${esc(R[0].name)}</h2><p id="r-line">${esc(R[0].line)}</p></div>
+      <div class="r-status" role="status" data-focus><p class="r-title">${esc(window.RITUAL_TITLE)}</p><h2 id="r-name" class="sr-only">${esc(R[0].name)}</h2><p class="r-line" id="r-line">${esc(R[0].line)}</p></div>
       <button class="skip" id="skip">スキップ</button>
     </section>`);
     document.getElementById("skip").onclick = skip;
