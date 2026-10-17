@@ -208,13 +208,9 @@ test("ため演出: 最終回答後に演出が流れ、その間に結果URLは
   assert.match(env.location.hash, /^#[HS][WA][OT][RF]-[0-4]{24}$/);
   assert.equal(env.storage["totonology:progress"], undefined);
   assert.match(env.html, /水風呂/);
-  // 演出の見た目(CSS)が頼る構造: 光・水・波紋3つ・呼吸する輪・段階表示
-  assert.doesNotMatch(env.html, /door/); // 扉は描かない
-  assert.match(env.html, /class="rays"/);
-  assert.match(env.html, /class="water"/);
-  assert.equal((env.html.match(/class="rip /g) || []).length, 3);
+  // 見た目は背景グラデーションの変化と呼吸する光だけ。温度や段階ドットなど文字の主役は置かない
   assert.match(env.html, /class="orb"/);
-  assert.equal((env.html.match(/<li><\/li>/g) || []).length, 4);
+  assert.doesNotMatch(env.html, /r-temp|r-dots|class="rip |class="water"|class="rays"|°C/);
 });
 
 test("ため演出: 4段(水風呂→休憩→外気浴→整い)を経て自動で結果が表示される", () => {
@@ -224,7 +220,7 @@ test("ため演出: 4段(水風呂→休憩→外気浴→整い)を経て自動
     tick(env);
     assert.doesNotMatch(env.html, /強み/);
     assert.equal(env.el.ritual.className, "ritual s" + i); // だんだん明るくなる段階
-    assert.equal(env.el["r-temp"].textContent, ["16°C", "18°C", "22°C", "24°C"][i]);
+    assert.equal(env.el["r-name"].textContent, ["水風呂", "休憩", "外気浴", "整い"][i]); // 読み上げ用の段の名前
   }
   assert.equal(env.el["r-name"].textContent, "整い");
   tick(env);

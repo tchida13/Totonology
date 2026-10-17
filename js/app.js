@@ -170,7 +170,7 @@
     calm() ? result(code, sc) : ritual(code, sc);
   }
 
-  // 結果の前の「ため」: 水風呂→休憩→外気浴→整いと、暗い所から明るい所へゆっくり意識がほどけていく。スキップ(右下のボタン/Esc)で即結果へ
+  // 結果の前の「ため」: 水風呂→休憩→外気浴→整いと、暗い所から明るい所へ、背景の色がゆっくり変わるだけ。スキップ(右下のボタン/Esc)で即結果へ
   const RITUAL_STEP_MS = 1200;
   let ritualTimer = 0, ritualArm = 0, ritualSkip = null;
   const RITUAL_ARM_MS = 1500; // 演出の開始直後は、連打でスキップしてしまわないよう操作を受け付けない
@@ -186,18 +186,16 @@
     const skip = () => { if (armed) finish(); };
     ritualSkip = skip;
     ritualArm = setTimeout(() => { armed = true; }, RITUAL_ARM_MS);
+    // 見た目は背景のグラデーションがゆっくり呼吸するように変わるだけ。段の名前と一言は読み上げ用の非表示テキストで伝える
     el(`<section class="ritual s0" id="ritual">
-      <div class="r-scene" aria-hidden="true"><div class="rays"></div><div class="water"></div><i class="rip p1"></i><i class="rip p2"></i><i class="rip p3"></i><i class="orb"></i></div>
-      <p class="r-temp" id="r-temp" aria-hidden="true">${esc(R[0].temp)}</p>
-      <div class="r-status" role="status" data-focus><h2 id="r-name">${esc(R[0].name)}</h2><p id="r-line">${esc(R[0].line)}</p></div>
-      <ol class="r-dots" aria-hidden="true">${R.map(() => "<li></li>").join("")}</ol>
+      <div class="r-scene" aria-hidden="true"><i class="orb"></i></div>
+      <div class="r-status sr-only" role="status" data-focus><h2 id="r-name">${esc(R[0].name)}</h2><p id="r-line">${esc(R[0].line)}</p></div>
       <button class="skip" id="skip">スキップ</button>
     </section>`);
     document.getElementById("skip").onclick = skip;
     const step = () => {
       if (++n >= R.length) return finish();
       document.getElementById("ritual").className = "ritual s" + n;
-      document.getElementById("r-temp").textContent = R[n].temp;
       document.getElementById("r-name").textContent = R[n].name;
       document.getElementById("r-line").textContent = R[n].line;
       ritualTimer = setTimeout(step, R[n].ms || RITUAL_STEP_MS);
