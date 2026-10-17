@@ -211,6 +211,8 @@ test("ため演出: 最終回答後に演出が流れ、その間に結果URLは
   // 見た目は背景グラデーションの変化と呼吸する光だけ。温度や段階ドットなど文字の主役は置かない
   assert.match(env.html, /class="orb"/);
   assert.doesNotMatch(env.html, /r-temp|r-dots|class="rip |class="water"|class="rays"|°C/);
+  assert.match(env.html, /回答を分析しています/); // 分析中であることをうっすら伝える
+  assert.match(env.html, /深呼吸してお待ちください/);
 });
 
 test("ため演出: 4段(水風呂→休憩→外気浴→整い)を経て自動で結果が表示される", () => {
@@ -221,6 +223,7 @@ test("ため演出: 4段(水風呂→休憩→外気浴→整い)を経て自動
     assert.doesNotMatch(env.html, /強み/);
     assert.equal(env.el.ritual.className, "ritual s" + i); // だんだん明るくなる段階
     assert.equal(env.el["r-name"].textContent, ["水風呂", "休憩", "外気浴", "整い"][i]); // 読み上げ用の段の名前
+    assert.ok(env.el["r-line"].textContent.length > 5); // 段ごとの一言も切り替わる
   }
   assert.equal(env.el["r-name"].textContent, "整い");
   tick(env);

@@ -154,7 +154,7 @@ body[data-scene="ritual"] .foot{opacity:.5}
 /* ---- ため演出: 暗い所から明るい所へ。ゆっくり呼吸するように、背景のグラデーションの色が変わるだけ（水風呂 → 休憩 → 外気浴 → 整い） ---- */
 @property --g1{syntax:"<color>";inherits:false;initial-value:#0A1F2C}
 @property --g2{syntax:"<color>";inherits:false;initial-value:#153B4F}
-.ritual{--g1:#0A1F2C;--g2:#153B4F;position:relative;overflow:hidden;min-height:min(78vh,620px);margin-top:12px;border-radius:var(--radius);color:#fff;background:linear-gradient(180deg,var(--g1),var(--g2));transition:--g1 3.4s ease,--g2 3.4s ease,color 3s ease}
+.ritual{--g1:#0A1F2C;--g2:#153B4F;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;min-height:min(78vh,620px);margin-top:12px;border-radius:var(--radius);color:#fff;background:linear-gradient(180deg,var(--g1),var(--g2));transition:--g1 3.4s ease,--g2 3.4s ease,color 3s ease}
 .ritual.s1{--g1:#17475E;--g2:#2D7590}
 .ritual.s2{--g1:#6FA9BE;--g2:#BCD9E2;color:#25292C}
 .ritual.s3{--g1:#DCE9EA;--g2:#F1F4F0;color:#25292C}
@@ -162,6 +162,14 @@ body[data-scene="ritual"] .foot{opacity:.5}
 /* 呼吸する光: ゆっくり膨らんで縮む、やわらかなグラデーションの光だけ */
 .orb{position:absolute;left:50%;top:50%;width:150%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(225,242,250,.34),rgba(225,242,250,0) 62%);transform:translate(-50%,-50%) scale(.75);animation:breathe 7s ease-in-out infinite alternate}
 @keyframes breathe{to{transform:translate(-50%,-50%) scale(1.15);opacity:.6}}
+/* 「回答を分析しています」と一言: 主張しないよう、小さく・うっすら・ゆっくりフェードで切り替える */
+.r-status{position:relative;z-index:1;padding:0 28px}
+.r-title{margin:0 0 10px;font-size:.78rem;letter-spacing:.35em;padding-left:.35em;opacity:.55}
+.r-line{margin:0;font-size:.95rem;letter-spacing:.1em;opacity:.7}
+.s0 .r-line,.s2 .r-line{animation:soft-a 2.2s ease-out both}
+.s1 .r-line,.s3 .r-line{animation:soft-b 2.2s ease-out both}
+@keyframes soft-a{from{opacity:0}}
+@keyframes soft-b{from{opacity:0}}
 /* スキップは誤操作を避けるため、カード右下の小さな文字リンクにする */
 .skip{position:absolute;right:4px;bottom:2px;z-index:2;padding:10px 12px;border:0;background:none;color:inherit;font-size:.7rem;letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px;opacity:.55;cursor:pointer}
 .skip:hover{opacity:.9}
