@@ -275,14 +275,20 @@
       </header>
       <p class="lead">${esc(t.desc)}</p>
       <section class="panel"><h2>あなたの傾向</h2>${bars}</section>
+      <section class="panel pair" style="--you:${groupOf(t.match).color}"><h2>相性のいいタイプ</h2>
+        <div class="pair-row">
+          <figure class="pair-me">${avatar(code, t.name + "のキャラクター", 96)}<figcaption><small>あなた</small>${esc(t.name)}</figcaption></figure>
+          <span class="pair-link" aria-hidden="true"><i></i><b>相性</b><i></i></span>
+          <figure class="pair-you">${avatar(t.match, m.name + "のキャラクター", 128)}<figcaption><small>${t.match}</small><strong>${esc(m.name)}</strong></figcaption></figure>
+        </div>
+        <p class="pair-tag">${esc(m.tagline)}</p>
+        <p class="pair-reason">${esc(t.matchReason)}</p></section>
       <div class="grid2">
         <section class="panel"><h2>強み</h2><ul class="list">${t.strengths.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>
         <section class="panel"><h2>気をつけたいこと</h2><ul class="list">${t.cautions.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>
       </div>
       <section class="panel"><h2>おすすめのサウナ</h2><p>${esc(t.sauna)}</p><ul class="spots" style="margin-top:14px">${spots}</ul>
         <p class="note-small">※ 営業状況・料金・利用条件は変わることがあります。訪問前に公式情報をご確認ください。</p></section>
-      <section class="panel"><h2>相性のいいタイプ</h2>
-        <p class="match">${avatar(t.match, m.name + "のキャラクター", 72)}<span><strong>${esc(m.name)}</strong> <span class="sub">(${t.match})</span><br><span class="sub">${esc(m.tagline)}</span></span></p></section>
       ${window.ShareImage ? `<section class="panel share" id="share"><h2>シェア用の画像</h2>
         <img class="share-img" id="share-img" alt="${esc(t.name)}の結果のシェア用画像" width="1200" height="630">
         <div class="actions"><button class="btn ghost" id="save-img" hidden>画像を保存</button><button class="btn ghost" id="share-files" hidden>画像つきでシェア</button></div>

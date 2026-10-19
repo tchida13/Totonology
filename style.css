@@ -155,9 +155,19 @@ body[data-scene="ritual"] .foot{opacity:.5}
 .spot .vibe{display:inline-block;margin:4px 0 2px;font-size:.8rem;font-weight:700;color:var(--fg);background:color-mix(in srgb,var(--group) 22%,transparent);padding:0 10px;border-radius:2px}
 .spot .note{display:block;color:var(--sub);font-size:.9rem}
 .note-small{margin-top:12px;color:var(--sub);font-size:.8rem}
-.match{display:flex;align-items:center;gap:14px}
-.match .avatar{width:72px;height:72px;border-radius:50%;border:3px solid var(--group)}
-.match strong{font-size:1.1rem}
+/* 相性カード: 自分 ⇄ 相手を並べ、相手を大きく。相手のグループ色を縁に使う */
+.pair{border-top:3px solid var(--you)}
+.pair-row{display:grid;grid-template-columns:1fr auto 1.25fr;align-items:center;gap:8px;margin-top:8px}
+.pair figure{margin:0;text-align:center}
+.pair figcaption{margin-top:8px;font-weight:600;line-height:1.35}
+.pair figcaption small{display:block;color:var(--sub);font-size:.7rem;font-weight:500;letter-spacing:.14em}
+.pair-me .avatar{width:min(96px,100%);border-radius:50%;border:2px solid var(--group)}
+.pair-you .avatar{width:min(128px,100%);border-radius:50%;border:3px solid var(--you);box-shadow:0 0 0 4px color-mix(in srgb,var(--you) 22%,transparent)}
+.pair-you strong{font-size:1.15rem}
+.pair-link{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--sub);font-size:.7rem;letter-spacing:.2em}
+.pair-link i{width:1px;height:22px;background:currentColor;opacity:.5}
+.pair-tag{margin-top:16px;text-align:center;color:var(--sub);font-size:.9rem}
+.pair-reason{margin-top:10px;padding:12px 14px;border-radius:2px;background:color-mix(in srgb,var(--you) 10%,transparent);line-height:1.8}
 .disclaimer{margin-top:24px;text-align:center;color:var(--sub);font-size:.8rem}
 
 /* ---- ため演出: 暗い所から明るい所へ。ゆっくり呼吸するように、背景のグラデーションの色が変わるだけ（水風呂 → 休憩 → 外気浴 → 整い） ---- */

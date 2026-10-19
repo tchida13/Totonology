@@ -390,3 +390,11 @@ test("回答の並び: 右へ行くほど「そう思う」。キー1=全くそ�
   assert.ok(env.html.indexOf("そう思わない</span><span class=\"agree\">そう思う") > 0, "ラベルは左=そう思わない、右=そう思う");
   assert.ok(env.html.indexOf("全くそう思わない") < env.html.indexOf("とてもそう思う"), "ボタンも左から右へ");
 });
+
+test("相性カード: 自分と相手のアバターを並べ、相性の理由を表示する", () => {
+  const env = boot({ hash: "#SAOR-" + "4".repeat(24) });
+  assert.match(env.html, /class="panel pair"/);
+  assert.match(env.html, /class="pair-me"/);
+  assert.match(env.html, /class="pair-you"/);
+  assert.match(env.html, /class="pair-reason"/);
+});
