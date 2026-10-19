@@ -1,0 +1,258 @@
+/* ---- デザイントークン ---- */
+:root{
+  /* 白樺のオフホワイト・炭・杉の赤・湖の青。グラデーションと影は使わず、1pxの罫線で区切る */
+  --bg:#F3F1EC;--surface:#FBFAF7;--surface2:#ECE8DF;--fg:#25292C;--sub:#5F6668;--line:#D6D1C5;
+  --hot:#B8432B;--cool:#3A7A93;--gold:#C9A96E;--accent:var(--hot);--on-accent:#fff;
+  --radius:4px;--shadow:none;
+  --font:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.75;font-size:16px;font-variant-numeric:tabular-nums}
+a{color:inherit}
+main{flex:1 0 auto;width:100%;max-width:760px;margin:0 auto;padding:8px 16px 24px}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{font-weight:600;letter-spacing:.04em}
+h1,h2{text-wrap:balance}
+ul{margin:0;padding:0;list-style:none}
+button{font:inherit;cursor:pointer;color:inherit}
+img{max-width:100%}
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.avatar{display:block;margin:0 auto;height:auto}
+.sub{color:var(--sub)}
+.icon{width:1.15em;height:1.15em;flex:none;vertical-align:-.2em}
+[data-focus]:focus{outline:none}
+:focus-visible{outline:3px solid var(--cool);outline-offset:3px;border-radius:var(--radius)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+/* ---- ヘッダー・フッター ---- */
+.top{width:100%;max-width:760px;margin:0 auto;padding:14px 16px 6px}
+.brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:1rem;letter-spacing:.14em;text-transform:uppercase}
+.brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:2px;color:var(--bg);background:var(--fg)}
+.brand-mark .icon{width:20px;height:20px}
+/* フッターはページ最下部に小さく控えめに（短い画面でも下に寄せる） */
+.foot{width:100%;max-width:760px;margin:auto auto 0;padding:24px 16px 14px;color:var(--sub);font-size:.68rem;line-height:1.6;text-align:center;opacity:.8}
+.foot p{margin:2px 0}
+body[data-scene="ritual"] .foot{opacity:.5}
+
+/* ---- ボタン ---- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:var(--accent);color:var(--on-accent);border:1.5px solid var(--accent);border-radius:var(--radius);padding:12px 26px;font-weight:600;letter-spacing:.06em;transition:background .15s,color .15s,border-color .15s}
+@media (hover:hover){.btn:hover{background:var(--fg);border-color:var(--fg);color:#fff}}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+@media (hover:hover){.btn.ghost:hover{background:transparent;color:var(--fg);border-color:var(--fg)}}
+.btn.lg{padding:16px 36px;font-size:1.05rem}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:28px}
+
+/* ---- トップ ---- */
+.hero{position:relative;overflow:hidden;text-align:center;color:#fff;margin-top:8px;padding:48px 20px 44px;border-radius:var(--radius);background:linear-gradient(rgba(28,32,34,.58),rgba(28,32,34,.58)),url(assets/photos/loyly.jpg) center/cover}
+.intro{margin-top:0}
+.nb{display:inline-block}
+.eyebrow{display:inline-block;padding:3px 12px;border:1px solid rgba(255,255,255,.7);border-radius:2px;color:#fff;font-weight:600;font-size:.78rem;letter-spacing:.18em}
+.hero h1{font-size:clamp(1.8rem,6.5vw,2.8rem);line-height:1.35;margin:18px 0 14px;font-weight:600}
+.hero .lead{color:rgba(255,255,255,.88);max-width:34em;margin:0 auto 26px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 0}
+.steps li{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 8px;font-size:.85rem;font-weight:600}
+.steps b{display:block;margin-bottom:4px;font-size:1.1rem;font-weight:600;letter-spacing:.12em;color:var(--accent)}
+.types{margin-top:32px}
+.types>h2{font-size:1.4rem;text-align:center;margin-bottom:4px}
+.types>.sub{text-align:center;margin-bottom:20px}
+.tgroup{margin-top:22px}
+.tgroup h3{display:flex;align-items:center;gap:8px;font-size:1rem}
+.tgroup h3::before{content:"";width:12px;height:12px;border-radius:2px;background:var(--group)}
+.tgroup h3 span{color:var(--sub);font-weight:400;font-size:.85rem}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.tcard{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--group);border-radius:var(--radius);padding:8px 4px 10px;text-align:center;font-size:.75rem;font-weight:700;line-height:1.35}
+.tcard .avatar{width:100%;max-width:96px}
+@media (max-width:480px){.tgrid{grid-template-columns:repeat(2,1fr)}.tcard{font-size:.85rem}.tcard .avatar{max-width:120px}}
+
+/* ---- 質問 ---- */
+.quiz{padding-top:20px}
+.quizhead{display:flex;align-items:center;gap:14px}
+.progress{width:40px;flex:none}
+.hg{display:block;width:100%;height:auto;overflow:visible}
+.hg .glass{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round}
+.hg .sand-top,.hg .sand-bot{fill:var(--hot);transition:transform .7s cubic-bezier(.4,0,.2,1)}
+.hg .sand-top{transform:translateY(calc(var(--p) * 30px))}
+.hg .sand-bot{transform:translateY(calc((1 - var(--p)) * 30px))}
+.hg .stream{stroke:var(--hot);stroke-width:1.5;stroke-dasharray:3 3;animation:sand-fall .5s linear infinite}
+@keyframes sand-fall{to{stroke-dashoffset:-6}}
+/* 問題番号は薄く大きな数字(欧文セリフ)+小さな「/ 24」。室温も同じ書体に揃える */
+.count{display:flex;align-items:baseline;gap:8px;margin:0;color:var(--gold)}
+.count .no{font-family:"Iowan Old Style",Palatino,Georgia,"Noto Serif",serif;font-size:2.1rem;font-weight:400;line-height:1;letter-spacing:.02em}
+.count .of{color:var(--sub);font-size:.78rem;letter-spacing:.14em}
+.q{font-size:clamp(1.2rem,4.6vw,1.55rem);line-height:1.9;font-weight:400;letter-spacing:.06em;min-height:5.7em;margin:24px 0 16px;display:flex;align-items:flex-start;animation:q-in .3s cubic-bezier(.2,.7,.2,1)}
+/* 質問の入場: 小さな移動と軽いぼかしがほどけるだけ(.q のみ・300ms)。blur は from 側だけなので、動きを減らす設定でも残らない */
+@keyframes q-in{from{opacity:0;transform:translateY(4px);filter:blur(3px)}}
+.count .no{animation:no-in .3s ease-out}
+@keyframes no-in{from{opacity:0}}
+/* 回答: サウナハット。サウナ室前の板壁のフックに、紐で吊るされている。強い回答ほど大きく、右ほど「そう思う」(赤)。選択中は輪郭が付いて揺れる */
+.scale{position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin:16px 0 8px;padding:34px 10px 22px}
+.scale::before{content:"";position:absolute;left:0;right:0;top:30px;height:8px;border-radius:4px;background:linear-gradient(180deg,#D2BA84,#B39A66 38%,#7C6A44);box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 3px 4px rgba(0,0,0,.45)}
+.opt{position:relative;display:block;box-sizing:content-box;padding:18px 0 0;border:0;color:var(--hat);flex:none;transform-origin:50% 0;
+  background:linear-gradient(#B79C66,#B79C66) 50% 0/2px 18px no-repeat,radial-gradient(circle at 50% 0,#C9A96E 0 4.5px,transparent 5px) no-repeat;transition:transform .18s ease-out,opacity .2s}
+.opt::before{content:"";position:absolute;inset:-6px -2px -2px}/* タップ領域を広げる(見た目は変えない) */
+.opt .hat{display:block;width:100%;height:auto;overflow:visible}
+.opt .dome{fill:currentColor}
+.opt .fold{fill:currentColor;filter:brightness(.8)}
+.opt .shade{fill:url(#felt)}
+.opt::after{content:"";position:absolute;left:14%;right:-8%;bottom:-9px;height:11px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.5),transparent 70%);pointer-events:none}
+.opt .seam{fill:none;stroke:var(--seam,rgba(0,0,0,.3));stroke-width:1.5;stroke-dasharray:3 3}
+.opt .num{fill:var(--num,#25292C);font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.opt:nth-child(1){width:76px;--hat:#5F7C8D;--num:#F3EDE4;--seam:rgba(255,255,255,.5)}
+.opt:nth-child(2){width:64px;--hat:#8FA8B5}
+.opt:nth-child(3){width:54px;--hat:#CDC3B2}
+.opt:nth-child(4){width:64px;--hat:#C88B6E}
+.opt:nth-child(5){width:76px;--hat:#A5513A;--num:#F3EDE4;--seam:rgba(255,255,255,.5)}
+@media (hover:hover){.opt:hover{animation:swing 1s ease-out}}
+@keyframes swing{15%{transform:rotate(6deg)}35%{transform:rotate(-4.5deg)}55%{transform:rotate(3deg)}75%{transform:rotate(-1.5deg)}}
+.opt:active{transform:scale(.96)}
+.opt.on{animation:swing 1.4s ease-out}
+.opt.on .dome,.opt.on .fold{stroke:var(--gold);stroke-width:1.6;stroke-linejoin:round} /* 選択中は金の細いリング(色以外の手がかりも兼ねる) */
+.scale:has(.opt.on) .opt:not(.on){opacity:.75}
+.labels{display:flex;justify-content:space-between;font-size:.78rem;font-weight:500;letter-spacing:.12em;padding:0 6px}
+.labels .agree{color:#C88B6E}
+.labels .disagree{color:#8FA8B5}
+.keyhint{display:none;color:var(--sub);font-size:.7rem;letter-spacing:.1em;text-align:center;margin-top:14px;opacity:.8}
+@media (hover:hover) and (pointer:fine){.keyhint{display:block}} /* キー操作のヒントは、マウス/キーボードの環境だけ */
+@media (max-width:480px){.scale{gap:2px;padding-left:6px;padding-right:6px}.opt:nth-child(1),.opt:nth-child(5){width:58px}.opt:nth-child(2),.opt:nth-child(4){width:52px}.opt:nth-child(3){width:46px}}
+
+/* ---- 結果 ---- */
+.result{--group:var(--accent);padding-top:12px}
+/* 入館証: 写真の帯＋紙のカード。タイプコードは4枚の札が順に掛かり、グループはゴム印で押される */
+.pass{position:relative;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:0 16px 30px;overflow:hidden}
+.pass-band{display:flex;justify-content:space-between;align-items:flex-start;height:150px;margin:0 -16px;padding:12px 16px;color:#fff;font-size:.75rem;font-weight:600;letter-spacing:.22em;background:linear-gradient(color-mix(in srgb,color-mix(in srgb,var(--group) 55%,#000) 88%,transparent),color-mix(in srgb,color-mix(in srgb,var(--group) 55%,#000) 88%,transparent)),var(--photo) center/cover}
+.pass .avatar{position:relative;width:min(190px,52vw);height:auto;margin-top:-92px;border-radius:50%;border:4px solid var(--surface);background:var(--surface)}
+.code{display:flex;justify-content:center;gap:8px;margin:18px 0 6px}
+.code li{flex:1 1 0;min-width:0;max-width:78px;padding:7px 4px 8px;border:1.5px solid var(--fg);border-radius:var(--radius);background:var(--bg);transform-origin:50% -10px;animation:hang .6s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(var(--i) * .16s + .2s)}
+.code b{display:block;font-size:1.7rem;font-weight:600;line-height:1.1}
+.code small{display:block;margin-top:3px;font-size:.6rem;letter-spacing:-.02em;line-height:1.3;color:var(--sub)}
+@keyframes hang{from{opacity:0;transform:translateY(-18px) rotate(-8deg)}}
+.pass h1{font-size:clamp(2rem,8vw,2.8rem);line-height:1.25;margin:10px 0 2px}
+.pass .en{color:var(--sub);font-weight:600;letter-spacing:.08em}
+.pass .tagline{margin-top:6px}
+.group{margin-top:10px;color:var(--sub);font-size:.85rem}
+.stamp{position:absolute;right:14px;top:46px;padding:3px 10px;border:2px solid var(--group);border-radius:2px;background:color-mix(in srgb,var(--surface) 92%,transparent);color:var(--fg);font-size:.8rem;font-weight:600;letter-spacing:.12em;transform:rotate(-9deg);animation:stamp .5s cubic-bezier(.2,1.5,.4,1) 1.1s both}
+@keyframes stamp{from{opacity:0;transform:rotate(-9deg) scale(2)}}
+.result .lead{margin:22px 4px 6px;padding-left:14px;border-left:3px solid var(--group);font-size:1.05rem}
+.panel{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 20px}
+.panel h2{font-size:1.05rem;margin-bottom:12px;padding-left:10px;border-left:3px solid var(--group)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.grid2 .panel{margin-top:0}
+@media (max-width:600px){.grid2{grid-template-columns:1fr}}
+.list li{position:relative;padding-left:1.4em;margin:6px 0}
+.list li::before{content:"";position:absolute;left:.2em;top:.75em;width:7px;height:7px;border-radius:1px;background:var(--group)}
+.bar{margin:16px 0}
+.bar .title{font-size:.8rem;color:var(--sub);font-weight:700;margin-bottom:4px}
+.bar .row{display:flex;justify-content:space-between;gap:8px;font-size:.9rem;margin-bottom:6px}
+.bar .row .win{font-weight:800;color:var(--fg)}
+.bar .row span:not(.win){color:var(--sub)}
+.bar .track{height:10px;border-radius:2px;overflow:hidden;background:var(--cool)}
+.bar .fill{height:100%;background:var(--hot)}
+.spots{display:grid;gap:12px}
+.spot{padding:14px 16px;border-radius:2px;background:var(--surface2);border-left:4px solid var(--group)}
+.spot strong{font-size:1.05rem}
+.spot .vibe{display:inline-block;margin:4px 0 2px;font-size:.8rem;font-weight:700;color:var(--fg);background:color-mix(in srgb,var(--group) 22%,transparent);padding:0 10px;border-radius:2px}
+.spot .note{display:block;color:var(--sub);font-size:.9rem}
+.note-small{margin-top:12px;color:var(--sub);font-size:.8rem}
+.match{display:flex;align-items:center;gap:14px}
+.match .avatar{width:72px;height:72px;border-radius:50%;border:3px solid var(--group)}
+.match strong{font-size:1.1rem}
+.disclaimer{margin-top:24px;text-align:center;color:var(--sub);font-size:.8rem}
+
+/* ---- ため演出: 暗い所から明るい所へ。ゆっくり呼吸するように、背景のグラデーションの色が変わるだけ（水風呂 → 休憩 → 外気浴 → 整い） ---- */
+@property --g1{syntax:"<color>";inherits:false;initial-value:#0A1F2C}
+@property --g2{syntax:"<color>";inherits:false;initial-value:#153B4F}
+.ritual{--g1:#0A1F2C;--g2:#153B4F;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;min-height:min(78vh,620px);margin-top:12px;border-radius:var(--radius);color:#fff;background:linear-gradient(180deg,var(--g1),var(--g2));transition:--g1 3.4s ease,--g2 3.4s ease,color 3s ease}
+.ritual.s1{--g1:#17475E;--g2:#2D7590}
+.ritual.s2{--g1:#6FA9BE;--g2:#BCD9E2;color:#25292C}
+.ritual.s3{--g1:#DCE9EA;--g2:#F1F4F0;color:#25292C}
+.r-scene{position:absolute;inset:0;pointer-events:none}
+/* 呼吸する光: ゆっくり膨らんで縮む、やわらかなグラデーションの光だけ */
+.orb{position:absolute;left:50%;top:50%;width:150%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(225,242,250,.34),rgba(225,242,250,0) 62%);transform:translate(-50%,-50%) scale(.75);animation:breathe 7s ease-in-out infinite alternate}
+@keyframes breathe{to{transform:translate(-50%,-50%) scale(1.15);opacity:.6}}
+/* 「回答を分析しています」と一言: 主張しないよう、小さく・うっすら・ゆっくりフェードで切り替える */
+.r-status{position:relative;z-index:1;padding:0 28px}
+.r-title{margin:0 0 10px;font-size:.78rem;letter-spacing:.35em;padding-left:.35em;opacity:.55}
+.r-line{margin:0;font-size:.95rem;letter-spacing:.1em;opacity:.7}
+.s0 .r-line,.s2 .r-line{animation:soft-a 2.2s ease-out both}
+.s1 .r-line,.s3 .r-line{animation:soft-b 2.2s ease-out both}
+@keyframes soft-a{from{opacity:0}}
+@keyframes soft-b{from{opacity:0}}
+/* スキップは誤操作を避けるため、カード右下の小さな文字リンクにする */
+.skip{position:absolute;right:4px;bottom:2px;z-index:2;padding:10px 12px;border:0;background:none;color:inherit;font-size:.7rem;letter-spacing:.06em;text-decoration:underline;text-underline-offset:3px;opacity:.55;cursor:pointer}
+.skip:hover{opacity:.9}
+
+/* ---- シェア用画像 ---- */
+.share-img{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface2)}
+.share .actions{margin-top:16px}
+
+/* ---- 質問中: 暗いサウナ室で我慢する。進捗に応じて熱気(--heat)が増し、半分でロウリュが入る ---- */
+@property --heat{syntax:"<number>";inherits:true;initial-value:0}
+body{transition:--heat 1s ease,background-color .8s ease,color .8s ease}
+/* 質問画面の配色は3トーン: 炭(ウォームブラック)／金1色／残り火1色(＋くすんだ青) */
+body[data-scene="quiz"],body[data-scene="ritual"]{color-scheme:dark;--bg:#161210;--surface:#211B18;--surface2:#2B2421;--fg:#EFE6DA;--sub:#A89C90;--line:#3A312C;--hot:#D9663E;--cool:#7F9DAE}
+body[data-scene="quiz"] :focus-visible{outline-color:var(--gold)}
+body[data-scene="quiz"] .brand-mark{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+body[data-scene="quiz"]{background:radial-gradient(120% 70% at 50% 118%,rgba(228,105,60,.14),transparent 62%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55 0.012' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 .92  0 0 0 0 .82  0 0 0 .9 -.25'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E"),repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 2px,transparent 2px 54px),var(--bg)} /* 板壁: ごく薄い木目(静的な小タイル)と板目 */
+body[data-scene="quiz"]::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.5));animation:endure 6s ease-in-out infinite alternate}
+@keyframes endure{from{opacity:.55}to{opacity:1}}
+body[data-scene="quiz"][data-loyly]::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(255,236,215,.09),transparent 55%);animation:haze 7s ease-in-out infinite alternate}
+@keyframes haze{from{transform:translateY(-2%)}to{transform:translateY(3%)}}
+.temp{margin:0 0 0 auto;font-family:"Iowan Old Style",Palatino,Georgia,"Noto Serif",serif;font-size:1.5rem;font-weight:400;letter-spacing:.04em;color:var(--sub)}
+.fx{position:fixed;inset:0;z-index:20;overflow:hidden;pointer-events:none;display:none}
+.fx.on{display:block}
+.fx.on::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(255,190,130,.3),transparent 62%);animation:flash 1.8s ease-out .8s both}
+@keyframes flash{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
+/* オートロウリュ: ストーブ上のアームのノズルから石にミストが吹き、石から蒸気が少し立つ。動きはすべてストーブ周辺（画面下部）に収める */
+.auto{position:absolute;left:50%;bottom:42px;width:min(100%,560px);aspect-ratio:480/192;transform:translateX(-50%)}
+/* 噴出口(ノズル先端)から霧がふわっと広がり、石の上へ降りて消える。縞や水滴のような線は使わない */
+.puff{position:absolute;left:50%;top:16%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:radial-gradient(circle,rgba(240,248,255,.75),rgba(240,248,255,0) 68%);filter:blur(5px);opacity:0;animation:puff 1.5s ease-out 2 both}
+.m1{animation-delay:.2s}.m2{animation-delay:.3s;--dx:-16px}.m3{animation-delay:.4s;--dx:16px}.m4{animation-delay:.5s;--dx:-30px}.m5{animation-delay:.6s;--dx:30px}.m6{animation-delay:.7s}
+@keyframes puff{0%{transform:translate(0,0) scale(.25);opacity:0}25%{opacity:.85}100%{transform:translate(var(--dx,0px),74px) scale(2.4);opacity:0}}
+.steam-burst{position:absolute;top:22%;width:150px;height:150px;margin-left:-75px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0) 68%);filter:blur(10px);opacity:0;animation:burst 2.4s ease-out 1s forwards}
+.b1{left:36%}.b2{left:50%;animation-delay:1.15s}.b3{left:64%;animation-delay:1.3s}
+@keyframes burst{0%{transform:translateY(0) scale(.5);opacity:0}30%{opacity:.5}100%{transform:translateY(-90px) scale(1.4);opacity:0}}
+
+/* ---- 整いタイム: 結果確認中の、穏やかでスピリチュアルな時間（Apple Watch のマインドフルネスを参考に） ---- */
+body[data-scene="result"]{overflow-x:clip;background:radial-gradient(62% 42% at 18% 8%,rgba(196,181,253,.55),transparent 70%),radial-gradient(60% 45% at 88% 26%,rgba(125,211,252,.42),transparent 70%),radial-gradient(75% 50% at 50% 100%,rgba(253,186,170,.5),transparent 70%),linear-gradient(180deg,#F5F1FB,#E9F2F6);background-attachment:fixed}
+/* 呼吸する花びら: 8枚の半透明の円が、ゆっくり開いて閉じながら回る。色はタイプのグループ色 */
+/* 花びら: 全体の背景にうっすら置くだけ。薄く、ゆっくり開閉して回る。色はタイプのグループ色 */
+.bloom{position:fixed;left:50%;top:42vh;z-index:-1;width:min(150vw,780px);aspect-ratio:1;margin:calc(min(150vw,780px) / -2) 0 0 calc(min(150vw,780px) / -2);opacity:.4;pointer-events:none;animation:bloom-turn 180s linear infinite}
+.bloom i{position:absolute;inset:0;margin:auto;width:54%;height:54%;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);background:radial-gradient(circle at 50% 36%,color-mix(in srgb,var(--group) 38%,transparent),color-mix(in srgb,var(--group) 8%,transparent) 75%);transform:rotate(var(--r)) translateY(-24%) scale(.9);animation:petal 9s ease-in-out infinite alternate}
+@keyframes bloom-turn{to{transform:rotate(360deg)}}
+@keyframes petal{from{transform:rotate(var(--r)) translateY(-8%) scale(.62)}to{transform:rotate(var(--r)) translateY(-34%) scale(.98)}}
+.tototime{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 14px;color:var(--sub);font-size:.8rem;font-weight:600;letter-spacing:.4em}
+.tototime::before,.tototime::after{content:"";width:34px;height:1px;background:currentColor;opacity:.6}
+
+/* カードは少し透けるガラス調にして、背景の花びらがやわらかく見えるように（結果表示の間だけ） */
+body[data-scene="result"] .pass{background:color-mix(in srgb,var(--surface) 80%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+body[data-scene="result"] .panel{background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+
+/* ---- 質問ページ下部のサウナストーン: 熱気(--heat)に応じて足元が赤く光る ---- */
+.stones-deco{--stones-h:192px;display:none;position:fixed;left:0;right:0;bottom:42px;height:var(--stones-h);z-index:-1;pointer-events:none}
+body[data-scene="quiz"] .stones-deco{display:block}
+/* 石の熱が壁を下から照らす光: 熱気(--heat)は opacity だけで表現する(再描画を避ける) */
+.stones-deco::after{content:"";position:fixed;z-index:-1;left:0;right:0;bottom:0;height:70vh;background:radial-gradient(120% 70% at 50% 118%,rgba(228,105,60,.34),transparent 62%);opacity:var(--heat);transform-origin:50% 100%;animation:wash-sway 7s ease-in-out infinite alternate;will-change:transform,opacity;pointer-events:none}
+.stones-deco::before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--stones-h);background:radial-gradient(ellipse at 50% 100%,rgba(240,110,50,calc(.2 + var(--heat) * .45)),transparent 70%);transform-origin:50% 100%;animation:glow-sway 3.7s ease-in-out infinite alternate;will-change:transform,opacity}
+.stones-deco svg{position:absolute;left:50%;bottom:0;width:min(100%,560px);height:auto;aspect-ratio:480/192;transform:translateX(-50%);overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+/* 石は輪郭線でなく、上面だけに当たる残り火のリムライト。石の隙間には熱気に応じて残り火がのぞく */
+.rim{fill:rgba(255,160,95,calc(.04 + var(--heat) * .2))}
+.ember{fill:url(#emb);opacity:calc(.25 + var(--heat) * .75)}
+/* ストーブ周辺のあかり: たき火のようにゆっくりゆらゆら揺れる。合成レイヤー(will-change)の transform/opacity だけで動かし、周期をずらして単調にしない */
+@keyframes glow-sway{from{opacity:.86;transform:scaleX(.96)}to{opacity:1;transform:scaleX(1.05)}}
+@keyframes wash-sway{from{transform:scale(1) translateY(0)}to{transform:scale(1.06) translateY(-1.5%)}}
+
+/* 質問画面のフッターは画面最下部に固定（石の上に小さく重ねる）。本文が隠れないよう main に余白 */
+body[data-scene="quiz"] .foot{position:fixed;left:0;right:0;bottom:0;z-index:5;width:auto;max-width:none;margin:0;padding:18px 12px calc(6px + env(safe-area-inset-bottom));color:var(--sub);font-size:.62rem;opacity:.42;background:linear-gradient(transparent,rgba(12,9,8,.82) 55%)} /* ライセンス表記は目立たないよう、小さく薄く */
+body[data-scene="quiz"] main{padding-bottom:64px}
+/* 「戻る」は枠なしの控えめなテキストリンク。タップ領域は44px以上 */
+body[data-scene="quiz"] #back{min-height:44px;padding:10px 12px;border:0;background:none;color:var(--sub);font-weight:500;letter-spacing:.14em;text-shadow:0 1px 8px rgba(0,0,0,.85)}
+@media (hover:hover){body[data-scene="quiz"] #back:hover{background:none;color:var(--fg)}}
+/* ヘッダー(砂時計・問題番号・室温)は細い線でそろえる */
+body[data-scene="quiz"] .quizhead{padding-bottom:14px;border-bottom:1px solid var(--line)}
+
+/* 質問画面の余白: 左右を広げ、縦は8の倍数でそろえる */
+body[data-scene="quiz"] .top,body[data-scene="quiz"] main{padding-left:24px;padding-right:24px}
+body[data-scene="quiz"] .quiz{padding-top:16px}
+body[data-scene="quiz"] .quizhead{margin-bottom:8px}
