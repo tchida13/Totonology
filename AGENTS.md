@@ -10,10 +10,11 @@ Totonology 開発における AI エージェント・人間共通の作業ル�
 | ファイル | 役割 |
 |---|---|
 | `js/data.js` | 軸・質問・16タイプの定義（文言の編集はここ） |
-| `js/score.js` | スコア計算・タイプ判定（DOM非依存。ブラウザ/Node両対応） |
+| `js/score.js` | スコア計算・タイプ判定・おすすめ施設の選定(`recommend`)（DOM非依存。ブラウザ/Node両対応） |
 | `js/share.js` | 結果のシェア用画像(canvas)の描画。`draw` は描画命令のみでテスト可能 |
 | `js/app.js` | 画面遷移・描画 |
 | `scripts/collect-site.sh` | Pages 公開ファイルを集めるスクリプト（deploy.yml と ci.yml が共用。assets/ を追加したらここも確認） |
+| `scripts/check-spots.js` | 施設データの公式URLの死活確認(手動実行・CIには入れない)。`node scripts/check-spots.js [--stale 12]` |
 | `test/` | `node --test` で実行するテスト（外部依存なし） |
 | `style.css` | スタイル（ライトテーマ。演出は prefers-reduced-motion で停止） |
 | `index.html` | エントリポイント |

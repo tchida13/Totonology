@@ -154,6 +154,10 @@ body[data-scene="ritual"] .foot{opacity:.5}
 .spot strong{font-size:1.05rem}
 .spot .vibe{display:inline-block;margin:4px 0 2px;font-size:.8rem;font-weight:700;color:var(--fg);background:color-mix(in srgb,var(--group) 22%,transparent);padding:0 10px;border-radius:2px}
 .spot .note{display:block;color:var(--sub);font-size:.9rem}
+.spot .kind{display:inline-block;margin-left:4px;padding:0 8px;border:1px solid var(--line);border-radius:2px;color:var(--sub);font-size:.7rem;letter-spacing:.06em}
+.spot .kind.only{border-color:var(--hot);color:var(--hot)}
+.spot .links{display:flex;gap:16px;margin-top:8px;font-size:.85rem}
+.spot .links a{color:var(--fg);text-underline-offset:3px}
 .note-small{margin-top:12px;color:var(--sub);font-size:.8rem}
 /* 相性カード: 自分 ⇄ 相手を並べ、相手を大きく。相手のグループ色を縁に使う */
 .pair{border-top:3px solid var(--you)}

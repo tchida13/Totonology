@@ -55,21 +55,26 @@ test("match は自分以外の実在タイプを指す", () => {
   });
 });
 
-test("おすすめ施設: 各タイプに1〜2件の実在IDが紐づき、必須項目がある", () => {
+test("施設データ: 必須項目・親和度の範囲・都道府県・URL形式・確認日が正しい", () => {
   const SPOTS = window.SPOTS;
-  Object.entries(TYPES).forEach(([code, t]) => {
-    assert.ok(Array.isArray(t.spots) && t.spots.length >= 1 && t.spots.length <= 2, `${code}.spots`);
-    t.spots.forEach((id) => assert.ok(SPOTS[id], `${code}: ${id}`));
-    assert.equal(new Set(t.spots).size, t.spots.length, `${code} の施設が重複`);
-  });
+  const KINDS = ["サウナ専門", "銭湯", "スパ・健康ランド", "ホテル・カプセル", "宿泊・アウトドア", "温泉"];
   Object.entries(SPOTS).forEach(([id, sp]) => {
-    ["name", "area", "vibe", "note"].forEach((k) => assert.ok(sp[k], `${id}.${k}`));
+    ["name", "pref", "kind", "vibe", "note", "checked"].forEach((k) => assert.ok(sp[k], `${id}.${k}`));
+    assert.ok(/(都|道|府|県)$/.test(sp.pref), `${id}.pref=${sp.pref}`);
+    assert.ok(KINDS.includes(sp.kind), `${id}.kind=${sp.kind}`);
+    assert.match(sp.checked, /^\d{4}-\d{2}$/, `${id}.checked`);
+    AXES.forEach((ax) => {
+      const v = sp.axes && sp.axes[ax.id];
+      assert.ok(Number.isInteger(v) && v >= -2 && v <= 2, `${id}.axes.${ax.id}=${v}`);
+    });
+    if (sp.url) assert.match(sp.url, /^https:\/\/[^\s]+$/, `${id}.url`);
+    if (sp.only) assert.match(sp.only, /専用$/, `${id}.only`);
   });
+  assert.equal(Object.keys(SPOTS).length, new Set(Object.values(SPOTS).map((x) => x.name + x.pref)).size, "施設の重複");
 });
 
-test("すべての施設がいずれかのタイプから参照されている", () => {
-  const used = new Set(Object.values(TYPES).flatMap((t) => t.spots));
-  Object.keys(window.SPOTS).forEach((id) => assert.ok(used.has(id), id));
+test("types に手動の spots 紐づけが残っていない(施設は親和度から自動で選ぶ)", () => {
+  Object.entries(TYPES).forEach(([code, t]) => assert.equal(t.spots, undefined, code));
 });
 
 test("各タイプのキャラクター画像があり、所属グループが定義されている", () => {
