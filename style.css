@@ -196,6 +196,11 @@ body[data-scene="ritual"] .foot{opacity:.5}
 /* ---- シェア用画像 ---- */
 .share-img{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface2)}
 .share .actions{margin-top:16px}
+.share-img[data-layout="portrait"]{aspect-ratio:1080/1350;max-width:340px;margin:0 auto}
+/* 画像サイズの切り替え(横長 / 縦長) */
+.seg{display:flex;gap:0;margin:0 0 12px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;width:max-content}
+.seg-btn{padding:8px 20px;border:0;background:transparent;color:var(--sub);font-size:.85rem;font-weight:600;letter-spacing:.08em}
+.seg-btn[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 
 /* ---- 質問中: 暗いサウナ室で我慢する。進捗に応じて熱気(--heat)が増し、半分でロウリュが入る ---- */
 @property --heat{syntax:"<number>";inherits:true;initial-value:0}

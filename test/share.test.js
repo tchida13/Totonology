@@ -6,7 +6,9 @@ const Share = require("../js/share.js");
 function recorder() {
   const calls = [], props = {};
   const ctx = new Proxy(props, {
-    get: (t, k) => (k in t ? t[k] : k === "measureText" ? (s) => ({ width: String(s).length * 20 }) : (...a) => calls.push([k, ...a])),
+    get: (t, k) => (k in t ? t[k] : k === "measureText" ? (s) => ({ width: String(s).length * 20 })
+      : k === "createLinearGradient" || k === "createRadialGradient" ? () => ({ addColorStop() {} })
+      : (...a) => calls.push([k, ...a])),
     set: (t, k, v) => { t[k] = v; return true; },
   });
   return { ctx, calls };
@@ -19,25 +21,42 @@ const spec = {
 };
 const texts = (calls) => calls.filter((c) => c[0] === "fillText").map((c) => c[1]);
 
-test("シェア画像: タイプ名・コード4文字・英名・グループ・サイトURLを描く", () => {
-  const { ctx, calls } = recorder();
-  Share.draw(ctx, spec, { avatar: img(240, 240), photo: img(1600, 900) });
-  const t = texts(calls);
-  ["瞑想家", "The Meditator", "S", "A", "O", "R", "静寂派タイプ", "tchida13.github.io/Totonology"].forEach((x) => assert.ok(t.includes(x), x));
-  assert.ok(t.some((x) => x.startsWith("穏やかな")), "キャッチコピー");
-  assert.equal(calls.filter((c) => c[0] === "drawImage").length, 2); // 写真とアバター
+const LAYOUTS = ["landscape", "portrait"];
+
+test("シェア画像: タイプ名・コード4文字・英名・グループ・サイトURLを描く(横長・縦長とも)", () => {
+  LAYOUTS.forEach((layout) => {
+    const { ctx, calls } = recorder();
+    Share.draw(ctx, spec, { avatar: img(240, 240), photo: img(1600, 900) }, layout);
+    const t = texts(calls);
+    ["瞑想家", "The Meditator", "S", "A", "O", "R", "静寂派タイプ", "tchida13.github.io/Totonology", "SAUNA PASS", "TOTONOLOGY"].forEach((x) => assert.ok(t.includes(x), `${layout}: ${x}`));
+    assert.ok(t.some((x) => x.startsWith("穏やかな")), `${layout}: キャッチコピー`);
+    assert.equal(calls.filter((c) => c[0] === "drawImage").length, 2, `${layout}: 写真とアバター`);
+  });
 });
 
 test("シェア画像: 写真がなくても描ける。回答のハッシュ(結果URL)は含めない", () => {
-  const { ctx, calls } = recorder();
-  Share.draw(ctx, spec, { avatar: img(240, 240), photo: null });
-  assert.equal(calls.filter((c) => c[0] === "drawImage").length, 1);
-  assert.ok(texts(calls).every((x) => !x.includes("#") && !/[0-4]{24}/.test(x)));
+  LAYOUTS.forEach((layout) => {
+    const { ctx, calls } = recorder();
+    Share.draw(ctx, spec, { avatar: img(240, 240), photo: null }, layout);
+    assert.equal(calls.filter((c) => c[0] === "drawImage").length, 1);
+    assert.ok(texts(calls).every((x) => !x.includes("#") && !/[0-4]{24}/.test(x)));
+  });
 });
 
-test("シェア画像: 長いキャッチコピーは折り返して2行まで、キャンバスは1200x630", () => {
-  const { ctx, calls } = recorder();
-  Share.draw(ctx, { ...spec, tagline: "あ".repeat(80) }, { avatar: img(1, 1), photo: null });
-  assert.equal(texts(calls).filter((x) => x.startsWith("あ")).length, 2);
-  assert.deepEqual([Share.W, Share.H], [1200, 630]);
+test("シェア画像: 長いキャッチコピーは折り返し(横長は2行・縦長は3行まで)。サイズは 1200x630 / 1080x1350", () => {
+  [["landscape", 2], ["portrait", 3]].forEach(([layout, max]) => {
+    const { ctx, calls } = recorder();
+    Share.draw(ctx, { ...spec, tagline: "あ".repeat(120) }, { avatar: img(1, 1), photo: null }, layout);
+    assert.equal(texts(calls).filter((x) => x.startsWith("あ")).length, max, layout);
+  });
+  assert.deepEqual([Share.SIZES.landscape.w, Share.SIZES.landscape.h], [1200, 630]);
+  assert.deepEqual([Share.SIZES.portrait.w, Share.SIZES.portrait.h], [1080, 1350]);
+});
+
+test("シェア画像: 金の細い外枠(二重線)を描く", () => {
+  LAYOUTS.forEach((layout) => {
+    const { ctx, calls } = recorder();
+    Share.draw(ctx, spec, { avatar: img(240, 240), photo: null }, layout);
+    assert.ok(calls.filter((c) => c[0] === "strokeRect").length >= 2, layout);
+  });
 });

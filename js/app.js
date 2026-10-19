@@ -204,9 +204,9 @@
   }
 
   // 結果のシェア用画像を canvas で生成してプレビューし、保存・共有できるようにする（失敗したらセクションごと隠す）
-  let shareObjectUrl = "";
+  let shareUrls = []; // 生成した画像の object URL(横長・縦長)。画面を離れるときに解放する
   let shareSeq = 0; // 生成の世代。結果が切り替わったら古い生成結果を捨てる
-  const freeShareUrl = () => { if (shareObjectUrl) { URL.revokeObjectURL(shareObjectUrl); shareObjectUrl = ""; } };
+  const freeShareUrl = () => { shareUrls.forEach((u) => URL.revokeObjectURL(u)); shareUrls = []; };
   function shareImage(code, t, grp, sc, text) {
     const seq = ++shareSeq;
     const spec = {
@@ -214,22 +214,40 @@
       letters: sc.map((x) => x.ax[x.side]), siteLabel: SITE_URL.replace(/^https?:\/\//, "").replace(/\/$/, ""),
       avatarSrc: `assets/characters/${code}.svg`, photoSrc: grp.photo,
     };
-    window.ShareImage.render(spec).then((blob) => {
+    // 横長(1200x630)と縦長(1080x1350)を両方作り、切り替えて保存・共有できるようにする
+    Promise.allSettled([window.ShareImage.render(spec, "landscape"), window.ShareImage.render(spec, "portrait")]).then(([landR, portR]) => {
+      if (landR.status !== "fulfilled") throw landR.reason; // 横長が作れなければ全体を隠す(縦長だけ失敗した場合は横長のみで続行)
+      const land = landR.value, port = portR.status === "fulfilled" ? portR.value : null;
       if (seq !== shareSeq || view !== "result" || !document.getElementById("share")) return; // 生成中に画面や結果が変わった
       freeShareUrl();
-      shareObjectUrl = URL.createObjectURL(blob);
-      document.getElementById("share-img").src = shareObjectUrl;
-      document.getElementById("save-img").hidden = false;
-      document.getElementById("save-img").onclick = () => {
+      const items = { landscape: { blob: land, name: `totonology-${code}.png`, w: 1200, h: 630 } };
+      if (port) items.portrait = { blob: port, name: `totonology-${code}-portrait.png`, w: 1080, h: 1350 };
+      Object.values(items).forEach((it) => { it.url = URL.createObjectURL(it.blob); shareUrls.push(it.url); });
+      let cur = "landscape";
+      const img = document.getElementById("share-img");
+      const show = (k) => {
+        cur = k;
+        img.src = items[k].url; img.width = items[k].w; img.height = items[k].h;
+        img.dataset.layout = k;
+        document.getElementById("size-l").setAttribute("aria-pressed", String(k === "landscape"));
+        document.getElementById("size-p").setAttribute("aria-pressed", String(k === "portrait"));
+      };
+      document.getElementById("size-l").onclick = () => show("landscape");
+      document.getElementById("size-p").onclick = () => show("portrait");
+      show("landscape");
+      document.getElementById("share-size").hidden = !port; // 縦長が無ければ切り替えは出さない
+      const save = document.getElementById("save-img");
+      save.hidden = false;
+      save.onclick = () => {
         const a = document.createElement("a");
-        a.href = shareObjectUrl; a.download = `totonology-${code}.png`;
+        a.href = items[cur].url; a.download = items[cur].name;
         a.click();
       };
-      const file = new File([blob], `totonology-${code}.png`, { type: "image/png" });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      const toFile = (it) => new File([it.blob], it.name, { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [toFile(items.landscape)] })) {
         const b = document.getElementById("share-files");
         b.hidden = false;
-        b.onclick = () => navigator.share({ files: [file], text: `${text} ${SITE_URL}` }).catch(() => {}); // キャンセルは無視
+        b.onclick = () => navigator.share({ files: [toFile(items[cur])], text: `${text} ${SITE_URL}` }).catch(() => {}); // キャンセルは無視
       }
     }).catch(() => { const sec = document.getElementById("share"); if (sec && seq === shareSeq) sec.hidden = true; }); // 失敗したらセクションごと隠す
   }
@@ -290,6 +308,7 @@
       <section class="panel"><h2>おすすめのサウナ</h2><p>${esc(t.sauna)}</p><ul class="spots" style="margin-top:14px">${spots}</ul>
         <p class="note-small">※ 営業状況・料金・利用条件は変わることがあります。訪問前に公式情報をご確認ください。</p></section>
       ${window.ShareImage ? `<section class="panel share" id="share"><h2>シェア用の画像</h2>
+        <div class="seg" id="share-size" role="group" aria-label="画像のサイズ" hidden><button class="seg-btn" id="size-l" aria-pressed="true">横長</button><button class="seg-btn" id="size-p" aria-pressed="false">縦長</button></div>
         <img class="share-img" id="share-img" alt="${esc(t.name)}の結果のシェア用画像" width="1200" height="630">
         <div class="actions"><button class="btn ghost" id="save-img" hidden>画像を保存</button><button class="btn ghost" id="share-files" hidden>画像つきでシェア</button></div>
         <p class="note-small">保存した画像は、結果をシェアする投稿に添付できます。</p></section>` : ""}
