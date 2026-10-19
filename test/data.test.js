@@ -41,6 +41,13 @@ test("各タイプの必須項目が埋まっている", () => {
   });
 });
 
+test("相性は全タイプが相互のペアで、理由文がある", () => {
+  Object.entries(TYPES).forEach(([code, t]) => {
+    assert.equal(TYPES[t.match].match, code, `${code} ⇄ ${t.match} は相互`);
+    assert.ok(t.matchReason && t.matchReason.length >= 20, `${code}.matchReason`);
+  });
+});
+
 test("match は自分以外の実在タイプを指す", () => {
   Object.entries(TYPES).forEach(([code, t]) => {
     assert.ok(TYPES[t.match], `${code}.match=${t.match}`);
