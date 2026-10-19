@@ -270,9 +270,13 @@
       return `<div class="bar"><div class="title">${esc(a.title)}</div><div class="row"><span class="${s.side === "first" ? "win" : ""}">${esc(a.first.label)} ${s.pct}%</span><span class="${s.side === "second" ? "win" : ""}">${100 - s.pct}% ${esc(a.second.label)}</span></div>
         <div class="track" role="img" aria-label="${esc(a.title)}: ${esc(a.first.label)} ${s.pct}%、${esc(a.second.label)} ${100 - s.pct}%"><div class="fill" style="width:${s.pct}%"></div></div></div>`;
     }).join("");
-    const spots = t.spots.map((id) => {
+    // おすすめ施設: 4軸の親和度から選ぶ。公式サイトは確認できたものだけ、地図検索のリンクは全施設に付ける
+    const spots = window.Score.recommend(code, SPOTS, AXES, 3).map((id) => {
       const sp = SPOTS[id];
-      return `<li class="spot"><strong>${esc(sp.name)}</strong> <span class="sub">${esc(sp.area)}</span><br><span class="vibe">${esc(sp.vibe)}</span><span class="note">${esc(sp.note)}</span></li>`;
+      const where = [sp.pref, sp.area].filter(Boolean).join(" ");
+      const map = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(sp.name + " " + where);
+      return `<li class="spot"><strong>${esc(sp.name)}</strong> <span class="sub">${esc(where)}</span> <span class="kind">${esc(sp.kind)}</span>${sp.only ? ` <span class="kind only">${esc(sp.only)}</span>` : ""}<br><span class="vibe">${esc(sp.vibe)}</span><span class="note">${esc(sp.note)}</span>
+        <span class="links">${sp.url ? `<a href="${esc(sp.url)}" target="_blank" rel="noopener">公式サイト</a>` : ""}<a href="${map}" target="_blank" rel="noopener">地図で見る</a></span></li>`;
     }).join("");
     const text = `私のサウナタイプは【${t.name}】(${code})でした！ #Totonology`;
     const shareUrl = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE_URL);

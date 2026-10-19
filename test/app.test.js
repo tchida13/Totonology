@@ -414,3 +414,16 @@ test("相性カード: 自分と相手のアバターを並べ、相性の理由
   assert.match(env.html, /class="pair-you"/);
   assert.match(env.html, /class="pair-reason"/);
 });
+
+test("おすすめ施設: 結果に3件表示され、全施設に地図リンクが付き、公式サイトは確認済みのものだけ", () => {
+  const env = boot({ hash: "#HWOR-" + "4".repeat(24) });
+  assert.equal((env.html.match(/class="spot"/g) || []).length, 3);
+  assert.equal((env.html.match(/地図で見る/g) || []).length, 3);
+  assert.match(env.html, /google\.com\/maps\/search\/\?api=1&query=/);
+  const items = env.html.match(/<li class="spot">[^]*?<\/li>/g) || [];
+  items.forEach((li) => { // 公式サイトのリンクは url のある施設だけに付く
+    const sp = Object.values(window.SPOTS).find((x) => li.includes(">" + x.name.replace(/&/g, "&amp;") + "<"));
+    assert.ok(sp, "表示された施設がデータにある");
+    assert.equal(li.includes(">公式サイト<"), Boolean(sp.url), sp.name);
+  });
+});

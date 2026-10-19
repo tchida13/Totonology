@@ -3,7 +3,8 @@ const assert = require("node:assert/strict");
 
 globalThis.window = globalThis;
 require("../js/data.js");
-const { scores, codeOf } = require("../js/score.js");
+const Score = require("../js/score.js");
+const { scores, codeOf } = Score;
 
 const Q = window.QUESTIONS, AXES = window.AXES, TYPES = window.TYPES;
 
@@ -143,4 +144,48 @@ test("order: 全質問を1回ずつ含み、同じ軸が連続しない", () => 
   assert.deepEqual([...o].sort((a, b) => a - b), Q.map((_, i) => i));
   o.slice(1).forEach((qi, k) => assert.notEqual(Q[qi].axis, Q[o[k]].axis));
   assert.deepEqual(o.slice(0, AXES.length).map((qi) => Q[qi].axis), AXES.map((ax) => ax.id));
+});
+
+// ---- おすすめ施設の選定 ----
+const AX = [
+  { id: "heat", first: { code: "H" }, second: { code: "S" } }, { id: "cool", first: { code: "W" }, second: { code: "A" } },
+  { id: "mate", first: { code: "O" }, second: { code: "T" } }, { id: "style", first: { code: "R" }, second: { code: "F" } },
+];
+const sp = (pref, heat, cool, mate, style) => ({ pref, axes: { heat, cool, mate, style } });
+
+test("recommend: 4軸の親和度がタイプに近い施設を上位から選ぶ", () => {
+  const spots = { a: sp("東京都", 2, 2, 2, 2), b: sp("東京都", -2, -2, -2, -2), c: sp("東京都", 0, 0, 0, 0) };
+  assert.equal(Score.recommend("HWOR", spots, AX, 1)[0], "a"); // 高温・水風呂・ひとり・計画に最も近い
+  assert.equal(Score.recommend("SATF", spots, AX, 1)[0], "b"); // 逆側の4軸に最も近い
+  assert.deepEqual(Score.recommend("HWOR", spots, AX, 3), ["a", "c", "b"]);
+});
+
+test("recommend: 首都圏はn-1件までにして、近い地方の施設を入れる。地方が遠すぎるなら入れない", () => {
+  const near = { m1: sp("東京都", 2, 2, 2, 2), m2: sp("神奈川県", 2, 2, 2, 1), m3: sp("埼玉県", 2, 2, 1, 1), r1: sp("長野県", 2, 1, 1, 1) };
+  const got = Score.recommend("HWOR", near, AX, 3);
+  assert.equal(got.length, 3);
+  assert.ok(got.includes("r1"), "近い地方の施設が入る");
+  assert.equal(got.filter((id) => Score.isMetro(near[id])).length, 2);
+  const far = { m1: sp("東京都", 2, 2, 2, 2), m2: sp("神奈川県", 2, 2, 2, 1), m3: sp("埼玉県", 2, 2, 1, 1), r1: sp("長野県", -2, -2, -2, -2) };
+  assert.deepEqual(Score.recommend("HWOR", far, AX, 3).sort(), ["m1", "m2", "m3"]); // 遠い地方は入れない
+  assert.deepEqual(Score.recommend("HWOR", near, AX, 1), ["m1"]); // n=1 でも最良の施設は首都圏だからと落とさない
+});
+
+test("recommend: 施設が少なくても件数ぶんだけ返し、空の施設群は空配列。結果は毎回同じ(決定的)", () => {
+  assert.deepEqual(Score.recommend("HWOR", {}, AX, 3), []);
+  const two = { a: sp("東京都", 1, 1, 1, 1), b: sp("大阪府", 0, 0, 0, 0) };
+  assert.equal(Score.recommend("HWOR", two, AX, 3).length, 2);
+  assert.deepEqual(Score.recommend("HWOR", two, AX, 3), Score.recommend("HWOR", two, AX, 3));
+});
+
+test("recommend: 実データで全16タイプに3件ずつ、重複なく選ばれ、施設が一部に偏らない", () => {
+  const { SPOTS, AXES, TYPES } = window;
+  const used = new Set();
+  Object.keys(TYPES).forEach((code) => {
+    const got = Score.recommend(code, SPOTS, AXES, 3);
+    assert.equal(got.length, 3, code);
+    assert.equal(new Set(got).size, 3, `${code} の重複`);
+    got.forEach((id) => { assert.ok(SPOTS[id], id); used.add(id); });
+  });
+  assert.ok(used.size >= Math.ceil(Object.keys(SPOTS).length * 0.7), `使われた施設 ${used.size}/${Object.keys(SPOTS).length}`);
 });
