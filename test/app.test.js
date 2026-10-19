@@ -27,7 +27,7 @@ function boot({ hash = "", search = "", reduce = false, ritual = false, share = 
       : { getItem: (k) => storage[k] ?? null, setItem: (k, v) => (storage[k] = v), removeItem: (k) => delete storage[k] },
     document: {
       body: { dataset: {}, style: { setProperty: (k, v) => (env.vars[k] = v) } },
-      getElementById: (id) => (id === "app" ? app : id === "fx" ? env.fx : id === "announce" ? env.announce : (el[id] = el[id] || { innerHTML: "ORIG", click() { this.onclick(); } })),
+      getElementById: (id) => (id === "app" ? app : id === "fx" ? env.fx : id === "announce" ? env.announce : (el[id] = el[id] || { innerHTML: "ORIG", dataset: {}, attrs: {}, setAttribute(k, v) { this.attrs[k] = v; }, click() { this.onclick(); } })),
       addEventListener: (t, f) => (env.listeners[t] = f),
     },
     confirm: () => env.confirmAnswer,
@@ -40,7 +40,7 @@ function boot({ hash = "", search = "", reduce = false, ritual = false, share = 
   env.downloads = [];
   g.document.createElement = () => ({ click() { env.downloads.push(this); } });
   g.URL = { createObjectURL: () => "blob:test", revokeObjectURL() {} };
-  g.window = { ...g, ShareImage: share ? { render: (spec) => (env.shareSpec = spec, share === "fail" ? Promise.reject(new Error("x")) : Promise.resolve(new Blob(["x"]))) } : undefined, QUESTIONS: undefined, addEventListener: (t, f) => (env.listeners[t] = f), scrollTo() {} };
+  g.window = { ...g, ShareImage: share ? { render: (spec, layout) => (env.shareSpec = spec, (env.layouts = env.layouts || []).push(layout), share === "fail" ? Promise.reject(new Error("x")) : Promise.resolve(new Blob([layout]))) } : undefined, QUESTIONS: undefined, addEventListener: (t, f) => (env.listeners[t] = f), scrollTo() {} };
   // data.js/score.js は window / globalThis に定義するため、関数内で window を差し替えて評価する
   const run = new Function(...Object.keys(g), SRC.join("\n"));
   run(...Object.values(g));
@@ -300,6 +300,22 @@ test("シェア画像: 結果に画像セクションが出て、生成後に保
   assert.ok(!JSON.stringify(env.shareSpec).includes("4444"));
   env.el["save-img"].click();
   assert.equal(env.downloads[0].download, "totonology-SAOR.png");
+});
+
+test("シェア画像: 横長・縦長の2サイズを作り、切り替えて保存できる", async () => {
+  const env = boot({ share: true, hash: "#SAOR-" + "4".repeat(24) });
+  await new Promise((r) => setImmediate(r));
+  assert.deepEqual([...env.layouts].sort(), ["landscape", "portrait"]);
+  assert.equal(env.el["share-size"].hidden, false);
+  assert.equal(env.el["share-img"].dataset.layout, "landscape");
+  env.el["size-p"].click();
+  assert.equal(env.el["share-img"].dataset.layout, "portrait");
+  assert.equal([env.el["share-img"].width, env.el["share-img"].height].join("x"), "1080x1350");
+  env.el["save-img"].click();
+  assert.equal(env.downloads.at(-1).download, "totonology-SAOR-portrait.png");
+  env.el["size-l"].click();
+  env.el["save-img"].click();
+  assert.equal(env.downloads.at(-1).download, "totonology-SAOR.png");
 });
 
 test("シェア画像: 生成に失敗しても結果表示は壊れず、セクションは隠れたまま", async () => {
