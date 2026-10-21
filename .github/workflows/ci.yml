@@ -42,6 +42,9 @@ jobs:
           for f in $refs; do
             if [ ! -f "_site/$f" ]; then echo "not published: $f"; status=1; fi
           done
+          for f in robots.txt sitemap.xml; do
+            if [ ! -f "_site/$f" ]; then echo "not published: $f"; status=1; fi
+          done
           codes=$(node -e 'globalThis.window=globalThis;require("./js/data.js");console.log(Object.keys(window.TYPES).join(" "))')
           if [ -z "$codes" ]; then echo "no type codes found"; exit 1; fi
           for code in $codes; do
