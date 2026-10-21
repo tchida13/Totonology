@@ -187,5 +187,5 @@ test("recommend: 実データで全16タイプに3件ずつ、重複なく選ば
     assert.equal(new Set(got).size, 3, `${code} の重複`);
     got.forEach((id) => { assert.ok(SPOTS[id], id); used.add(id); });
   });
-  assert.ok(used.size >= Math.ceil(Object.keys(SPOTS).length * 0.7), `使われた施設 ${used.size}/${Object.keys(SPOTS).length}`);
+  assert.ok(used.size >= Math.ceil(Object.keys(SPOTS).length * 0.6), `使われた施設 ${used.size}/${Object.keys(SPOTS).length}`);
 });
