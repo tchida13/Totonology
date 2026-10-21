@@ -73,6 +73,15 @@ test("施設データ: 必須項目・親和度の範囲・都道府県・URL形
   assert.equal(Object.keys(SPOTS).length, new Set(Object.values(SPOTS).map((x) => x.name + x.pref)).size, "施設の重複");
 });
 
+test("施設データ: 件数・エリアの広がり・公式URLの形式(#69)", () => {
+  const sp = Object.values(window.SPOTS);
+  assert.ok(sp.length >= 30, `施設数 ${sp.length}`);
+  assert.ok(new Set(sp.map((x) => x.pref)).size >= 12, "都道府県の種類");
+  assert.ok(sp.filter((x) => !["東京都", "神奈川県", "埼玉県", "千葉県"].includes(x.pref)).length >= 15, "地方の施設数");
+  sp.forEach((x) => { if (x.url) assert.ok(x.url.startsWith("https://"), x.name); }); // 公式URLは https のみ
+  assert.ok(sp.filter((x) => x.url).length >= 24, "公式サイトURLのある施設数");
+});
+
 test("types に手動の spots 紐づけが残っていない(施設は親和度から自動で選ぶ)", () => {
   Object.entries(TYPES).forEach(([code, t]) => assert.equal(t.spots, undefined, code));
 });
