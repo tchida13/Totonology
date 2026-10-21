@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tchida13.github.io/Totonology/sitemap.xml

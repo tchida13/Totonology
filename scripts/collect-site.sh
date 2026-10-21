@@ -4,7 +4,7 @@ set -eu
 out="${1:-_site}"
 rm -rf "$out"
 mkdir -p "$out"
-cp index.html style.css favicon.svg favicon.ico apple-touch-icon.png "$out/"
+cp index.html style.css robots.txt sitemap.xml favicon.svg favicon.ico apple-touch-icon.png "$out/"
 cp -r js "$out/"
 # assets は丸ごと含める（新しい素材の追加漏れを防ぐ）。assets/images は元画像(管理対象外)なので除く
 cp -r assets "$out/assets"
