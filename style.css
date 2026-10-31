@@ -275,3 +275,8 @@ body[data-scene="quiz"] .quizhead{padding-bottom:14px;border-bottom:1px solid va
 body[data-scene="quiz"] .top,body[data-scene="quiz"] main{padding-left:24px;padding-right:24px}
 body[data-scene="quiz"] .quiz{padding-top:16px}
 body[data-scene="quiz"] .quizhead{margin-bottom:8px}
+
+/* タイプ別ページ(types/*.html。scripts/build-types.js で生成) */
+.type-links{display:flex;flex-wrap:wrap;gap:6px 18px}
+.type-links a{color:var(--fg);text-underline-offset:3px}
+.type-page .pair-you a{color:inherit}
