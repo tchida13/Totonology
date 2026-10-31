@@ -15,6 +15,8 @@ Totonology 開発における AI エージェント・人間共通の作業ル�
 | `js/app.js` | 画面遷移・描画 |
 | `scripts/collect-site.sh` | Pages 公開ファイルを集めるスクリプト（deploy.yml と ci.yml が共用。assets/ を追加したらここも確認） |
 | `scripts/check-spots.js` | 施設データの公式URLの死活確認(手動実行・CIには入れない)。`node scripts/check-spots.js [--stale 12]` |
+| `scripts/build-types.js` | タイプ別ページ(`types/<code>.html`)と `sitemap.xml` を `js/data.js` から生成（下記「生成スクリプトの例外」） |
+| `types/` | 上記スクリプトの生成物（コミット対象・手で編集しない） |
 | `test/` | `node --test` で実行するテスト（外部依存なし） |
 | `style.css` | スタイル（ライトテーマ。演出は prefers-reduced-motion で停止） |
 | `index.html` | エントリポイント |
@@ -92,5 +94,11 @@ node --test   # テスト
 - 変更は依頼された Issue の範囲に収める。範囲外の改善は新しい Issue として提案する
 - `git push`、PR 作成、Issue 操作など外部に影響する操作は、依頼の範囲内で行う
 - 依存パッケージやビルド工程を安易に追加しない（静的サイトのまま保つ。テストも Node 標準の `node --test` を使う）
+- **生成スクリプトの例外（オーナー承認済み）**: タイプ別の静的ページは、シェアの URL ごとに OGP を変え検索にも載せるため、ビルドではなく「生成して出力をコミットする」方式で用意する
+  - 目的: `types/<code>.html`（16タイプ）と `sitemap.xml` を生成する。これ以外の用途に生成スクリプトを増やす場合は、改めてオーナーに確認する
+  - 実行: `node scripts/build-types.js`（Node 標準のみ・外部依存なし）。サイトの配信自体にビルド工程は不要で、生成物は静的ファイルとしてそのまま公開される
+  - 運用: `js/data.js`（タイプ・施設）や `SITE_URL`、ページのテンプレートを変えたら再実行し、**生成物も同じコミットに含める**。`types/` と `sitemap.xml` は手で編集しない
+  - 鮮度チェック: CI が `node scripts/build-types.js --check` を実行し、`node --test`（`test/types.test.js`）も生成物と `data.js` の食い違いを検知する
+  - og:image はページ側で差し替えられるよう、スクリプト内の `ogImage()` に集約している（タイプ別 OGP 画像は別 Issue）
 - ロジックを変えたら `test/` にテストを追加・更新する
 - 質問・タイプの文言は `js/data.js` のみで編集できる構造を維持する

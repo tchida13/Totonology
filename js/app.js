@@ -1,7 +1,7 @@
 (function () {
   const app = document.getElementById("app");
   const Q = window.QUESTIONS, AXES = window.AXES, TYPES = window.TYPES, SPOTS = window.SPOTS, GROUPS = window.GROUPS;
-  // シェアにはトップURLを使う（結果URLのハッシュには回答が含まれるため、投稿文には載せない）
+  // サイトのルートURL。シェアにはタイプ別ページのURLを使う（結果URLのハッシュには回答が含まれるため、投稿文には載せない）
   const SITE_URL = "https://tchida13.github.io/Totonology/";
   // lucide のSVGスプライト(assets/icons.svg)から表示する。色は currentColor に追従
   const icon = (name) => `<svg class="icon" aria-hidden="true" focusable="false"><use href="assets/icons.svg#${name}"/></svg>`;
@@ -207,7 +207,7 @@
   let shareUrls = []; // 生成した画像の object URL(横長・縦長)。画面を離れるときに解放する
   let shareSeq = 0; // 生成の世代。結果が切り替わったら古い生成結果を捨てる
   const freeShareUrl = () => { shareUrls.forEach((u) => URL.revokeObjectURL(u)); shareUrls = []; };
-  function shareImage(code, t, grp, sc, text) {
+  function shareImage(code, t, grp, sc, text, typeUrl) {
     const seq = ++shareSeq;
     const spec = {
       code, name: t.name, en: t.en, tagline: t.tagline, groupName: grp.name, color: grp.color,
@@ -247,7 +247,7 @@
       if (navigator.canShare && navigator.canShare({ files: [toFile(items.landscape)] })) {
         const b = document.getElementById("share-files");
         b.hidden = false;
-        b.onclick = () => navigator.share({ files: [toFile(items[cur])], text: `${text} ${SITE_URL}` }).catch(() => {}); // キャンセルは無視
+        b.onclick = () => navigator.share({ files: [toFile(items[cur])], text: `${text} ${typeUrl}` }).catch(() => {}); // キャンセルは無視
       }
     }).catch(() => { const sec = document.getElementById("share"); if (sec && seq === shareSeq) sec.hidden = true; }); // 失敗したらセクションごと隠す
   }
@@ -279,7 +279,8 @@
         <span class="links">${sp.url ? `<a href="${esc(sp.url)}" target="_blank" rel="noopener">公式サイト</a>` : ""}<a href="${map}" target="_blank" rel="noopener">地図で見る</a></span></li>`;
     }).join("");
     const text = `私のサウナタイプは【${t.name}】(${code})でした！ #Totonology`;
-    const shareUrl = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(SITE_URL);
+    const typeUrl = SITE_URL + window.Score.typePagePath(code); // 共有はタイプ別ページへ(タイプ別のカード表示・回答の生データを含まない)
+    const shareUrl = "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(typeUrl);
     // 整いタイム: Apple Watch のマインドフルネスのような花びら状の光を、全体の背景にうっすら置くだけ(主張しない)
     const petals = Array.from({ length: 8 }, (_, k) => `<i style="--r:${k * 45}deg"></i>`).join("");
     el(`<article class="result" style="--group:${grp.color}">
@@ -324,7 +325,7 @@
       <p class="disclaimer">※ 娯楽目的の診断です。サウナは体調に合わせて無理せず、水分補給をしてお楽しみください。</p>
     </article>`);
     document.getElementById("again").onclick = start;
-    if (window.ShareImage) shareImage(code, t, grp, sc, text);
+    if (window.ShareImage) shareImage(code, t, grp, sc, text, typeUrl);
     const copy = document.getElementById("copy");
     const orig = copy.innerHTML; // 連打しても元の表示に戻せるよう、描画直後に保持する
     let timer;

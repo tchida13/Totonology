@@ -25,6 +25,9 @@ jobs:
       - name: テスト
         run: node --test
 
+      - name: タイプ別ページの鮮度確認（js/data.js と生成物が一致するか）
+        run: node scripts/build-types.js --check
+
       - name: index.html の参照ファイル確認
         run: |
           status=0
@@ -48,6 +51,8 @@ jobs:
           codes=$(node -e 'globalThis.window=globalThis;require("./js/data.js");console.log(Object.keys(window.TYPES).join(" "))')
           if [ -z "$codes" ]; then echo "no type codes found"; exit 1; fi
           for code in $codes; do
+            lc=$(echo "$code" | tr 'A-Z' 'a-z')
             if [ ! -f "_site/assets/characters/$code.svg" ]; then echo "not published: assets/characters/$code.svg"; status=1; fi
+            if [ ! -f "_site/types/$lc.html" ]; then echo "not published: types/$lc.html"; status=1; fi
           done
           exit $status

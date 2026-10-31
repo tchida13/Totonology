@@ -75,7 +75,10 @@
     return picked.map((r) => r.id);
   }
 
-  const api = { scores, codeOf, order, recommend, isMetro };
+  // タイプ別ページの相対パス(サイトのルートから)。シェアの向き先と生成スクリプト(scripts/build-types.js)が共用する
+  const typePagePath = (code) => `types/${code.toLowerCase()}.html`;
+
+  const api = { scores, codeOf, order, recommend, isMetro, typePagePath };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.Score = api;
 })(typeof window !== "undefined" ? window : globalThis);
