@@ -25,6 +25,7 @@
 - `js/share.js` … 結果のシェア用画像（canvas）の描画
 - `js/app.js` … 画面遷移・描画
 - `robots.txt` / `sitemap.xml` … 検索エンジン向け。URL は `js/app.js` の `SITE_URL` と揃える（`test/seo.test.js` が整合を検査）
+- `assets/ogp/` … OGP 画像（トップ用 + タイプ別16枚、1200x630 JPEG）。`scripts/build-ogp.js` が share.js の描画から生成した出力で、手で編集しない。再生成は macOS で `node scripts/build-ogp.js`（詳細は AGENTS.md）
 - `types/` … タイプ別の静的ページ（16枚）。`scripts/build-types.js` が `js/data.js` から生成した出力で、手で編集しない（`sitemap.xml` も同スクリプトが生成）
 - `test/` … テスト（`node --test`）
 - `style.css` … スタイル（北欧テイストのライトテーマ）

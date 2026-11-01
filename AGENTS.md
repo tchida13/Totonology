@@ -17,6 +17,7 @@ Totonology 開発における AI エージェント・人間共通の作業ル�
 | `scripts/check-spots.js` | 施設データの公式URLの死活確認(手動実行・CIには入れない)。`node scripts/check-spots.js [--stale 12]` |
 | `scripts/build-types.js` | タイプ別ページ(`types/<code>.html`)と `sitemap.xml` を `js/data.js` から生成（下記「生成スクリプトの例外」） |
 | `types/` | 上記スクリプトの生成物（コミット対象・手で編集しない） |
+| `scripts/build-ogp.js` | OGP 画像(`assets/ogp/*.jpg`、トップ+16タイプ)を share.js の描画から生成（macOS 専用。`--check` は全OS。下記「OGP 画像の生成」） |
 | `test/` | `node --test` で実行するテスト（外部依存なし） |
 | `style.css` | スタイル（ライトテーマ。演出は prefers-reduced-motion で停止） |
 | `index.html` | エントリポイント |
@@ -99,6 +100,11 @@ node --test   # テスト
   - 実行: `node scripts/build-types.js`（Node 標準のみ・外部依存なし）。サイトの配信自体にビルド工程は不要で、生成物は静的ファイルとしてそのまま公開される
   - 運用: `js/data.js`（タイプ・施設）や `SITE_URL`、ページのテンプレートを変えたら再実行し、**生成物も同じコミットに含める**。`types/` と `sitemap.xml` は手で編集しない
   - 鮮度チェック: CI が `node scripts/build-types.js --check` を実行し、`node --test`（`test/types.test.js`）も生成物と `data.js` の食い違いを検知する
-  - og:image はページ側で差し替えられるよう、スクリプト内の `ogImage()` に集約している（タイプ別 OGP 画像は別 Issue）
+  - og:image はスクリプト内の `ogImage()` に集約し、タイプ別 OGP 画像（`assets/ogp/<code>.jpg`）を指す
+- **OGP 画像の生成（Issue #65、同じ方針の追加例外）**: トップ用 `assets/ogp/top.jpg` とタイプ別16枚（1200x630 の JPEG。SNS のカードは SVG 非対応が多いため）を、生成して出力をコミットする方式で用意する
+  - 仕組み: `js/share.js` の描画（`draw` / `drawSite`）を `scripts/svg-canvas.js`（SVG 記録用の canvas 互換コンテキスト）で SVG にし、macOS 標準の `qlmanage` と `sips` で JPEG にする。外部依存なし。デザインは share.js と共通なので、シェア画像の見た目を変えたら OGP も再生成する
+  - 再生成: **macOS で** `node scripts/build-ogp.js`（`assets/ogp/*.jpg` と `manifest.json` が更新される）。`js/data.js` のタイプ名・キャッチコピー、`js/share.js` の描画、`assets/photos`・`assets/characters` を変えたら実行し、**画像と manifest を同じコミットに含める**。生成後は画像を開いて見た目を確認する
+  - 鮮度チェック: CI は `node scripts/build-ogp.js --check`（どの OS でも可）で、描画結果の SVG のハッシュを `manifest.json` と突き合わせ、画像の存在と寸法も確認する。`node --test`（`test/ogp.test.js`）も同様
+  - 注意: 画像そのものは macOS の描画（フォント・レンダラ）に依存するため、CI では再生成しない。`assets/ogp/` は手で編集しない
 - ロジックを変えたら `test/` にテストを追加・更新する
 - 質問・タイプの文言は `js/data.js` のみで編集できる構造を維持する
