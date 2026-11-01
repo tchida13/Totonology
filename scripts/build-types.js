@@ -20,8 +20,8 @@ function loadData() {
 const Score = require("../js/score.js");
 const SITE_URL = read("js/app.js").match(/const SITE_URL = "([^"]+)"/)[1];
 
-// og:image / twitter:image の URL。タイプ別OGP画像(#65)を作ったら、ここだけ差し替える
-const ogImage = (_code) => ({ url: SITE_URL + "assets/ogp.jpg", width: 1200, height: 630 });
+// og:image / twitter:image の URL。タイプ別OGP画像(scripts/build-ogp.js の生成物 assets/ogp/<code>.jpg)
+const ogImage = (code) => ({ url: SITE_URL + "assets/ogp/" + code.toLowerCase() + ".jpg", width: 1200, height: 630 });
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const typeUrl = (code) => SITE_URL + Score.typePagePath(code);
