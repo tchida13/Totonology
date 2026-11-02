@@ -4,7 +4,7 @@ set -eu
 out="${1:-_site}"
 rm -rf "$out"
 mkdir -p "$out"
-cp index.html style.css robots.txt sitemap.xml favicon.svg favicon.ico apple-touch-icon.png "$out/"
+cp index.html 404.html style.css robots.txt sitemap.xml favicon.svg favicon.ico apple-touch-icon.png "$out/"
 cp -r js "$out/"
 # タイプ別ページ(scripts/build-types.js の生成物)
 cp -r types "$out/types"
