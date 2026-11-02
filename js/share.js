@@ -170,6 +170,35 @@
     ctx.strokeStyle = "rgba(201,169,110,.25)"; ctx.lineWidth = 1; ctx.strokeRect(30, 30, W - 60, H - 60);
   }
 
+  // トップ用 OGP(1200x630)。同じ世界観で、ブランド名・サービス名と4グループの代表キャラを並べる
+  // d: { title, tagline, siteLabel, color }  imgs: { photo, avatars: [4枚] }
+  function drawSite(ctx, d, imgs) {
+    const { w: W, h: H } = SIZES.landscape;
+    backdrop(ctx, W, H);
+    ctx.textBaseline = "alphabetic";
+    photoBand(ctx, d, imgs, 0, 0, W, H, "right");
+    const X = 84;
+    ctx.fillStyle = GOLD; ctx.textAlign = "left"; ctx.font = `500 20px ${SANS}`; spacing(ctx, 8);
+    ctx.fillText("SAUNA PERSONALITY TEST", X, 112);
+    spacing(ctx, 1);
+    ctx.font = `400 128px ${SERIF}`;
+    ctx.fillText("Totonology", X, 258);
+    spacing(ctx, 0);
+    hairline(ctx, X, 296, X + 120, 296, 0.8);
+    ctx.fillStyle = TEXT; ctx.font = `500 62px ${SANS}`; spacing(ctx, 2);
+    ctx.fillText(d.title, X, 380);
+    spacing(ctx, 0);
+    ctx.fillStyle = "#BDB1A6"; ctx.font = `400 28px ${SANS}`;
+    ctx.fillText(d.tagline, X, 440);
+    ctx.fillStyle = SUB; ctx.font = `500 18px ${SANS}`; spacing(ctx, 3);
+    ctx.fillText(d.siteLabel, X, 556);
+    spacing(ctx, 0);
+    const pos = [[840, 190], [1030, 190], [840, 440], [1030, 440]];
+    imgs.avatars.slice(0, 4).forEach((a, i) => avatarRing(ctx, a, pos[i][0], pos[i][1], 72));
+    ctx.strokeStyle = "rgba(201,169,110,.6)"; ctx.lineWidth = 1.5; ctx.strokeRect(20, 20, W - 40, H - 40);
+    ctx.strokeStyle = "rgba(201,169,110,.25)"; ctx.lineWidth = 1; ctx.strokeRect(30, 30, W - 60, H - 60);
+  }
+
   const load = (src) => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
 
   // PNG の Blob を返す。d.avatarSrc / d.photoSrc は同一オリジンの画像
@@ -182,7 +211,7 @@
     return new Promise((res, rej) => canvas.toBlob((b) => (b ? res(b) : rej(new Error("toBlob"))), "image/png"));
   }
 
-  const api = { SIZES, draw, render };
+  const api = { SIZES, draw, drawSite, render };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.ShareImage = api;
 })(typeof window !== "undefined" ? window : globalThis);
