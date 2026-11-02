@@ -34,7 +34,7 @@ img{max-width:100%}
 /* フッターはページ最下部に小さく控えめに（短い画面でも下に寄せる） */
 .foot{width:100%;max-width:760px;margin:auto auto 0;padding:24px 16px 14px;color:var(--sub);font-size:.68rem;line-height:1.6;text-align:center;opacity:.8}
 .foot p{margin:2px 0}
-body[data-scene="ritual"] .foot{opacity:.5}
+body[data-scene="ritual"] .foot{opacity:.6}
 
 /* ---- ボタン ---- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:var(--accent);color:var(--on-accent);border:1.5px solid var(--accent);border-radius:var(--radius);padding:12px 26px;font-weight:600;letter-spacing:.06em;transition:background .15s,color .15s,border-color .15s}
@@ -263,7 +263,7 @@ body[data-scene="quiz"] .stones-deco{display:block}
 @keyframes wash-sway{from{transform:scale(1) translateY(0)}to{transform:scale(1.06) translateY(-1.5%)}}
 
 /* 質問画面のフッターは画面最下部に固定（石の上に小さく重ねる）。本文が隠れないよう main に余白 */
-body[data-scene="quiz"] .foot{position:fixed;left:0;right:0;bottom:0;z-index:5;width:auto;max-width:none;margin:0;padding:18px 12px calc(6px + env(safe-area-inset-bottom));color:var(--sub);font-size:.62rem;opacity:.42;background:linear-gradient(transparent,rgba(12,9,8,.82) 55%)} /* ライセンス表記は目立たないよう、小さく薄く */
+body[data-scene="quiz"] .foot{position:fixed;left:0;right:0;bottom:0;z-index:5;width:auto;max-width:none;margin:0;padding:18px 12px calc(6px + env(safe-area-inset-bottom));color:var(--sub);font-size:.62rem;opacity:.75;background:linear-gradient(transparent,rgba(12,9,8,.82) 55%)} /* ライセンス表記は目立たないよう、小さく薄く */
 body[data-scene="quiz"] main{padding-bottom:64px}
 /* 「戻る」は枠なしの控えめなテキストリンク。タップ領域は44px以上 */
 body[data-scene="quiz"] #back{min-height:44px;padding:10px 12px;border:0;background:none;color:var(--sub);font-weight:500;letter-spacing:.14em;text-shadow:0 1px 8px rgba(0,0,0,.85)}
