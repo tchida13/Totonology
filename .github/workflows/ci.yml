@@ -20,7 +20,7 @@ jobs:
           node-version: 22
 
       - name: JavaScript 構文チェック
-        run: for f in js/*.js; do node --check "$f"; done
+        run: for f in js/*.js scripts/*.js; do node --check "$f"; done
 
       - name: テスト
         run: node --test
@@ -48,7 +48,7 @@ jobs:
           for f in $refs; do
             if [ ! -f "_site/$f" ]; then echo "not published: $f"; status=1; fi
           done
-          for f in robots.txt sitemap.xml; do
+          for f in robots.txt sitemap.xml 404.html favicon.svg favicon.ico apple-touch-icon.png; do
             if [ ! -f "_site/$f" ]; then echo "not published: $f"; status=1; fi
           done
           codes=$(node -e 'globalThis.window=globalThis;require("./js/data.js");console.log(Object.keys(window.TYPES).join(" "))')

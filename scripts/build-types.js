@@ -75,9 +75,9 @@ function renderPage(code, d) {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${img.url}">
 <link rel="canonical" href="${url}">
-<link rel="icon" href="../favicon.svg?v=2" type="image/svg+xml">
-<link rel="icon" href="../favicon.ico?v=2" sizes="48x48">
-<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<link rel="icon" href="../favicon.svg?v=3" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico?v=3" sizes="48x48">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=3">
 <meta name="theme-color" content="#F3F1EC">
 <meta name="color-scheme" content="light">
 <link rel="stylesheet" href="../style.css">
@@ -126,7 +126,7 @@ ${JSON.stringify(ld, null, 2)}
 </main>
 <footer class="foot">
   <p>娯楽目的のサウナ性格診断 ／ Totonology</p>
-  <p>写真: Kateryna Petrova / <a href="https://pixnio.com/" target="_blank" rel="noopener">Pixnio</a>（CC0）。その他の写真・イラストはAIを含む自作です。</p>
+  <p>写真: Kateryna Petrova / <a href="https://pixnio.com/" target="_blank" rel="noopener">Pixnio</a>（CC0）。その他の写真・イラストはAIを含む自作です。アイコン: <a href="https://lucide.dev/" target="_blank" rel="noopener">Lucide</a>（ISC）。</p>
 </footer>
 </body>
 </html>
