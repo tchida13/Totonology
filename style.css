@@ -35,6 +35,18 @@ img{max-width:100%}
 .foot{width:100%;max-width:760px;margin:auto auto 0;padding:24px 16px 14px;color:var(--sub);font-size:.68rem;line-height:1.6;text-align:center;opacity:.8}
 .foot p{margin:2px 0}
 body[data-scene="ritual"] .foot{opacity:.6}
+.foot a{color:inherit;text-underline-offset:2px}
+/* ---- 文書ページ（プライバシーポリシー） ---- */
+.doc{padding:20px 0 12px}
+.doc h1{font-size:clamp(1.5rem,5.5vw,2rem);line-height:1.4;margin-bottom:6px}
+.doc-meta{color:var(--sub);font-size:.8rem;margin-bottom:20px}
+.doc h2{font-size:1.05rem;margin:28px 0 8px;padding-left:10px;border-left:3px solid var(--gold)}
+.doc p{margin:0 0 10px;font-size:.92rem}
+.doc ul{margin:0 0 10px;padding-left:1.3em;font-size:.92rem}
+.doc li{margin:0 0 6px}
+.doc code{padding:1px 5px;border-radius:2px;background:var(--surface2);font-size:.85em}
+.doc a{color:var(--cool);text-underline-offset:2px}
+.doc-back{margin-top:28px}
 
 /* ---- ボタン ---- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:var(--accent);color:var(--on-accent);border:1.5px solid var(--accent);border-radius:var(--radius);padding:12px 26px;font-weight:600;letter-spacing:.06em;transition:background .15s,color .15s,border-color .15s}

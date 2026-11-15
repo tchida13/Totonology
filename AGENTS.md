@@ -19,6 +19,7 @@ Totonology 開発における AI エージェント・人間共通の作業ル�
 | `types/` | 上記スクリプトの生成物（コミット対象・手で編集しない） |
 | `scripts/build-ogp.js` | OGP 画像(`assets/ogp/*.jpg`、トップ+16タイプ)を share.js の描画から生成（macOS 専用。`--check` は全OS。下記「OGP 画像の生成」） |
 | `test/` | `node --test` で実行するテスト（外部依存なし） |
+| `privacy.html` | プライバシーポリシー・免責事項。Cookie・解析・外部サービス・取得情報を変えたら同じ PR で更新する |
 | `style.css` | スタイル（ライトテーマ。演出は prefers-reduced-motion で停止） |
 | `index.html` | エントリポイント |
 

@@ -125,7 +125,7 @@ ${JSON.stringify(ld, null, 2)}
 </article>
 </main>
 <footer class="foot">
-  <p>娯楽目的のサウナ性格診断 ／ Totonology</p>
+  <p>娯楽目的のサウナ性格診断 ／ Totonology ／ <a href="../privacy.html">プライバシーポリシー・免責事項</a></p>
   <p>写真: Kateryna Petrova / <a href="https://pixnio.com/" target="_blank" rel="noopener">Pixnio</a>（CC0）。その他の写真・イラストはAIを含む自作です。アイコン: <a href="https://lucide.dev/" target="_blank" rel="noopener">Lucide</a>（ISC）。</p>
 </footer>
 </body>

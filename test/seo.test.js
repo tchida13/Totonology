@@ -40,3 +40,19 @@ test("collect-site.sh が sitemap.xml / robots.txt を公開対象に含める",
   const sh = read("scripts/collect-site.sh");
   assert.ok(sh.includes("robots.txt") && sh.includes("sitemap.xml"));
 });
+
+test("privacy.html が存在し、canonical が SITE_URL 配下で、トップのフッターからリンクされる", () => {
+  const p = read("privacy.html");
+  assert.equal(p.match(/<link rel="canonical" href="([^"]+)"/)[1], SITE_URL + "privacy.html");
+  assert.match(p, /<title>[^<]*プライバシー[^<]*<\/title>/);
+  assert.ok(/<footer class="foot">[\s\S]*href="privacy\.html"/.test(html), "index.html のフッターにリンクがある");
+  assert.ok(read("scripts/collect-site.sh").includes("privacy.html"), "公開対象に含まれる");
+});
+
+test("privacy.html の記述が実装と矛盾しない（Cookie・解析・サーバー送信を使っていない）", () => {
+  const js = ["js/app.js", "js/score.js", "js/share.js"].map(read).join("\n");
+  assert.ok(!/document\.cookie|localStorage|fetch\(|XMLHttpRequest|sendBeacon/.test(js), "Cookie/localStorage/通信を使っていない");
+  assert.ok(!/<script[^>]+src="https?:/.test(html), "外部スクリプト(解析タグ等)を読み込んでいない");
+  const p = read("privacy.html");
+  assert.ok(p.includes("Cookie を使用しません") && p.includes("アクセス解析ツールも導入していません"));
+});
